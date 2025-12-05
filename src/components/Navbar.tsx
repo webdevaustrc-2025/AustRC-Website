@@ -76,9 +76,8 @@ export function Navbar() {
               transition={{ duration: 0.2 }}
             >
               <div className="relative group cursor-pointer">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71] to-[#27AE60] rounded-xl blur opacity-60 group-hover:opacity-100 transition-opacity" />
-                <div className="relative w-12 h-12 bg-gradient-to-br from-[#2ECC71] to-[#27AE60] rounded-xl flex items-center justify-center shadow-[0_0_30px_0_rgba(46,204,113,0.6)] group-hover:shadow-[0_0_40px_0_rgba(46,204,113,0.9)] transition-all">
-                  <span className="text-white text-xl">A</span>
+                <div className="relative w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
+                  <img src="/src/assets/logo.png" alt="AUSTRC Logo" className="w-full h-full object-cover rounded-xl" />
                 </div>
               </div>
               <div>
