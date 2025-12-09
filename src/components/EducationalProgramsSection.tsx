@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { useCachedImages } from '@/hooks/useCachedImage';
 
 interface EducationalProgram {
   id: string;
@@ -16,6 +17,10 @@ interface EducationalProgram {
 export function EducationalProgramsSection() {
   const [programs, setPrograms] = useState<EducationalProgram[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Get image URLs for caching
+  const imageUrls = programs.map((program) => program.Image_1).filter(Boolean);
+  const cachedUrls = useCachedImages(imageUrls);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -103,7 +108,7 @@ export function EducationalProgramsSection() {
                     {program.Image_1 ? (
                       <>
                         <img
-                          src={program.Image_1}
+                          src={cachedUrls[program.Image_1] || program.Image_1}
                           alt={program.Name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
