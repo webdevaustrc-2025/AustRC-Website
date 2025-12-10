@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { useCachedImages } from '@/hooks/useCachedImage';
 
 interface ResearchProject {
   id: string;
@@ -16,6 +17,10 @@ interface ResearchProject {
 export function ResearchProjectsHomepageSection() {
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Get image URLs for caching
+  const imageUrls = projects.map((project) => project.Cover_Picture).filter(Boolean);
+  const cachedUrls = useCachedImages(imageUrls);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -103,7 +108,7 @@ export function ResearchProjectsHomepageSection() {
                     {project.Cover_Picture ? (
                       <>
                         <img
-                          src={project.Cover_Picture}
+                          src={cachedUrls[project.Cover_Picture] || project.Cover_Picture}
                           alt={project.Title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />

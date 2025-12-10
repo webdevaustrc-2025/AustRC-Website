@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { useNavigate } from 'react-router-dom';
+import { useCachedImages } from '@/hooks/useCachedImage';
 
 interface Event {
   id: string;
@@ -20,6 +21,10 @@ export function EventsSection() {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const navigate = useNavigate();
+  
+  // Get image URLs for caching
+  const imageUrls = events.map((event) => event.Cover_Picture).filter(Boolean);
+  const cachedUrls = useCachedImages(imageUrls);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -127,7 +132,7 @@ export function EventsSection() {
                     {/* Image Section Enhanced */}
                     <div className="relative overflow-hidden h-56 bg-gradient-to-b from-[#2ECC71]/10 to-transparent cursor-pointer">
                       <img
-                        src={event.Cover_Picture}
+                        src={cachedUrls[event.Cover_Picture] || event.Cover_Picture}
                         alt={event.Event_Name}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-125 cursor-pointer"
                       />
@@ -302,7 +307,7 @@ export function EventsSection() {
               <div className="p-6 space-y-6">
                 <div className="relative rounded-lg overflow-hidden">
                   <img
-                    src={selectedEvent.Cover_Picture}
+                    src={cachedUrls[selectedEvent.Cover_Picture] || selectedEvent.Cover_Picture}
                     alt={selectedEvent.Event_Name}
                     className="w-full h-80 object-cover"
                   />

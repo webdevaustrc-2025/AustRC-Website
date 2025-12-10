@@ -4,7 +4,7 @@ import { HeroSection } from './HeroSection';
 import { EventsSection } from './EventsSection';
 import { EducationalProgramsSection } from './EducationalProgramsSection';
 import { ResearchProjectsHomepageSection } from './ResearchProjectsHomepageSection';
-import { TestimonialsSection } from './TestimonialsSection';
+import { VoiceOfAUSTRCSection } from './VoiceOfAUSTRCSection';
 import { CollaborationsSection } from './CollaborationsSection';
 
 // Animated background particles
@@ -124,14 +124,14 @@ export function HomePage() {
 
       <AnimatedDivider />
 
-      {/* Testimonials with slide animation */}
+      {/* Voice of AUSTRC with slide animation */}
       <motion.div
         initial={{ opacity: 0, x: 50 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
-        <TestimonialsSection />
+        <VoiceOfAUSTRCSection />
       </motion.div>
 
       <AnimatedDivider />
