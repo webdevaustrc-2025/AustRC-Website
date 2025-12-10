@@ -6,6 +6,7 @@ import { EducationalProgramsSection } from './EducationalProgramsSection';
 import { ResearchProjectsHomepageSection } from './ResearchProjectsHomepageSection';
 import { TestimonialsSection } from './TestimonialsSection';
 import { CollaborationsSection } from './CollaborationsSection';
+import { SponsorsSection } from './SponsorsSection';
 
 // Animated background particles
 function AnimatedBackground() {
@@ -144,6 +145,18 @@ export function HomePage() {
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
         <CollaborationsSection />
+      </motion.div>
+
+      <AnimatedDivider />
+
+      {/* Sponsors with fade animation */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+      >
+        <SponsorsSection />
       </motion.div>
 
       {/* Glow effect on scroll */}

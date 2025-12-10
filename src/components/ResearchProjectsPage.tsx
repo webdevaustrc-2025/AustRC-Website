@@ -38,10 +38,15 @@ export function ResearchProjectsPage() {
         
         const fetchedProjects: ProjectData[] = [];
         querySnapshot.forEach((doc) => {
+          const data = doc.data();
           fetchedProjects.push({
             id: doc.id,
-            ...doc.data() as Omit<ProjectData, 'id'>,
-          });
+            Title: data.Title || '',
+            Introduction: data.Introduction || '',
+            Cover_Picture: data.Cover_Picture || '',
+            Order: data.Order || 0,
+            ...data,
+          } as ProjectData);
         });
         
         setProjects(fetchedProjects);
@@ -208,7 +213,7 @@ export function ResearchProjectsPage() {
 
                       {/* View Button */}
                       <Button
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                           e.stopPropagation();
                           setSelectedProject(project);
                         }}

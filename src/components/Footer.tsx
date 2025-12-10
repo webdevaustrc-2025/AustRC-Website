@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone } from 'lucide-react';
+import logo from '@/assets/logo.png';
 
 interface FooterProps {
   theme?: 'dark' | 'light';
@@ -43,9 +44,11 @@ export function Footer({ theme = 'dark' }: FooterProps) {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#2ECC71] to-[#27AE60] rounded-lg flex items-center justify-center shadow-[0_0_30px_0_rgba(46,204,113,0.6)]">
-                  <span className="text-white">A</span>
-                </div>
+                <img 
+                  src={logo} 
+                  alt="AUSTRC Logo" 
+                  className="w-10 h-10 object-contain"
+                />
                 <span className={`tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Aust Robotics Club</span>
               </div>
               <p className={`text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
