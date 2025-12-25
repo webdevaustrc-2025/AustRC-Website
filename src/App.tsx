@@ -9,6 +9,17 @@ import { ProjectDetailPage } from './components/ProjectDetailPage';
 import { AboutPage } from './components/AboutPage';
 import { EnthusiastAcquisitionPage } from './components/EnthusiastAcquisitionPage';
 import { Footer } from './components/Footer';
+import { CursorGlow } from './components/CursorGlow';
+
+// Sub-Pages
+import { EventsPage } from './components/activities/EventsPage';
+import { AchievementsPage } from './components/activities/AchievementsPage';
+import { SocialActivitiesPage } from './components/activities/SocialActivitiesPage';
+import { EducationalActivitiesPage } from './components/activities/EducationalActivitiesPage';
+import { EventWebsitePage } from './components/activities/EventWebsitePage';
+
+// ✅ THIS IMPORT IS VITAL
+import { ActivityDetailPage } from './components/activities/ActivityDetailPage';
 
 function AppContent() {
   const location = useLocation();
@@ -16,10 +27,21 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-black">
+      <CursorGlow />
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        
         <Route path="/activities" element={<ActivitiesPage />} />
+        <Route path="/activities/events" element={<EventsPage />} />
+        <Route path="/activities/achievements" element={<AchievementsPage />} />
+        <Route path="/activities/social-activities" element={<SocialActivitiesPage />} />
+        <Route path="/activities/educational-activities" element={<EducationalActivitiesPage />} />
+        <Route path="/activities/event-website" element={<EventWebsitePage />} />
+
+        {/* ✅ THE DYNAMIC ROUTE FOR DETAIL PAGES */}
+        <Route path="/activity/:category/:id" element={<ActivityDetailPage />} />
+
         <Route path="/about" element={<AboutPage />} />
         <Route path="/enthusiast-acquisition" element={<EnthusiastAcquisitionPage />} />
         <Route path="/research-projects" element={<ResearchProjectsPage />} />

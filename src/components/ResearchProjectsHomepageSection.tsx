@@ -1,18 +1,17 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
-import { ExternalLink, X } from 'lucide-react';
-import { Button } from './ui/button';
+import { ArrowRight, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { Button } from './ui/button';
 
-interface ProjectData {
+interface ResearchProject {
   id: string;
   Title: string;
-  Introduction: string;
   Cover_Picture: string;
-  Order: number;
+  Introduction: string;
+  Order?: number;
   Owner_1_Name?: string;
   Owner_1_Designation_Department?: string;
   Owner_2_Name?: string;
@@ -24,38 +23,42 @@ interface ProjectData {
   [key: string]: string | number | undefined;
 }
 
-const statusColors: Record<string, string> = {
-  'In Progress': 'bg-blue-500',
-  'Completed': 'bg-[#2ECC71]',
-  'Planning': 'bg-orange-500',
-};
-
-export function ResearchProjectsSection() {
-  const [projects, setProjects] = useState<ProjectData[]>([]);
+export function ResearchProjectsHomepageSection() {
+  const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ResearchProject | null>(null);
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const projectsCollection = collection(db, 'All_Data', 'Research_Page', 'All_Projects_of_RC');
-        const q = query(projectsCollection, orderBy('Order', 'asc'));
+        const projectsCollection = collection(db, 'All_Data', 'Research_Projects', 'research_projects');
+        const q = query(projectsCollection);
         const querySnapshot = await getDocs(q);
-        
-        const fetchedProjects: ProjectData[] = [];
+
+        const fetchedProjects: ResearchProject[] = [];
         querySnapshot.forEach((doc) => {
-          if (fetchedProjects.length < 4) {
-            fetchedProjects.push({
-              id: doc.id,
-              ...doc.data() as Omit<ProjectData, 'id'>,
-            });
-          }
+          const data = doc.data();
+          console.log('Project data:', data);
+          fetchedProjects.push({
+            id: doc.id,
+            Title: data.Title || doc.id || '',
+            Cover_Picture: data.Cover_Picture || '',
+            Introduction: data.Introduction || '',
+            Order: data.Order || 0,
+            ...data,
+          });
         });
-        
-        setProjects(fetchedProjects);
+
+        // Sort by Order and take only first 4
+        const topProjects = fetchedProjects
+          .sort((a, b) => (a.Order || 0) - (b.Order || 0))
+          .slice(0, 4);
+
+        console.log('Fetched projects:', topProjects);
+        setProjects(topProjects);
       } catch (error) {
-        console.error('Error fetching projects:', error);
+        console.error('Error fetching research projects:', error);
       } finally {
         setLoading(false);
       }
@@ -102,7 +105,7 @@ export function ResearchProjectsSection() {
     }
   }, [projects]);
 
-  const getOwners = (project: ProjectData) => {
+  const getOwners = (project: ResearchProject) => {
     const owners = [];
     for (let i = 1; i <= 4; i++) {
       const nameKey = `Owner_${i}_Name`;
@@ -118,13 +121,13 @@ export function ResearchProjectsSection() {
     }
     return owners;
   };
+
   return (
     <>
-      <section id="projects" className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
-        {/* Background gradient blobs */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#2ECC71] rounded-full blur-[150px]" />
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#27AE60] rounded-full blur-[150px]" />
+      <section id="research-projects-home" className="py-20 bg-black relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] blur-3xl" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -133,70 +136,127 @@ export function ResearchProjectsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
             <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
-              <span className="text-[#2ECC71] text-sm">Research & Innovation</span>
+              <span className="text-[#2ECC71] text-sm">Innovation & Discovery</span>
             </div>
-            <h2 className="mb-4 tracking-tight text-white text-5xl">Built for Performance</h2>
+            <h2 className="mb-4 tracking-tight text-white text-5xl">Research & Projects</h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              We push the limits with state-of-the-art research. Fast, scalable, and innovative solutions.
+              Explore our cutting-edge research projects and innovations that advance robotics technology.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {loading ? (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-400">Loading projects...</p>
-              </div>
-            ) : projects.length === 0 ? (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-400">No projects found</p>
-              </div>
-            ) : (
-              projects.map((project, index) => (
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400">Loading research projects...</p>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-400">No research projects found</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {projects.map((project, index) => (
                 <motion.div
                   key={project.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="h-full cursor-pointer"
                   onClick={() => setSelectedProject(project)}
                 >
-                  <Card className="group overflow-hidden bg-gradient-to-br from-[rgba(46,204,113,0.05)] to-transparent border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] transition-all duration-300 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] h-full backdrop-blur-sm pointer-events-none">
+                  <Card className="group bg-gradient-to-br from-[rgba(46,204,113,0.05)] to-transparent border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] transition-all duration-300 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] overflow-hidden backdrop-blur-sm flex flex-col h-full relative pointer-events-none">
+                    {/* Image Section */}
                     <div className="relative overflow-hidden h-48">
-                      <img
-                        src={cachedImages[project.id] || project.Cover_Picture}
-                        alt={project.Title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                        <div className="text-white flex items-center gap-2 bg-[#2ECC71] px-4 py-2 rounded-full shadow-[0_0_30px_0_rgba(46,204,113,0.8)]">
-                          <span>View Details</span>
-                          <ExternalLink className="w-4 h-4" />
+                      {project.Cover_Picture ? (
+                        <>
+                          <img
+                            src={cachedImages[project.id] || project.Cover_Picture}
+                            alt={project.Title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2ECC71]/30 to-[#27AE60]/10">
+                          <span className="text-[#2ECC71] text-center px-4">{project.Title}</span>
                         </div>
-                      </div>
-                      <div className="absolute bottom-4 left-4">
+                      )}
+
+                      {/* Badge indicator */}
+                      <div className="absolute top-4 right-4 z-10">
                         <div className="w-3 h-3 bg-[#2ECC71] rounded-full shadow-[0_0_20px_0_rgba(46,204,113,0.8)]" />
                       </div>
                     </div>
 
-                    <CardContent className="p-4 space-y-3 bg-black/40 backdrop-blur-sm">
-                      <h3 className="tracking-tight group-hover:text-[#2ECC71] transition-colors text-white">
+                    {/* Content Section */}
+                    <CardContent className="p-6 space-y-4 bg-black/40 backdrop-blur-sm flex-1 flex flex-col">
+                      <h3 className="tracking-tight group-hover:text-[#2ECC71] transition-colors text-white font-semibold line-clamp-2">
                         {project.Title}
                       </h3>
 
-                      <p className="text-gray-400 text-sm line-clamp-2">
+                      <p className="text-gray-400 text-sm flex-1" style={{ display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {project.Introduction}
                       </p>
+
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedProject(project);
+                        }}
+                        className="w-full group-hover:bg-[#2ECC71] group-hover:text-white transition-all text-[#2ECC71] border border-[rgba(46,204,113,0.3)] hover:shadow-[0_0_20px_0_rgba(46,204,113,0.5)] px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center justify-center gap-2"
+                      >
+                        <span>View Details</span>
+                        <motion.span
+                          animate={{ x: [0, 4, 0] }}
+                          transition={{ duration: 1, repeat: Infinity }}
+                        >
+                          <ArrowRight className="w-4 h-4" />
+                        </motion.span>
+                      </motion.button>
                     </CardContent>
                   </Card>
                 </motion.div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Explore All Projects Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex justify-center mt-12"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative px-8 py-3 bg-gradient-to-r from-[rgba(46,204,113,0.15)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.4)] hover:border-[rgba(46,204,113,0.7)] text-[#2ECC71] font-semibold text-base transition-all duration-300 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] overflow-hidden group"
+            >
+              {/* Shine effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.6 }}
+              />
+
+              <span className="relative inline-flex items-center gap-2">
+                Explore All Projects
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </motion.span>
+              </span>
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
