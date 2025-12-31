@@ -591,27 +591,26 @@ export function ResearchProjectsHomepageSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 50 }}
               transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 25 }}
-              className="fixed inset-0 flex items-center justify-center pointer-events-none p-4 sm:p-6 lg:p-8"
+              className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4 sm:p-6 lg:p-8"
               style={{ zIndex: 100000 }}
+              onClick={() => setSelectedProject(null)}
             >
               <div
-                className="relative w-full max-w-4xl max-h-[90vh] bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-2xl sm:rounded-3xl border border-[rgba(46,204,113,0.3)] shadow-2xl shadow-[#2ECC71]/10 pointer-events-auto overflow-hidden"
+                className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-xl sm:rounded-2xl lg:rounded-3xl border border-[rgba(46,204,113,0.3)] shadow-2xl shadow-[#2ECC71]/10 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Close Button */}
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setSelectedProject(null)}
-                  className="absolute top-4 right-4 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-[rgba(46,204,113,0.3)] flex items-center justify-center text-[#2ECC71] hover:bg-[#2ECC71] hover:text-white transition-colors duration-300"
-                >
-                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
-                </motion.button>
+                  {/* Close Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setSelectedProject(null)}
+                    className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-black/90 backdrop-blur-md border border-[rgba(46,204,113,0.3)] flex items-center justify-center text-[#2ECC71] hover:bg-[#2ECC71] hover:text-white transition-colors duration-300"
+                  >
+                    <X className="w-4 h-4 sm:w-6 sm:h-6" />
+                  </motion.button>
 
-                {/* Scrollable Content */}
-                <div className="overflow-y-auto max-h-[90vh] scrollbar-thin scrollbar-thumb-[#2ECC71]/30 scrollbar-track-transparent">
                   {/* Hero Image */}
-                  <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
+                  <div className="relative h-32 sm:h-56 lg:h-72 overflow-hidden rounded-t-xl sm:rounded-t-2xl lg:rounded-t-3xl flex-shrink-0">
                     <motion.img
                       initial={{ scale: 1.1 }}
                       animate={{ scale: 1 }}
@@ -623,12 +622,12 @@ export function ResearchProjectsHomepageSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
                     {/* Title Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
                       <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2"
+                        className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 line-clamp-2"
                       >
                         {selectedProject.Title}
                       </motion.h2>
@@ -636,24 +635,24 @@ export function ResearchProjectsHomepageSection() {
                         initial={{ scaleX: 0 }}
                         animate={{ scaleX: 1 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
-                        className="w-20 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full origin-left"
+                        className="w-16 sm:w-20 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full origin-left"
                       />
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 sm:p-8 space-y-6 sm:space-y-8">
+                  <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
                     {/* About Section */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                     >
-                      <h3 className="text-lg sm:text-xl font-semibold text-[#2ECC71] mb-3 flex items-center gap-2">
-                        <span className="w-8 h-[2px] bg-[#2ECC71] rounded-full" />
+                      <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-[#2ECC71] mb-2 sm:mb-3 flex items-center gap-2">
+                        <span className="w-6 sm:w-8 h-[2px] bg-[#2ECC71] rounded-full" />
                         About This Project
                       </h3>
-                      <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                      <p className="text-gray-300 text-xs sm:text-sm lg:text-base leading-relaxed whitespace-pre-wrap">
                         {selectedProject.Introduction}
                       </p>
                     </motion.div>
@@ -665,28 +664,28 @@ export function ResearchProjectsHomepageSection() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
                       >
-                        <h3 className="text-lg sm:text-xl font-semibold text-[#2ECC71] mb-4 flex items-center gap-2">
-                          <span className="w-8 h-[2px] bg-[#2ECC71] rounded-full" />
+                        <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-[#2ECC71] mb-3 sm:mb-4 flex items-center gap-2">
+                          <span className="w-6 sm:w-8 h-[2px] bg-[#2ECC71] rounded-full" />
                           Project Team
                         </h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                           {getOwners(selectedProject).map((owner, index) => (
                             <motion.div
                               key={index}
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: 0.5 + index * 0.1 }}
-                              className="group relative bg-gradient-to-br from-[rgba(46,204,113,0.1)] to-transparent rounded-xl p-4 border border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.4)] transition-colors"
+                              className="group relative bg-gradient-to-br from-[rgba(46,204,113,0.1)] to-transparent rounded-xl p-3 sm:p-4 border border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.4)] transition-colors"
                             >
-                              <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2ECC71]/30 to-[#27AE60]/10 flex items-center justify-center border border-[rgba(46,204,113,0.3)]">
-                                  <Users className="w-5 h-5 text-[#2ECC71]" />
+                              <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#2ECC71]/30 to-[#27AE60]/10 flex items-center justify-center border border-[rgba(46,204,113,0.3)] flex-shrink-0">
+                                  <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#2ECC71]" />
                                 </div>
-                                <div>
-                                  <h4 className="text-white font-semibold text-sm sm:text-base">
+                                <div className="min-w-0 flex-1">
+                                  <h4 className="text-white font-semibold text-xs sm:text-sm lg:text-base truncate">
                                     {owner.name}
                                   </h4>
-                                  <p className="text-gray-400 text-xs sm:text-sm">
+                                  <p className="text-gray-400 text-[10px] sm:text-xs lg:text-sm truncate">
                                     {owner.designation}
                                   </p>
                                 </div>
@@ -702,17 +701,17 @@ export function ResearchProjectsHomepageSection() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.6 }}
-                      className="flex flex-col sm:flex-row gap-4 pt-4"
+                      className="flex flex-col sm:flex-row gap-3 pt-2 sm:pt-4 pb-2"
                     >
                       <Button
                         onClick={() => setSelectedProject(null)}
-                        className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white hover:from-[#27AE60] hover:to-[#2ECC71] transition-all py-3 rounded-xl font-semibold shadow-lg shadow-[#2ECC71]/20"
+                        className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white hover:from-[#27AE60] hover:to-[#2ECC71] transition-all py-2.5 sm:py-3 rounded-xl font-semibold text-sm shadow-lg shadow-[#2ECC71]/20"
                       >
                         Close Project
                       </Button>
                       <Button
                         variant="outline"
-                        className="flex-1 border-[rgba(46,204,113,0.3)] text-[#2ECC71] hover:bg-[rgba(46,204,113,0.1)] py-3 rounded-xl font-semibold"
+                        className="flex-1 border-[rgba(46,204,113,0.3)] text-[#2ECC71] hover:bg-[rgba(46,204,113,0.1)] py-2.5 sm:py-3 rounded-xl font-semibold text-sm"
                       >
                         Learn More
                         <ExternalLink className="w-4 h-4 ml-2" />
@@ -720,7 +719,6 @@ export function ResearchProjectsHomepageSection() {
                     </motion.div>
                   </div>
                 </div>
-              </div>
             </motion.div>
           </>
         )}
