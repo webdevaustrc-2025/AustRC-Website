@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { collection, getDocs, query, doc, getDoc } from 'firebase/firestore'; // Removed 'limit'
+import { collection, getDocs, query, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
-import { ArrowRight, Sparkles, Layers, Wrench, Microscope } from 'lucide-react';
+import { ArrowRight, Sparkles, Layers, Microscope } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // --- Types ---
@@ -14,7 +14,7 @@ interface ActivityItem {
   Status?: string; 
 }
 
-// --- 1. MENTORSHIP & WORKSHOP COMPONENT (Grid View) ---
+// --- 1. MENTORSHIP COMPONENT (Grid View) ---
 const ActivitySection = ({ 
   title, 
   categoryBadge, 
@@ -38,8 +38,6 @@ const ActivitySection = ({
       try {
         // @ts-ignore
         const ref = collection(db, ...collectionPath);
-        
-        // ✅ FIX: Removed limit(3). Now fetching ALL items.
         const q = query(ref); 
         const snapshot = await getDocs(q);
 
@@ -143,47 +141,60 @@ const ResearchSlider = () => {
   useEffect(() => {
     const fetchResearch = async () => {
       try {
-        const ref = collection(db, 'All_Data', 'Research_Projects', 'research_projects');
-        const snapshot = await getDocs(query(ref));
-        
-        const allSlides: ActivityItem[] = [];
+        const gatheredSlides: ActivityItem[] = [];
 
-        snapshot.docs.forEach(doc => {
-          const data = doc.data() as Record<string, any>;
-          let foundMultiImages = false;
-          for (let i = 1; i <= 10; i++) {
-            const imgKey = `Image_${i}`;
-            if (data[imgKey]) {
-              foundMultiImages = true;
-              allSlides.push({
-                id: `${doc.id}_${i}`, 
-                Name: data.Name || data.name || 'Research Project',
-                Image: data[imgKey],
-                Description: data.Description || 'Exploring new frontiers in robotics.',
+        // 1. Fetch from Parent Document (All_Data/Research_Projects)
+        // This matches your screenshot exactly
+        const parentDocRef = doc(db, 'All_Data', 'Research_Projects');
+        try {
+          const parentSnap = await getDoc(parentDocRef);
+          if (parentSnap.exists()) {
+            const data = parentSnap.data();
+            setSectionDescription(data.Description || data.description || "");
+
+            // Loop through all keys to find "Image_1", "Image_2", etc.
+            Object.keys(data).forEach((key, idx) => {
+              if (key.startsWith('Image_')) {
+                const val = data[key];
+                if (typeof val === 'string' && val.length > 5) {
+                  gatheredSlides.push({
+                    id: `parent_${key}`,
+                    Name: 'Research Project', // Or add a specific title field in FB
+                    Image: val,
+                    Description: data.Description || '',
+                    Status: 'Research'
+                  });
+                }
+              }
+            });
+          }
+        } catch (e) {
+          console.warn("Parent doc fetch warning:", e);
+        }
+
+        // 2. Fetch from Sub-Collection (Fallback/Extra)
+        const subColRef = collection(db, 'All_Data', 'Research_Projects', 'research_projects');
+        try {
+          const subSnap = await getDocs(query(subColRef));
+          subSnap.docs.forEach(doc => {
+            const data = doc.data();
+            // Check for single image
+            const singleImg = data.Image || data.imgUrl || data.image || '';
+            if (singleImg && singleImg.length > 5) {
+              gatheredSlides.push({
+                id: doc.id,
+                Name: data.Name || data.Title || 'Project',
+                Image: singleImg,
+                Description: data.Description || '',
                 Status: 'Research'
               });
             }
-          }
-          if (!foundMultiImages) {
-             const standardImg = data.Image || data.imgUrl || '';
-             if (standardImg) {
-               allSlides.push({
-                 id: doc.id,
-                 Name: data.Name || data.name || 'Untitled Research',
-                 Image: standardImg,
-                 Description: data.Description || 'Innovative research initiative.',
-                 Status: 'Research'
-               });
-             }
-          }
-        });
-        setSlides(allSlides);
-
-        const parentDocRef = doc(db, 'All_Data', 'Research_Projects');
-        const parentDocSnap = await getDoc(parentDocRef);
-        if (parentDocSnap.exists()) {
-          setSectionDescription(parentDocSnap.data().Description || "");
+          });
+        } catch (e) {
+          // Ignore sub-collection error if empty
         }
+
+        setSlides(gatheredSlides);
 
       } catch (err) {
         console.error("Research fetch error:", err);
@@ -194,6 +205,7 @@ const ResearchSlider = () => {
     fetchResearch();
   }, []);
 
+  // Auto-Play
   useEffect(() => {
     if (slides.length <= 1) return;
     const interval = setInterval(() => {
@@ -206,6 +218,7 @@ const ResearchSlider = () => {
     <div className="mb-32 relative z-10 overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#2ECC71]/10 rounded-full blur-[100px] pointer-events-none" />
 
+      {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -222,6 +235,7 @@ const ResearchSlider = () => {
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#2ECC71]/50 to-transparent mx-auto rounded-full" />
       </motion.div>
 
+      {/* Slider Container */}
       <div className="container mx-auto px-4 relative z-10">
         {loading ? (
           <div className="flex justify-center py-10">
@@ -233,45 +247,52 @@ const ResearchSlider = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center">
-            <div className="relative w-full max-w-4xl h-[500px] mb-12"> 
+            
+            {/* ✅ FIXED: Added min-h and forced Aspect Ratio */}
+            <div className="relative w-full max-w-4xl h-[450px] md:h-[550px] mb-12 flex justify-center"> 
               <AnimatePresence mode='popLayout'>
                 <motion.div
                   key={slides[currentIndex].id}
-                  initial={{ opacity: 0, scale: 0.9, x: 50 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, x: -50 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  className="absolute inset-0"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.8 }}
+                  className="absolute inset-0 w-full h-full"
                 >
-                  <div className="relative w-full h-full rounded-3xl overflow-hidden bg-[#0a1810] border border-[#2ECC71]/30 shadow-[0_0_40px_rgba(46,204,113,0.2)] group">
+                  <div className="relative w-full h-full rounded-2xl overflow-hidden bg-[#0a1810] border border-[#2ECC71]/30 shadow-[0_0_30px_rgba(46,204,113,0.15)] group">
+                    
+                    {/* Image */}
                     <img 
                       src={slides[currentIndex].Image} 
                       alt={slides[currentIndex].Name} 
-                      className="w-full h-full object-cover transition-transform duration-[5s] ease-linear group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-[5s] ease-linear group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-8 pb-12">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="p-2 bg-[#2ECC71] rounded-full text-black">
-                          <Sparkles size={16} fill="currentColor" />
+                    
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
+
+                    {/* Content Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-1.5 bg-[#2ECC71] rounded-full text-black">
+                          <Sparkles size={14} fill="currentColor" />
                         </div>
                         <span className="text-[#2ECC71] text-xs font-bold uppercase tracking-widest">
-                          Research Project
+                          Research Highlight
                         </span>
                       </div>
-                      <h3 className="text-white text-3xl font-bold leading-tight mb-2 drop-shadow-md">
+                      <h3 className="text-white text-2xl font-bold leading-tight mb-2 drop-shadow-md">
                         {slides[currentIndex].Name}
                       </h3>
-                      <p className="text-gray-300 text-base opacity-90 line-clamp-2 max-w-2xl">
-                        {slides[currentIndex].Description}
-                      </p>
                     </div>
+
+                    {/* Navigation Dots */}
                     <div className="absolute bottom-6 right-6 flex gap-2 z-20">
                       {slides.map((_, idx) => (
                         <button
                           key={idx}
                           onClick={() => setCurrentIndex(idx)}
-                          className={`h-2 rounded-full transition-all duration-300 ${
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
                             idx === currentIndex 
                               ? 'w-6 bg-[#2ECC71] shadow-[0_0_10px_#2ECC71]' 
                               : 'w-2 bg-gray-500/50 hover:bg-gray-400'
@@ -279,11 +300,13 @@ const ResearchSlider = () => {
                         />
                       ))}
                     </div>
+
                   </div>
                 </motion.div>
               </AnimatePresence>
             </div>
 
+            {/* Description & Button */}
             {sectionDescription && (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
@@ -292,9 +315,16 @@ const ResearchSlider = () => {
                 className="max-w-4xl text-center px-4"
               >
                 <div className="w-16 h-1 bg-[#2ECC71] mx-auto mb-6 rounded-full" />
-                <p className="text-[#2ECC71] text-lg md:text-xl font-medium italic leading-relaxed whitespace-pre-line tracking-wide drop-shadow-[0_0_10px_rgba(46,204,113,0.3)]">
+                <p className="text-[#2ECC71] text-lg md:text-xl font-medium italic leading-relaxed whitespace-pre-line tracking-wide drop-shadow-[0_0_10px_rgba(46,204,113,0.3)] mb-8">
                   "{sectionDescription}"
                 </p>
+                <Link 
+                  to="/research-projects" 
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-[#2ECC71]/10 border border-[#2ECC71] rounded-full text-[#2ECC71] font-bold uppercase tracking-wider hover:bg-[#2ECC71] hover:text-black transition-all duration-300 shadow-[0_0_20px_rgba(46,204,113,0.2)] hover:shadow-[0_0_40px_rgba(46,204,113,0.6)] hover:scale-105"
+                >
+                  Explore Research
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </motion.div>
             )}
           </div>
@@ -333,17 +363,7 @@ export function EducationalActivitiesPage() {
         delay={0.1}
       />
 
-      {/* 2. WORKSHOPS - Updated Path to match your Firebase */}
-      <ActivitySection 
-        title="Workshops & Seminar" 
-        categoryBadge="Training"
-        categorySlug="workshops" 
-        icon={Wrench}
-        collectionPath={['All_Data', 'Educational,Workshops & Seminar', 'educational,Workshops & Seminar']} 
-        delay={0.2}
-      />
-
-      {/* 3. RESEARCH SLIDESHOW */}
+      {/* 2. RESEARCH SLIDESHOW */}
       <ResearchSlider />
 
     </div>

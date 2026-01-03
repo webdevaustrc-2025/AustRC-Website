@@ -55,7 +55,7 @@ const TypewriterText = ({ text }: { text: string }) => {
 // --- Main Page Component ---
 export function ActivityDetailPage() {
   const { category, id } = useParams();
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate(); 
   const [data, setData] = useState<ActivityDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -130,23 +130,25 @@ export function ActivityDetailPage() {
   }
 
   return (
-    // ✅ FIX 1: Added pt-32 (Padding Top) to push content below the fixed Navbar
-    <div className="min-h-screen bg-black text-white pt-32 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
       
       {/* Background Ambience */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-[#2ECC71]/10 rounded-full blur-[120px] pointer-events-none" />
 
+      {/* ✅ FIX 1: Dedicated Spacer Div to push content below navbar */}
+      <div className="h-32 md:h-40 w-full" />
+
       {/* Main Container */}
-      <div className="container mx-auto px-6 max-w-5xl relative z-10">
+      <div className="container mx-auto px-6 max-w-5xl relative z-10 pb-20">
         
-        {/* ✅ FIX 2: Back Button Container - Distinctly placed at top left */}
-        <div className="w-full flex justify-start mb-8">
+        {/* ✅ FIX 2: Back Button Container - High Z-Index & bright colors */}
+        <div className="w-full flex justify-start mb-8 relative z-50">
           <button 
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-white hover:border-[#2ECC71] hover:bg-[#2ECC71]/20 hover:text-[#2ECC71] transition-all duration-300 cursor-pointer shadow-lg backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 border border-[#2ECC71]/30 rounded-full text-[#2ECC71] hover:bg-[#2ECC71] hover:text-black transition-all duration-300 cursor-pointer shadow-lg backdrop-blur-md"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold tracking-wide">Back</span>
+            <span className="font-bold tracking-wide">Back</span>
           </button>
         </div>
 
@@ -217,17 +219,6 @@ export function ActivityDetailPage() {
             </div>
             
             <TypewriterText text={data.Description} />
-          </motion.div>
-
-          {/* 5. CTA BUTTON */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-          >
-            <button className="px-10 py-4 bg-[#2ECC71] text-black font-bold text-lg rounded-xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(46,204,113,0.4)]">
-              Register / Contact Club
-            </button>
           </motion.div>
 
         </div>
