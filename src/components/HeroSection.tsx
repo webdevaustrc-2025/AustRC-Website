@@ -202,13 +202,7 @@ export function HeroSection() {
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Button
-                variant="outline"
-                className="relative bg-white border-[rgba(46,204,113,0.5)] text-[#2ECC71] hover:bg-[#2ECC71]/10 px-8 py-6 text-base transition-all hover:shadow-[0_0_30px_0_rgba(46,204,113,0.5)] group overflow-hidden"
-              >
-                <Cpu className="w-5 h-5 mr-2 group-hover:rotate-180 transition-transform duration-500" />
-                View Projects
-              </Button>
+             
             </motion.div>
           </motion.div>
 

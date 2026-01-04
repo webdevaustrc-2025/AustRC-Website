@@ -32,7 +32,6 @@ export function Navbar() {
   const activitiesDropdownItems = [
     { name: 'Events', path: '/activities/events' },
     { name: 'Achievements', path: '/activities/achievements' },
-    { name: 'Social Activities', path: '/activities/social-activities' },
     { name: 'Educational Activities', path: '/activities/educational-activities' },
     { name: 'Our Event Website', path: '/activities/event-website' },
   ];
