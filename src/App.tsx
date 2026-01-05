@@ -8,6 +8,7 @@ import { ResearchProjectsPage } from './components/ResearchProjectsPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
 import { AboutPage } from './components/AboutPage';
 import { EnthusiastAcquisitionPage } from './components/EnthusiastAcquisitionPage';
+import { DevelopersPage } from './components/DevelopersPage';
 import { Footer } from './components/Footer';
 import { CursorGlow } from './components/CursorGlow';
 
@@ -54,6 +55,7 @@ function AppContent() {
         <Route path="/governing-panel/fall-2022" element={<GoverningPanelSemester semester="Fall" year="2022" />} />
         <Route path="/governing-panel/spring-2022" element={<GoverningPanelSemester semester="Spring" year="2022" />} />
         <Route path="/governing-panel/fall-2021" element={<GoverningPanelSemester semester="Fall" year="2021" />} />
+        <Route path="/developers" element={<DevelopersPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer theme={isAboutPage ? 'light' : 'dark'} />
