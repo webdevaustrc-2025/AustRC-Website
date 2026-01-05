@@ -1459,28 +1459,6 @@ const ModeratorCard = ({ developer }: { developer: Developer }) => {
         />
         
         <motion.div
-          className="absolute top-8 left-8"
-          animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-        >
-          <Terminal className="w-6 h-6 text-[rgba(46,204,113,0.3)]" />
-        </motion.div>
-        <motion.div
-          className="absolute bottom-8 right-8"
-          animate={{ y: [0, 10, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity }}
-        >
-          <Coffee className="w-6 h-6 text-[rgba(46,204,113,0.3)]" />
-        </motion.div>
-        <motion.div
-          className="absolute top-1/2 left-8"
-          animate={{ x: [0, 10, 0] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        >
-          <Rocket className="w-5 h-5 text-[rgba(46,204,113,0.2)]" />
-        </motion.div>
-        
-        <motion.div
           className="absolute top-4 right-4 z-20"
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -1859,7 +1837,9 @@ export function DevelopersPage() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mt-20 mb-20"
         >
-          <SectionDivider title="Team Lead" icon={Code2} />
+          <div className="mb-10 mt-8">
+            <SectionDivider title="Team Lead" icon={Code2} />
+          </div>
           <ModeratorCard developer={moderator} />
         </motion.div>
 
@@ -1869,89 +1849,15 @@ export function DevelopersPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <SectionDivider title="Development Team" icon={Users} />
+          <div className="mt-8 mb-10">
+            <SectionDivider title="Development Team" icon={Users} />
+          </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {developers.map((developer, index) => (
               <DeveloperCard key={developer.name} developer={developer} index={index} />
             ))}
           </div>
-        </motion.div>
-
-        {/* Enhanced Footer Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="mt-24 text-center"
-        >
-          <motion.div
-            className="relative inline-flex items-center gap-3 bg-[rgba(46,204,113,0.05)] border border-[rgba(46,204,113,0.2)] rounded-2xl px-8 py-5 overflow-hidden"
-            whileHover={{ scale: 1.02, borderColor: "rgba(46,204,113,0.4)" }}
-          >
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(46,204,113,0.1)] to-transparent"
-              animate={{ x: ["-100%", "100%"] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            />
-            
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-            >
-              <Sparkles className="w-6 h-6 text-[#2ECC71]" />
-            </motion.div>
-            <p className="text-gray-400 relative z-10">
-              Built with{" "}
-              <motion.span 
-                className="text-[#2ECC71] inline-block"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                ♥
-              </motion.span>
-              {" "}by AUSTRC Web Development Team
-            </p>
-            <motion.div
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <Rocket className="w-5 h-5 text-[#2ECC71]" />
-            </motion.div>
-          </motion.div>
-          
-          <motion.div
-            className="mt-8 flex items-center justify-center gap-2 text-gray-500 text-sm"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <span>Crafted with</span>
-            <motion.span
-              className="text-[#2ECC71]"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              React
-            </motion.span>
-            <span>+</span>
-            <motion.span
-              className="text-[#2ECC71]"
-              animate={{ opacity: [1, 0.5, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              TypeScript
-            </motion.span>
-            <span>+</span>
-            <motion.span
-              className="text-[#2ECC71]"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-            >
-              Framer Motion
-            </motion.span>
-          </motion.div>
         </motion.div>
       </div>
     </div>
