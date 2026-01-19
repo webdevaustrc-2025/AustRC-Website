@@ -129,15 +129,15 @@ export function TestimonialsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12 px-4"
         >
-          <h2 className="tracking-tight text-white text-5xl">
+          <h2 className="tracking-tight text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
             VOICE OF AUSTRC
           </h2>
         </motion.div>
 
         {/* Carousel */}
-        <div className="flex justify-center max-w-3xl mx-auto">
+        <div className="flex justify-center w-full px-4 sm:px-6 md:px-0 max-w-3xl mx-auto">
           {/* Single Carousel */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -145,8 +145,9 @@ export function TestimonialsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             style={{ perspective: "1000px" }}
+            className="w-full max-w-[500px]"
           >
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-[rgba(46,204,113,0.3)] shadow-[0_0_50px_0_rgba(46,204,113,0.4)]" style={{ width: "500px", height: "500px" }}>
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-[rgba(46,204,113,0.3)] shadow-[0_0_50px_0_rgba(46,204,113,0.4)]">
               <AnimatePresence mode="wait">
                 {carouselImages.length > 0 && (
                   <motion.img
@@ -180,22 +181,22 @@ export function TestimonialsSection() {
                 )}
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <h3 className="text-white mb-2">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
+                <h3 className="text-white mb-1 sm:mb-2 text-sm sm:text-base">
                   Community Voice
                 </h3>
-                <p className="text-gray-300 text-sm">
+                <p className="text-gray-300 text-xs sm:text-sm">
                   Stories and experiences from AUSTRC members
                 </p>
               </div>
               {/* Dots Indicator */}
-              <div className="absolute bottom-6 right-6 flex gap-2">
+              <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 flex gap-1.5 sm:gap-2">
                 {carouselImages.map((_, index) => (
                   <div
                     key={index}
-                    className={`w-2 h-2 rounded-full transition-all ${
+                    className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
                       index === carouselIndex
-                        ? "bg-[#2ECC71] w-6 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]"
+                        ? "bg-[#2ECC71] w-4 sm:w-6 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]"
                         : "bg-gray-500"
                     }`}
                   />

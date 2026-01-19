@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Smartphone } from 'lucide-react';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -178,6 +178,20 @@ export function Navbar() {
               </Link>
             )
           ))}
+          
+          {/* Get App Button - Inside Nav */}
+          <Link to="/get-app">
+            <motion.button
+              className="relative group flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white text-sm font-semibold rounded-full shadow-[0_0_15px_0_rgba(46,204,113,0.4)] hover:shadow-[0_0_25px_0_rgba(46,204,113,0.6)] transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Smartphone className="w-4 h-4" />
+              Get App
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-white rounded-full animate-ping" />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-white rounded-full" />
+            </motion.button>
+          </Link>
         </div>
 
       </div>

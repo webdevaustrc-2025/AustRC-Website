@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,6 +18,22 @@ import { EnthusiastAcquisitionPage } from "./components/EnthusiastAcquisitionPag
 import { DevelopersPage } from "./components/DevelopersPage";
 import { Footer } from "./components/Footer";
 import { CursorGlow } from "./components/CursorGlow";
+=======
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Navbar } from './components/Navbar';
+import { HomePage } from './components/HomePage';
+import { ActivitiesPage } from './components/ActivitiesPage';
+import { GoverningPanelHallOfFame } from './components/GoverningPanelHallOfFame';
+import { GoverningPanelSemester } from './components/GoverningPanelSemester';
+import { ResearchProjectsPage } from './components/ResearchProjectsPage';
+import { ProjectDetailPage } from './components/ProjectDetailPage';
+import { AboutPage } from './components/AboutPage';
+import { EnthusiastAcquisitionPage } from './components/EnthusiastAcquisitionPage';
+import { DevelopersPage } from './components/DevelopersPage';
+import { AppDownloadPage } from './components/AppDownloadPage';
+import { Footer } from './components/Footer';
+import { CursorGlow } from './components/CursorGlow';
+>>>>>>> 3d1d9a62f43323ac0fa57532eb9bad3b3417e1f2
 
 // Sub-Pages
 import { EventsPage } from "./components/activities/EventsPage";
@@ -37,7 +54,7 @@ function AppContent() {
   const isEventDetailPage = location.pathname.startsWith("/activity/events/");
 
   return (
-    <div className="min-h-screen bg-black overflow-x-hidden">
+    <div className="relative min-h-screen bg-black overflow-x-hidden">
       <CursorGlow />
 
       {/* Hide main Navbar if we are in the Detailed Mobile-Style view */}
@@ -114,6 +131,7 @@ function AppContent() {
           element={<GoverningPanelSemester semester="Fall" year="2021" />}
         />
         <Route path="/developers" element={<DevelopersPage />} />
+        <Route path="/get-app" element={<AppDownloadPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
