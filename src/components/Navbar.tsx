@@ -152,7 +152,7 @@ export function Navbar() {
                 <div className="relative group cursor-pointer">
                   <div className="relative w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
                     <img
-                      src="/src/assets/logo.png"
+                      src="https://ik.imagekit.io/mekt2pafz/Web%20site%20team/logo.png?updatedAt=1769056096931"
                       alt="AUSTRC Logo"
                       className="w-full h-full object-cover rounded-xl"
                     />
