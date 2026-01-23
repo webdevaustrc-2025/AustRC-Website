@@ -65,8 +65,6 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   const navItems = [
-    { name: 'ARC 2.0', path: 'https://arc.austrc.com/', section: null, external: true },
-    { name: 'Robomania 2.0', path: 'https://robomania.austrc.com/', section: null, external: true },
     { name: 'Governing Panel', path: '/', section: 'governing-panel' },
     { name: 'Activities', path: '/activities', section: null },
     { name: 'Research and project', path: '/research-projects', section: null },
