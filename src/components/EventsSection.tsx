@@ -21,12 +21,19 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { useNavigate } from 'react-router-dom';
 
+interface Headline {
+  heading: string;
+  description: string;
+  images: string[];
+}
+
 interface Event {
   id: string;
   Event_Name: string;
   Cover_Picture: string;
   Introduction: string;
   Order: number;
+  headlines: Headline[];
 }
 
 // Premium Animated Background
@@ -327,55 +334,6 @@ const EventCard = ({
               animate={{ x: isHovered ? '150%' : '-150%' }}
               transition={{ duration: 0.7 }}
             />
-
-            {/* Badge */}
-            <motion.div
-              className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 + index * 0.1 }}
-            >
-              <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-[#2ECC71]/40">
-                <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2ECC71] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-full w-full bg-[#2ECC71]" />
-                </span>
-                <span className="text-[9px] sm:text-[10px] text-[#2ECC71] font-semibold tracking-wider uppercase">
-                  Active
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Index Number */}
-            <motion.div
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#2ECC71] to-[#27AE60] flex items-center justify-center shadow-lg shadow-[#2ECC71]/30">
-                <span className="text-white font-bold text-sm sm:text-base">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Hover View Button */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: isHovered ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div
-                className="flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
-                initial={{ scale: 0.8 }}
-                animate={{ scale: isHovered ? 1 : 0.8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                <span className="text-white text-xs sm:text-sm font-medium">View Details</span>
-              </motion.div>
-            </motion.div>
           </div>
 
           {/* Content Section */}
@@ -397,37 +355,43 @@ const EventCard = ({
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-end pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-[#2ECC71]/20">
+            <div className="flex items-center justify-end pt-6 sm:pt-8 mt-auto border-t border-[#2ECC71]/20">
               {/* View Details Button */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-gradient-to-r from-[#2ECC71]/10 to-[#27AE60]/10 border border-[#2ECC71]/40 cursor-pointer"
-                animate={{
-                  background: isHovered 
-                    ? 'linear-gradient(to right, rgba(46,204,113,1), rgba(39,174,96,1))' 
-                    : 'linear-gradient(to right, rgba(46,204,113,0.1), rgba(39,174,96,0.1))',
-                  borderColor: isHovered ? 'rgba(46,204,113,1)' : 'rgba(46,204,113,0.4)',
-                  boxShadow: isHovered 
-                    ? '0 0 25px rgba(46,204,113,0.5), 0 4px 15px rgba(46,204,113,0.3)' 
-                    : '0 0 10px rgba(46,204,113,0.1)',
-                }}
-                transition={{ duration: 0.3 }}
+              <motion.button
+                onClick={onClick}
+                className="relative px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base overflow-hidden group"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <motion.span 
-                  className="text-xs sm:text-sm font-semibold"
-                  animate={{ color: isHovered ? '#000000' : '#2ECC71' }}
-                >
-                  View Details
-                </motion.span>
+                {/* Background Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60] rounded-lg sm:rounded-xl" />
+                
+                {/* Hover Glow */}
                 <motion.div
-                  animate={{ 
-                    color: isHovered ? '#000000' : '#2ECC71',
-                    x: isHovered ? 3 : 0,
-                  }}
+                  className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-lg sm:rounded-xl blur-md opacity-0"
+                  animate={{ opacity: isHovered ? 0.8 : 0 }}
                   transition={{ duration: 0.3 }}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </motion.div>
-              </motion.div>
+                  style={{ filter: 'blur(8px)' }}
+                />
+
+                {/* Shine Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={{ x: isHovered ? ['100%', '-100%'] : '-100%' }}
+                  transition={{ duration: 0.8 }}
+                />
+
+                {/* Content */}
+                <div className="relative flex items-center gap-2 text-white font-bold">
+                  <span>See Details</span>
+                  <motion.div
+                    animate={{ x: isHovered ? 4 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </motion.div>
+                </div>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -487,7 +451,7 @@ const EmptyState = () => (
   </motion.div>
 );
 
-// Event Modal Component
+// Event Modal Component with Full Details
 const EventModal = ({
   event,
   cachedImage,
@@ -515,23 +479,6 @@ const EventModal = ({
     }
   };
 
-  const handleShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: event.Event_Name,
-          text: event.Introduction,
-          url: window.location.href,
-        });
-      } else {
-        await navigator.clipboard.writeText(window.location.href);
-        // You could add a toast notification here
-      }
-    } catch (error) {
-      console.error('Share failed:', error);
-    }
-  };
-
   return (
     <>
       {/* Backdrop */}
@@ -550,7 +497,7 @@ const EventModal = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto"
+        className="fixed inset-0 flex items-start justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto py-8 sm:py-16"
         style={{ zIndex: 100000 }}
         onClick={handleBackdropClick}
       >
@@ -566,10 +513,10 @@ const EventModal = ({
             stiffness: 300, 
             damping: 30 
           }}
-          className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto my-auto"
+          className="relative w-full max-w-4xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-gradient-to-b from-gray-900 to-gray-950 rounded-xl sm:rounded-2xl lg:rounded-3xl border border-white/10 shadow-2xl overflow-hidden">
+          <div className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black rounded-2xl lg:rounded-3xl border border-[#2ECC71]/20 shadow-2xl overflow-hidden">
             {/* Animated Top Border */}
             <motion.div
               className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
@@ -586,13 +533,13 @@ const EventModal = ({
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 z-30 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-[#2ECC71] hover:border-[#2ECC71] transition-all duration-300"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/60 backdrop-blur-md border border-[#2ECC71]/40 flex items-center justify-center text-white hover:bg-[#2ECC71] hover:border-[#2ECC71] hover:text-black transition-all duration-300"
             >
-              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.button>
 
             {/* Hero Image */}
-            <div className="relative h-40 sm:h-52 lg:h-64 overflow-hidden">
+            <div className="relative h-48 sm:h-64 lg:h-80 overflow-hidden">
               <motion.img
                 initial={{ scale: 1.1, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -603,19 +550,19 @@ const EventModal = ({
               />
               
               {/* Overlays */}
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71]/5 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71]/10 to-transparent" />
 
               {/* Title Section */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 lg:p-10">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#2ECC71] rounded-full mb-3 sm:mb-4"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#2ECC71] rounded-full mb-4 sm:mb-6"
                 >
-                  <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
-                  <span className="text-white text-[10px] sm:text-xs font-semibold tracking-wider uppercase">
+                  <Zap className="w-4 h-4 text-black" />
+                  <span className="text-black text-xs sm:text-sm font-bold tracking-wider uppercase">
                     Featured Event
                   </span>
                 </motion.div>
@@ -624,7 +571,7 @@ const EventModal = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight"
+                  className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3 sm:mb-4"
                 >
                   {event.Event_Name}
                 </motion.h2>
@@ -633,76 +580,119 @@ const EventModal = ({
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.6, duration: 0.6 }}
-                  className="w-12 sm:w-16 lg:w-20 h-1 bg-gradient-to-r from-[#2ECC71] to-[#3DED97] rounded-full mt-3 sm:mt-4 origin-left"
+                  className="w-12 sm:w-20 h-1 sm:h-1.5 bg-gradient-to-r from-[#2ECC71] to-[#3DED97] rounded-full origin-left"
                 />
               </div>
             </div>
 
             {/* Content Body */}
-            <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
-              {/* About Section */}
+            <div className="p-6 sm:p-8 lg:p-10 space-y-8 sm:space-y-10">
+              {/* Introduction Section */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
+                transition={{ delay: 0.5 }}
               >
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-8 sm:w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-                  <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-white">
-                    About This Event
+                  <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                    Introduction
                   </h3>
                 </div>
-                <div className="bg-white/[0.02] rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/5">
-                  <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 border border-[#2ECC71]/10 backdrop-blur-sm">
+                  <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
                     {event.Introduction}
                   </p>
                 </div>
               </motion.div>
 
-              {/* Highlights Section */}
+              {/* Headlines with Images and Descriptions */}
+              {event.headlines && event.headlines.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="space-y-8 sm:space-y-10"
+                >
+                  {event.headlines.map((headline, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 + idx * 0.1 }}
+                      className="bg-white/[0.02] rounded-xl sm:rounded-2xl p-6 sm:p-7 lg:p-8 border border-[#2ECC71]/10 backdrop-blur-sm overflow-hidden"
+                    >
+                      {/* Headline Title */}
+                      <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#2ECC71] mb-4 sm:mb-5 flex items-center gap-3">
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
+                          className="w-2 h-2 sm:w-3 sm:h-3 bg-[#2ECC71] rounded-full"
+                        />
+                        {headline.heading}
+                      </h4>
+
+                      {/* Images - Grid or Carousel */}
+                      {headline.images && headline.images.length > 0 && (
+                        <div className="mb-6 sm:mb-7">
+                          {headline.images.length === 1 ? (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.5 }}
+                              className="relative h-56 sm:h-72 lg:h-96 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#2ECC71]/20 to-[#27AE60]/10"
+                            >
+                              <img
+                                src={headline.images[0]}
+                                alt={headline.heading}
+                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                              />
+                            </motion.div>
+                          ) : (
+                            <div className="grid grid-cols-2 gap-4 w-full">
+                              {headline.images.map((img, imgIdx) => (
+                                <motion.div
+                                  key={imgIdx}
+                                  initial={{ opacity: 0, scale: 0.9 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{ delay: imgIdx * 0.1, duration: 0.5 }}
+                                  className="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#2ECC71]/20 to-[#27AE60]/10"
+                                >
+                                  <img
+                                    src={img}
+                                    alt={`${headline.heading} ${imgIdx + 1}`}
+                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                                  />
+                                </motion.div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Description */}
+                      {headline.description && (
+                        <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
+                          {headline.description}
+                        </p>
+                      )}
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+
+              {/* Close Button at Bottom */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
-              >
-                {[
-                  { label: 'Networking', desc: 'Connect with peers' },
-                  { label: 'Learning', desc: 'Gain new skills' },
-                  { label: 'Innovation', desc: 'Explore new ideas' },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-3 sm:p-4 bg-white/[0.02] rounded-xl border border-white/5"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-[#2ECC71]" />
-                    <div>
-                      <p className="text-xs sm:text-sm font-medium text-white">{item.label}</p>
-                      <p className="text-[10px] sm:text-xs text-gray-500">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </motion.div>
-
-              {/* Action Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-                className="flex flex-col sm:flex-row gap-3 pt-2"
+                className="flex gap-3 pt-4 border-t border-[#2ECC71]/10"
               >
                 <Button
                   onClick={onClose}
-                  className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-white h-11 sm:h-12 rounded-xl font-semibold shadow-lg shadow-[#2ECC71]/20 transition-all text-sm sm:text-base"
+                  className="flex-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-black font-bold h-12 sm:h-13 rounded-xl text-sm sm:text-base shadow-lg shadow-[#2ECC71]/20 transition-all"
                 >
                   <span>Close</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 border-[#2ECC71]/50 text-[#2ECC71] hover:bg-[#2ECC71]/10 hover:border-[#2ECC71] h-11 sm:h-12 rounded-xl font-semibold text-sm sm:text-base transition-all"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  <span>View Full Project</span>
                 </Button>
               </motion.div>
             </div>
@@ -721,6 +711,52 @@ export function EventsSection() {
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
+  // Helper function to extract all images from event data
+  const getAllImageURLs = (data: any): string[] => {
+    const imageUrls: string[] = [];
+    const dataKeys = Object.keys(data);
+    
+    // Fields to exclude (like Cover_Picture which is already used as hero image)
+    const excludeFields = ['cover_picture', 'coverpicture', 'heroimage', 'hero_image'];
+    
+    // Patterns that indicate an image field
+    const imagePatterns = [
+      'image', 'img', 'picture', 'photo', 'url', 'src', 'cover',
+      'banner', 'thumbnail', 'icon', 'graphic', 'visual', 'asset'
+    ];
+    
+    for (const key of dataKeys) {
+      const value = data[key];
+      // Check if value is a string and looks like a URL (contains http or firebase storage)
+      if (typeof value === 'string' && value.length > 10) {
+        const lowerKey = key.toLowerCase();
+        const lowerValue = value.toLowerCase();
+        
+        // Skip excluded fields
+        if (excludeFields.includes(lowerKey)) {
+          continue;
+        }
+        
+        // Check if key matches image patterns
+        const isImageKey = imagePatterns.some(pattern => lowerKey.includes(pattern));
+        
+        // Check if value looks like an image URL
+        const isImageUrl = lowerValue.includes('http') || 
+                          lowerValue.includes('firebase') || 
+                          lowerValue.includes('blob:') ||
+                          lowerValue.includes('data:image');
+        
+        if (isImageKey && isImageUrl) {
+          if (!imageUrls.includes(value)) {
+            imageUrls.push(value);
+          }
+        }
+      }
+    }
+    
+    return imageUrls;
+  };
+
   // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
@@ -732,12 +768,92 @@ export function EventsSection() {
         const fetchedEvents: Event[] = [];
         querySnapshot.forEach((doc) => {
           if (fetchedEvents.length < 3) {
+            const data = doc.data();
+            console.log('Raw event data:', data);
+            
+            // Extract headlines with their images and descriptions
+            const headlines: Headline[] = [];
+            let headlineFound = false;
+            
+            for (let i = 1; i <= 10; i++) {
+              const headingKey = `Headline_${i}`;
+              const descriptionKey = `Headline_${i}_description`;
+              const heading = data[headingKey];
+
+              if (heading) {
+                headlineFound = true;
+                // Collect images for this headline - try multiple naming patterns
+                const images: string[] = [];
+                for (let j = 1; j <= 10; j++) {
+                  // List of possible image key patterns to check
+                  const imageKeyPatterns = [
+                    `Headline_${i}_Image_${j}`,
+                    `Headline_${i}_image_${j}`,
+                    `Headline_${i}_IMG_${j}`,
+                    `Headline_${i}_img_${j}`,
+                    `headline_${i}_image_${j}`,
+                    `headline_${i}_Image_${j}`,
+                    `Headline${i}_Image${j}`,
+                    `Headline${i}_image${j}`,
+                  ];
+                  
+                  // Try each pattern
+                  let found = false;
+                  for (const imageKey of imageKeyPatterns) {
+                    if (data[imageKey]) {
+                      images.push(data[imageKey]);
+                      found = true;
+                      break;
+                    }
+                  }
+                  
+                  // If not found with exact patterns, try case-insensitive search
+                  if (!found) {
+                    const lowerImagePatterns = imageKeyPatterns.map(p => p.toLowerCase());
+                    const dataKeys = Object.keys(data);
+                    const matchingKey = dataKeys.find(key => {
+                      const lowerKey = key.toLowerCase();
+                      return lowerImagePatterns.some(pattern => lowerKey === pattern);
+                    });
+                    if (matchingKey && data[matchingKey]) {
+                      images.push(data[matchingKey]);
+                    }
+                  }
+                }
+
+                console.log(`Event: ${data.Event_Name}, Headline ${i}: Found ${images.length} images`, images);
+                if (images.length > 0 || heading) {
+                  headlines.push({
+                    heading,
+                    description: data[descriptionKey] || '',
+                    images,
+                  });
+                }
+              }
+            }
+            
+            // If no headlines found, look for standalone images in the document
+            if (!headlineFound || headlines.length === 0) {
+              const allImages = getAllImageURLs(data);
+              console.log(`Event: ${data.Event_Name}, Found ${allImages.length} standalone images`, allImages);
+              
+              // Create a default headline with all found images (no description to avoid duplication)
+              if (allImages.length > 0) {
+                headlines.push({
+                  heading: 'Gallery',
+                  description: '',
+                  images: allImages,
+                });
+              }
+            }
+
             fetchedEvents.push({
               id: doc.id,
-              Event_Name: doc.data().Event_Name,
-              Cover_Picture: doc.data().Cover_Picture,
-              Introduction: doc.data().Introduction,
-              Order: doc.data().Order,
+              Event_Name: data.Event_Name,
+              Cover_Picture: data.Cover_Picture,
+              Introduction: data.Introduction,
+              Order: data.Order,
+              headlines,
             });
           }
         });
