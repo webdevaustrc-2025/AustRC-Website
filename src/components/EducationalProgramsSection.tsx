@@ -333,6 +333,7 @@ export function EducationalProgramsSection() {
                     </p>
 
                     <motion.button
+                      onClick={() => navigate(`/activity/educational-activities/${program.id}`)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className="w-full relative overflow-hidden bg-transparent group-hover:bg-[#2ECC71] border border-[rgba(46,204,113,0.4)] group-hover:border-[#2ECC71] text-[#2ECC71] group-hover:text-white transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] mt-4"

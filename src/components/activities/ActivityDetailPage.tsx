@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Sparkles, User, CheckCircle } from 'lucide-react';
 // --- Configuration ---
 const COLLECTION_PATHS: Record<string, string[]> = {
   'mentorship': ['All_Data', 'Educational, Mentorship & Training Programs', 'educational, mentorship & training programs'],
+  'educational-activities': ['All_Data', 'Educational, Mentorship & Training Programs', 'educational, mentorship & training programs'],
   'workshops': ['All_Data', 'Educational,Workshops & Seminar', 'educational,Workshops & Seminar'],
   'research': ['All_Data', 'Research_Projects', 'research_projects']
 };
