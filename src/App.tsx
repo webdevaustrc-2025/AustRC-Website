@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
 import { ActivitiesPage } from './components/ActivitiesPage';
 import { GoverningPanelPage } from './components/GoverningPanelPage';
+import { HallOfFamePage } from './components/HallOfFamePage';
 import { ResearchProjectsPage } from './components/ResearchProjectsPage';
 import { ProjectDetailPage } from './components/ProjectDetailPage';
 import { AboutPage } from './components/AboutPage';
@@ -48,7 +49,9 @@ function AppContent() {
         <Route path="/enthusiast-acquisition" element={<EnthusiastAcquisitionPage />} />
         <Route path="/research-projects" element={<ResearchProjectsPage />} />
         <Route path="/research-projects/:projectId" element={<ProjectDetailPage />} />
-        {/* Dynamic Route for Governing Panel (Hall of Fame, Semesters) */}
+        {/* Hall of Fame Route */}
+        <Route path="/hall-of-fame" element={<HallOfFamePage />} />
+        {/* Dynamic Route for Governing Panel (Semesters) */}
         <Route path="/governing-panel/:panelId" element={<GoverningPanelPage />} />
 
         <Route path="/developers" element={<DevelopersPage />} />

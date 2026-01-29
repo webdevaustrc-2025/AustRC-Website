@@ -1,13 +1,13 @@
 import { motion, useInView } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
-import { 
-  Lightbulb, 
-  GraduationCap, 
-  MessageSquare, 
-  Users, 
-  FileText, 
-  Cpu, 
-  Target, 
+import {
+  Lightbulb,
+  GraduationCap,
+  MessageSquare,
+  Users,
+  FileText,
+  Cpu,
+  Target,
   Eye,
   Mail,
   Facebook,
@@ -104,7 +104,7 @@ const AnimatedCounter = ({ value, suffix = '' }: { value: string; suffix?: strin
       let start = 0;
       const duration = 2000;
       const increment = numericValue / (duration / 16);
-      
+
       const timer = setInterval(() => {
         start += increment;
         if (start >= numericValue) {
@@ -114,7 +114,7 @@ const AnimatedCounter = ({ value, suffix = '' }: { value: string; suffix?: strin
           setCount(Math.floor(start));
         }
       }, 16);
-      
+
       return () => clearInterval(timer);
     }
   }, [isInView, numericValue]);
@@ -220,9 +220,9 @@ const DarkFooter = () => {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <img 
-                  src={logo} 
-                  alt="AUSTRC Logo" 
+                <img
+                  src={logo}
+                  alt="AUSTRC Logo"
                   className="w-10 h-10 object-contain"
                 />
                 <span className="tracking-tight font-semibold text-white">
@@ -326,7 +326,7 @@ const DarkFooter = () => {
                   <span>AUST Campus, Dhaka, Bangladesh</span>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="mailto:contact@ausrc.edu"
                     className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#2ECC71] transition-colors"
                   >
@@ -335,7 +335,7 @@ const DarkFooter = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
+                  <a
                     href="tel:+8801234567890"
                     className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#2ECC71] transition-colors"
                   >
@@ -389,7 +389,7 @@ export function AboutPage() {
 
   useEffect(() => {
     let currentIndex = 0;
-    
+
     const typingInterval = setInterval(() => {
       if (currentIndex <= fullText.length) {
         setTypedText(fullText.slice(0, currentIndex));
@@ -473,7 +473,7 @@ export function AboutPage() {
           animate={{ opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
-        
+
         {/* Large gradient orbs */}
         <motion.div
           className="absolute top-20 -left-40 w-[500px] h-[500px] bg-[#2ECC71] rounded-full blur-[150px] opacity-20"
@@ -537,15 +537,15 @@ export function AboutPage() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="flex justify-center mb-8"
               >
-                <motion.img 
+                <motion.img
                   src={logo}
                   alt="AUSTRC Logo"
                   className="w-40 h-40 object-contain"
-                  animate={{ 
+                  animate={{
                     y: [0, -10, 0],
-                    filter: ["drop-shadow(0 0 10px rgba(46,204,113,0.3))", "drop-shadow(0 0 25px rgba(46,204,113,0.6))", "drop-shadow(0 0 10px rgba(46,204,113,0.3))"] 
+                    filter: ["drop-shadow(0 0 10px rgba(46,204,113,0.3))", "drop-shadow(0 0 25px rgba(46,204,113,0.6))", "drop-shadow(0 0 10px rgba(46,204,113,0.3))"]
                   }}
-                  transition={{ 
+                  transition={{
                     y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
                     filter: { duration: 2, repeat: Infinity, ease: "easeInOut" }
                   }}
@@ -559,7 +559,7 @@ export function AboutPage() {
                 </span>
                 <span className={`text-[#2ECC71] ${showCursor ? 'opacity-100' : 'opacity-0'}`}>|</span>
               </h1>
-              
+
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -568,7 +568,7 @@ export function AboutPage() {
               >
                 "Robotics for Building a Safer Future"
               </motion.p>
-              
+
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -608,7 +608,7 @@ export function AboutPage() {
         <section className="py-20 px-6 relative">
           <div className="max-w-6xl mx-auto">
             <SectionDivider title="About AUSTRC" icon={BookOpen} />
-            
+
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -620,16 +620,16 @@ export function AboutPage() {
               <motion.div
                 className="absolute -inset-1 bg-gradient-to-r from-[#2ECC71] via-[#27AE60] to-[#2ECC71] rounded-3xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"
               />
-              
+
               <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-12 hover:border-[rgba(46,204,113,0.5)] transition-all duration-500">
                 {/* Corner accents */}
                 <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#2ECC71] rounded-tl-3xl opacity-50" />
                 <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#2ECC71] rounded-br-3xl opacity-50" />
-                
+
                 <p className="text-xl text-gray-300 leading-relaxed text-center">
-                  AUSTRC is a leading student robotics club at Ahsanullah University of Science and Technology, 
-                  established in <span className="text-[#2ECC71] font-semibold">Fall 2021</span>. With an active student-community, the club encourages developing and 
-                  materializing innovative robotics ideas — from microcontroller-based bots to large-scale projects 
+                  AUSTRC is a leading student robotics club at Ahsanullah University of Science and Technology,
+                  established in <span className="text-[#2ECC71] font-semibold">Fall 2021</span>. With an active student-community, the club encourages developing and
+                  materializing innovative robotics ideas — from microcontroller-based bots to large-scale projects
                   like <span className="text-[#2ECC71] font-semibold">Mars Rover</span> & <span className="text-[#2ECC71] font-semibold">autonomous quadcopters</span>.
                 </p>
               </div>
@@ -654,7 +654,7 @@ export function AboutPage() {
                 <motion.div
                   className="absolute -inset-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-3xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"
                 />
-                
+
                 <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-10 h-full hover:border-[rgba(46,204,113,0.5)] transition-all duration-500 overflow-hidden">
                   {/* Animated scan line */}
                   <motion.div
@@ -662,9 +662,9 @@ export function AboutPage() {
                     animate={{ top: ["0%", "100%"] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   />
-                  
+
                   <div className="flex items-center gap-4 mb-6">
-                    <motion.div 
+                    <motion.div
                       className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-4 rounded-2xl shadow-[0_0_30px_rgba(46,204,113,0.5)]"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
@@ -673,9 +673,9 @@ export function AboutPage() {
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Our Mission</h3>
                   </div>
                   <p className="text-lg text-gray-300 leading-relaxed">
-                    To enrich knowledge in robotics and foster sustainable projects through comprehensive 
-                    educational programs, interactive workshops, specialized training sessions, and competitive 
-                    events. We aim to empower students with practical skills and theoretical knowledge to excel 
+                    To enrich knowledge in robotics and foster sustainable projects through comprehensive
+                    educational programs, interactive workshops, specialized training sessions, and competitive
+                    events. We aim to empower students with practical skills and theoretical knowledge to excel
                     in the field of robotics and automation.
                   </p>
                 </div>
@@ -692,7 +692,7 @@ export function AboutPage() {
                 <motion.div
                   className="absolute -inset-1 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-3xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"
                 />
-                
+
                 <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-10 h-full hover:border-[rgba(46,204,113,0.5)] transition-all duration-500 overflow-hidden">
                   {/* Animated scan line */}
                   <motion.div
@@ -700,9 +700,9 @@ export function AboutPage() {
                     animate={{ top: ["100%", "0%"] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   />
-                  
+
                   <div className="flex items-center gap-4 mb-6">
-                    <motion.div 
+                    <motion.div
                       className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-4 rounded-2xl shadow-[0_0_30px_rgba(46,204,113,0.5)]"
                       whileHover={{ scale: 1.1, rotate: -5 }}
                     >
@@ -711,9 +711,9 @@ export function AboutPage() {
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Our Vision</h3>
                   </div>
                   <p className="text-lg text-gray-300 leading-relaxed">
-                    To build strong bonds across clubs and groups inside and outside AUST, combining technological 
-                    growth with social development. We envision a collaborative ecosystem where innovation thrives, 
-                    knowledge is shared freely, and robotics enthusiasts from diverse backgrounds unite to create 
+                    To build strong bonds across clubs and groups inside and outside AUST, combining technological
+                    growth with social development. We envision a collaborative ecosystem where innovation thrives,
+                    knowledge is shared freely, and robotics enthusiasts from diverse backgrounds unite to create
                     impactful solutions for tomorrow's challenges.
                   </p>
                 </div>
@@ -740,7 +740,7 @@ export function AboutPage() {
                   <motion.div
                     className="absolute -inset-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"
                   />
-                  
+
                   <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.2)] rounded-2xl p-8 h-full hover:border-[rgba(46,204,113,0.5)] transition-all duration-500 hover:-translate-y-2">
                     {/* Floating particles on hover */}
                     <div className="absolute inset-0 overflow-hidden rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity">
@@ -754,8 +754,8 @@ export function AboutPage() {
                         />
                       ))}
                     </div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-4 rounded-xl inline-block mb-6 shadow-[0_0_30px_rgba(46,204,113,0.4)] group-hover:shadow-[0_0_40px_rgba(46,204,113,0.6)] transition-all text-white"
                       whileHover={{ scale: 1.1, rotate: 10 }}
                     >
@@ -791,10 +791,10 @@ export function AboutPage() {
                 <motion.div
                   className="absolute -inset-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-3xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"
                 />
-                
+
                 <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-10 h-full hover:border-[rgba(46,204,113,0.5)] transition-all duration-500">
                   <div className="flex items-center gap-4 mb-6">
-                    <motion.div 
+                    <motion.div
                       className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-4 rounded-2xl shadow-[0_0_30px_rgba(46,204,113,0.5)]"
                       whileHover={{ scale: 1.1 }}
                     >
@@ -803,12 +803,12 @@ export function AboutPage() {
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Who Can Join</h3>
                   </div>
                   <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                    AUSTRC welcomes all students from Ahsanullah University of Science and Technology who are 
+                    AUSTRC welcomes all students from Ahsanullah University of Science and Technology who are
                     passionate about robotics, technology, and innovation.
                   </p>
                   <div className="bg-[rgba(46,204,113,0.1)] border-l-4 border-[#2ECC71] p-6 rounded-lg">
                     <p className="text-gray-300">
-                      A one-time registration fee grants you full club rights and privileges, including access to 
+                      A one-time registration fee grants you full club rights and privileges, including access to
                       workshops, equipment, mentorship, and all club activities.
                     </p>
                   </div>
@@ -826,10 +826,10 @@ export function AboutPage() {
                 <motion.div
                   className="absolute -inset-1 bg-gradient-to-r from-[#27AE60] to-[#2ECC71] rounded-3xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"
                 />
-                
+
                 <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-10 h-full hover:border-[rgba(46,204,113,0.5)] transition-all duration-500">
                   <div className="flex items-center gap-4 mb-6">
-                    <motion.div 
+                    <motion.div
                       className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-4 rounded-2xl shadow-[0_0_30px_rgba(46,204,113,0.5)]"
                       whileHover={{ scale: 1.1 }}
                     >
@@ -838,7 +838,7 @@ export function AboutPage() {
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Leadership Structure</h3>
                   </div>
                   <p className="text-lg text-gray-300 leading-relaxed mb-6">
-                    Our club is governed by a dedicated Executive Committee that ensures smooth operations and 
+                    Our club is governed by a dedicated Executive Committee that ensures smooth operations and
                     continuous growth.
                   </p>
                   <div className="space-y-3 mb-6">
@@ -851,7 +851,7 @@ export function AboutPage() {
                         transition={{ delay: idx * 0.1 }}
                         className="flex items-center gap-3 bg-[rgba(46,204,113,0.1)] p-3 rounded-lg border border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] transition-all group/item"
                       >
-                        <motion.div 
+                        <motion.div
                           className="w-2 h-2 bg-[#2ECC71] rounded-full shadow-[0_0_10px_rgba(46,204,113,0.8)]"
                           animate={{ scale: [1, 1.3, 1] }}
                           transition={{ duration: 2, repeat: Infinity, delay: idx * 0.2 }}
@@ -861,10 +861,10 @@ export function AboutPage() {
                     ))}
                   </div>
                   <Link
-                    to="/governing-panel/hall-of-fame"
+                    to="/hall-of-fame"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-lg text-white font-medium hover:shadow-[0_0_30px_rgba(46,204,113,0.6)] transition-all hover:scale-105 group/btn"
                   >
-                    View Governing Panel
+                    View Hall of Fame
                     <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -877,7 +877,7 @@ export function AboutPage() {
         <section className="py-20 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <SectionDivider title="Our Achievements" icon={Star} />
-            
+
             <div className="grid md:grid-cols-4 gap-6">
               {[
                 { number: '2021', label: 'Established', suffix: '' },
@@ -896,7 +896,7 @@ export function AboutPage() {
                   <motion.div
                     className="absolute -inset-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-2xl blur-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500"
                   />
-                  
+
                   <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-2xl p-8 text-center hover:border-[rgba(46,204,113,0.5)] transition-all duration-500 hover:-translate-y-2">
                     {/* Animated ring */}
                     <motion.div
@@ -904,7 +904,7 @@ export function AboutPage() {
                       animate={{ opacity: [0.2, 0.5, 0.2] }}
                       transition={{ duration: 3, repeat: Infinity, delay: index * 0.5 }}
                     />
-                    
+
                     <div className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] bg-clip-text text-transparent">
                       <AnimatedCounter value={stat.number} suffix={stat.suffix} />
                     </div>
@@ -920,7 +920,7 @@ export function AboutPage() {
         <section className="py-20 px-6 relative">
           <div className="max-w-5xl mx-auto">
             <SectionDivider title="Connect With Us" icon={Mail} />
-            
+
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -931,11 +931,11 @@ export function AboutPage() {
               <motion.div
                 className="absolute -inset-2 bg-gradient-to-r from-[#2ECC71] via-[#27AE60] to-[#2ECC71] rounded-3xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"
               />
-              
+
               <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.3)] rounded-3xl p-12 hover:border-[rgba(46,204,113,0.5)] transition-all duration-500">
                 {/* Email */}
                 <div className="flex flex-col items-center mb-12">
-                  <motion.div 
+                  <motion.div
                     className="bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-6 rounded-2xl mb-6 shadow-[0_0_40px_rgba(46,204,113,0.5)]"
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     animate={{ y: [0, -5, 0] }}
@@ -984,7 +984,7 @@ export function AboutPage() {
                         </div>
                       </motion.a>
                     ))}
-                    
+
                     {/* Mail Icon */}
                     <motion.a
                       href="mailto:austrc@aust.edu"
@@ -1040,7 +1040,7 @@ export function AboutPage() {
               animate={{ x: ["-100%", "100%"] }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
             />
-            
+
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
@@ -1049,7 +1049,7 @@ export function AboutPage() {
             </motion.div>
             <p className="text-gray-400 relative z-10">
               AUSTRC — Where Innovation Meets Excellence
-              <motion.span 
+              <motion.span
                 className="text-[#2ECC71] inline-block ml-2"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1, repeat: Infinity }}

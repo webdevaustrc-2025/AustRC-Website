@@ -1,12 +1,12 @@
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
-import { 
-  ArrowRight, 
-  X, 
-  Calendar, 
-  Clock, 
-  MapPin, 
-  Users, 
-  Sparkles, 
+import {
+  ArrowRight,
+  X,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  Sparkles,
   ChevronRight,
   ExternalLink,
   Share2,
@@ -40,7 +40,7 @@ interface Event {
 const PremiumBackground = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     {/* Base Grid Pattern */}
-    <div 
+    <div
       className="absolute inset-0 opacity-[0.03]"
       style={{
         backgroundImage: `
@@ -50,10 +50,10 @@ const PremiumBackground = () => (
         backgroundSize: '60px 60px',
       }}
     />
-    
+
     {/* Radial Gradient Overlay */}
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-    
+
     {/* Animated Gradient Orbs */}
     <motion.div
       className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full"
@@ -270,7 +270,7 @@ const EventCard = ({
             background: 'linear-gradient(135deg, rgba(46,204,113,0.3), rgba(61,237,151,0.2), rgba(39,174,96,0.3))',
             backgroundSize: '300% 300%',
           }}
-          animate={{ 
+          animate={{
             opacity: isHovered ? 1 : 0.6,
             backgroundPosition: isHovered ? ['0% 0%', '100% 100%'] : '0% 0%',
           }}
@@ -291,14 +291,14 @@ const EventCard = ({
           <motion.div
             className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
             style={{
-              boxShadow: isHovered 
-                ? '0 0 30px rgba(46,204,113,0.4), inset 0 0 30px rgba(46,204,113,0.15)' 
+              boxShadow: isHovered
+                ? '0 0 30px rgba(46,204,113,0.4), inset 0 0 30px rgba(46,204,113,0.15)'
                 : '0 0 15px rgba(46,204,113,0.15), inset 0 0 10px rgba(46,204,113,0.05)',
             }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           />
-          
+
           {/* Corner Accents */}
           <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#2ECC71]/50 rounded-tl-2xl sm:rounded-tl-3xl" />
           <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#2ECC71]/50 rounded-br-2xl sm:rounded-br-3xl" />
@@ -320,7 +320,7 @@ const EventCard = ({
 
             {/* Overlays */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-            
+
             {/* Neon Green Overlay on Hover */}
             <motion.div
               className="absolute inset-0"
@@ -343,9 +343,9 @@ const EventCard = ({
           {/* Content Section */}
           <div className="p-4 sm:p-6 flex flex-col flex-1 bg-gradient-to-t from-[#2ECC71]/5 to-transparent">
             {/* Title */}
-            <motion.h3 
+            <motion.h3
               className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4"
-              animate={{ 
+              animate={{
                 color: isHovered ? '#2ECC71' : '#ffffff',
                 textShadow: isHovered ? '0 0 20px rgba(46,204,113,0.5)' : '0 0 0px rgba(46,204,113,0)',
               }}
@@ -369,7 +369,7 @@ const EventCard = ({
               >
                 {/* Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60] rounded-lg sm:rounded-xl" />
-                
+
                 {/* Hover Glow */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-lg sm:rounded-xl blur-md opacity-0"
@@ -502,7 +502,7 @@ const EventModal = ({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
         className="fixed inset-0 bg-black/90 backdrop-blur-xl"
-        style={{ 
+        style={{
           zIndex: 99999,
           willChange: 'opacity',
           WebkitBackfaceVisibility: 'hidden',
@@ -524,13 +524,13 @@ const EventModal = ({
         <motion.div
           ref={modalRef}
           initial={{ opacity: 0, y: 50, scale: 0.97 }}
-          animate={{ 
-            opacity: isVisible ? 1 : 0, 
-            y: isVisible ? 0 : 50, 
-            scale: isVisible ? 1 : 0.97 
+          animate={{
+            opacity: isVisible ? 1 : 0,
+            y: isVisible ? 0 : 50,
+            scale: isVisible ? 1 : 0.97
           }}
           exit={{ opacity: 0, y: 30, scale: 0.98 }}
-          transition={{ 
+          transition={{
             duration: 0.3,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
@@ -569,7 +569,7 @@ const EventModal = ({
                 alt={event.Event_Name}
                 className="w-full h-full object-cover"
               />
-              
+
               {/* Overlays */}
               <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71]/10 to-transparent" />
@@ -587,7 +587,7 @@ const EventModal = ({
                     Featured Event
                   </span>
                 </motion.div>
-                
+
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -596,7 +596,7 @@ const EventModal = ({
                 >
                   {event.Event_Name}
                 </motion.h2>
-                
+
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
@@ -736,37 +736,37 @@ export function EventsSection() {
   const getAllImageURLs = (data: any): string[] => {
     const imageUrls: string[] = [];
     const dataKeys = Object.keys(data);
-    
+
     // Fields to exclude (like Cover_Picture which is already used as hero image)
     const excludeFields = ['cover_picture', 'coverpicture', 'heroimage', 'hero_image'];
-    
+
     // Patterns that indicate an image field
     const imagePatterns = [
       'image', 'img', 'picture', 'photo', 'url', 'src', 'cover',
       'banner', 'thumbnail', 'icon', 'graphic', 'visual', 'asset'
     ];
-    
+
     for (const key of dataKeys) {
       const value = data[key];
       // Check if value is a string and looks like a URL (contains http or firebase storage)
       if (typeof value === 'string' && value.length > 10) {
         const lowerKey = key.toLowerCase();
         const lowerValue = value.toLowerCase();
-        
+
         // Skip excluded fields
         if (excludeFields.includes(lowerKey)) {
           continue;
         }
-        
+
         // Check if key matches image patterns
         const isImageKey = imagePatterns.some(pattern => lowerKey.includes(pattern));
-        
+
         // Check if value looks like an image URL
-        const isImageUrl = lowerValue.includes('http') || 
-                          lowerValue.includes('firebase') || 
-                          lowerValue.includes('blob:') ||
-                          lowerValue.includes('data:image');
-        
+        const isImageUrl = lowerValue.includes('http') ||
+          lowerValue.includes('firebase') ||
+          lowerValue.includes('blob:') ||
+          lowerValue.includes('data:image');
+
         if (isImageKey && isImageUrl) {
           if (!imageUrls.includes(value)) {
             imageUrls.push(value);
@@ -774,7 +774,7 @@ export function EventsSection() {
         }
       }
     }
-    
+
     return imageUrls;
   };
 
@@ -791,11 +791,11 @@ export function EventsSection() {
           if (fetchedEvents.length < 3) {
             const data = doc.data();
             console.log('Raw event data:', data);
-            
+
             // Extract headlines with their images and descriptions
             const headlines: Headline[] = [];
             let headlineFound = false;
-            
+
             for (let i = 1; i <= 10; i++) {
               const headingKey = `Headline_${i}`;
               const descriptionKey = `Headline_${i}_description`;
@@ -817,7 +817,7 @@ export function EventsSection() {
                     `Headline${i}_Image${j}`,
                     `Headline${i}_image${j}`,
                   ];
-                  
+
                   // Try each pattern
                   let found = false;
                   for (const imageKey of imageKeyPatterns) {
@@ -827,7 +827,7 @@ export function EventsSection() {
                       break;
                     }
                   }
-                  
+
                   // If not found with exact patterns, try case-insensitive search
                   if (!found) {
                     const lowerImagePatterns = imageKeyPatterns.map(p => p.toLowerCase());
@@ -852,12 +852,12 @@ export function EventsSection() {
                 }
               }
             }
-            
+
             // If no headlines found, look for standalone images in the document
             if (!headlineFound || headlines.length === 0) {
               const allImages = getAllImageURLs(data);
               console.log(`Event: ${data.Event_Name}, Found ${allImages.length} standalone images`, allImages);
-              
+
               // Create a default headline with all found images (no description to avoid duplication)
               if (allImages.length > 0) {
                 headlines.push({
@@ -897,7 +897,7 @@ export function EventsSection() {
       // Store current scroll position
       const scrollY = window.scrollY;
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      
+
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.left = '0';

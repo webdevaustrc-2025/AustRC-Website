@@ -42,9 +42,9 @@ export function Footer({ theme = 'dark' }: FooterProps) {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center gap-2 mb-4">
-                <img 
-                  src={logo} 
-                  alt="AUSTRC Logo" 
+                <img
+                  src={logo}
+                  alt="AUSTRC Logo"
                   className="w-10 h-10 object-contain"
                 />
                 <span className={`tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Aust Robotics Club</span>

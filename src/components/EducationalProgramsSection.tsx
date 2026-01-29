@@ -354,39 +354,39 @@ export function EducationalProgramsSection() {
           </div>
         )}
 
-{/* Explore All Programs Button */}
-<motion.div
-  initial={{ opacity: 0, y: 30 }}
-  whileInView={{ opacity: 10, y: 0 }}
-  viewport={{ once: true }}
-  transition={{ duration: 0.7, delay: 0.5 }}
-  className="flex justify-center mt-6"
->
-  <motion.button
-    onClick={() => navigate('/activities/educational-activities')}
-    whileHover={{ scale: 1.05, y: -3 }}
-    whileTap={{ scale: 0.97 }}
-    className="relative px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-bold text-base transition-all duration-300 shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] overflow-hidden group"
-  >
-    <motion.div
-      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
-      initial={{ x: "-150%" }}
-      whileHover={{ x: "150%" }}
-      transition={{ duration: 0.8 }}
-    />
+        {/* Explore All Programs Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 10, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="flex justify-center mt-6"
+        >
+          <motion.button
+            onClick={() => navigate('/activities/educational-activities')}
+            whileHover={{ scale: 1.05, y: -3 }}
+            whileTap={{ scale: 0.97 }}
+            className="relative px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-bold text-base transition-all duration-300 shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] overflow-hidden group"
+          >
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+              initial={{ x: "-150%" }}
+              whileHover={{ x: "150%" }}
+              transition={{ duration: 0.8 }}
+            />
 
-    <span className="relative inline-flex items-center gap-3">
-      <GraduationCap className="w-5 h-5" />
-      Explore All Programs
-      <motion.span
-        animate={{ x: [0, 5, 0] }}
-        transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <ArrowRight className="w-5 h-5" />
-      </motion.span>
-    </span>
-  </motion.button>
-</motion.div>
+            <span className="relative inline-flex items-center gap-3">
+              <GraduationCap className="w-5 h-5" />
+              Explore All Programs
+              <motion.span
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <ArrowRight className="w-5 h-5" />
+              </motion.span>
+            </span>
+          </motion.button>
+        </motion.div>
 
 
         {/* Bottom decorative element */}
