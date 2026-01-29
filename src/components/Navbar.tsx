@@ -102,8 +102,14 @@ export function Navbar() {
           };
         });
 
+        // Always add Hall of Fame at the beginning
+        const allItems = [
+          { name: 'Hall of Fame', path: '/hall-of-fame' },
+          ...semesters
+        ];
+
         // Sort semesters: Hall of Fame first, then by year (descending) and season (Fall before Spring)
-        const sortedSemesters = semesters.sort((a, b) => {
+        const sortedSemesters = allItems.sort((a, b) => {
           if (a.name === 'Hall of Fame') return -1;
           if (b.name === 'Hall of Fame') return 1;
 
@@ -131,7 +137,7 @@ export function Navbar() {
         console.error('Error fetching semesters:', error);
         // Fallback to default items if Firebase fetch fails
         setGoverningPanelDropdownItems([
-          { name: 'Hall of Fame', path: '/governing-panel/hall-of-fame' },
+          { name: 'Hall of Fame', path: '/hall-of-fame' },
         ]);
       } finally {
         setLoadingSemesters(false);

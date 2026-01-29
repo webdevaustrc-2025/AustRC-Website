@@ -861,10 +861,10 @@ export function AboutPage() {
                     ))}
                   </div>
                   <Link
-                    to="/governing-panel/hall-of-fame"
+                    to="/hall-of-fame"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-lg text-white font-medium hover:shadow-[0_0_30px_rgba(46,204,113,0.6)] transition-all hover:scale-105 group/btn"
                   >
-                    View Governing Panel
+                    View Hall of Fame
                     <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Link>
                 </div>

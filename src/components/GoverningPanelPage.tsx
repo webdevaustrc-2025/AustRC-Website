@@ -79,7 +79,39 @@ interface Person {
 
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400";
-
+// Static Hall of Fame members
+const STATIC_HALL_OF_FAME_MEMBERS: Person[] = [
+  {
+    id: "monjure-mowla",
+    name: "Monjure Mowla",
+    title: "Former VP, AUSTRC",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+    order: 1,
+    category: "Hall of Fame",
+    Description: "As the founding Vice President of the AUST Robotics Club, I had the opportunity to help lead the club's activities for a year. During this time, I worked alongside an amazing team to organize various events, including a national-level competition that brought together passionate minds. It was a rewarding experience, and I'm grateful to have contributed to promoting robotics within our university.",
+    Designation: "Embedded Software Engineer (Level - 3), Neural Semiconductor Limited",
+  },
+  {
+    id: "farhat-nahian",
+    name: "Farhat Nahian",
+    title: "Former VP, AUSTRC",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400",
+    order: 2,
+    category: "Hall of Fame",
+    Description: "Started this journey as a sub-executive member of the founding panel of the AUST Robotics Club, I was fortunate enough to have ended my journey as one of the leaders of the club. The more my responsibilities grew, the more my skills grew and looking back, I realize that it's the experience and learning that shaped the person I am today. I'm genuinely grateful for the love, respect, and platform the club has offered me. Lastly- no matter your starting point, regardless of your skill level or experience, get involved with dedication and self-belief, you will eventually grow into the person you're meant to be.",
+    Designation: "System Engineer, Huawei Technologies (Bangladesh) ltd",
+  },
+  {
+    id: "abdul-quader",
+    name: "Abdul Quader",
+    title: "Former VP, AUSTRC",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400",
+    order: 3,
+    category: "Hall of Fame",
+    Description: "Being a part of the AUST Robotics Club (ARC) was a dream come true. All the enthusiastic people around, creative minds doing things that never happened before. From seminar to national competitions, I have enjoyed it all and learned so many things. I will feel guilty if I do not mention the networking opportunities I had at ARC. Last but not the least, being able to work with the executives was another milestone for me and my self development. Ending my ARC journey being the Vice President was the best experience. All the best to AUSTRC for its future endeavours.",
+    Designation: "Graduate Trainee Engineer - Atlas Copco Bangladesh Ltd.",
+  },
+];
 // helper (keeps your “remove Unknown” logic readable)
 function isUnknown(memberName: string) {
   return memberName === "Unknown";
@@ -135,31 +167,40 @@ export function GoverningPanelPage() {
         const fetchedMembers: Person[] = [];
 
         if (panelId === "hall-of-fame") {
-          const membersCollection = collection(
-            db,
-            "All_Data",
-            "Governing_Panel",
-            "Hall_of_Fame"
-          );
-          const q = query(membersCollection);
-          const snapshot = await getDocs(q);
+          // Add static Hall of Fame members first
+          fetchedMembers.push(...STATIC_HALL_OF_FAME_MEMBERS);
 
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            fetchedMembers.push({
-              id: doc.id,
-              name: data.Name || data.name || "Unknown",
-              title: data.Title || data.title || data.Designation || "",
-              image: data.Image || data.image || data.Photo || DEFAULT_IMAGE,
-              facebook: data.Facebook || data.facebook,
-              linkedin: data.Linkedin || data.linkedin,
-              github: data.Github || data.github,
-              email: data.Email || data.email,
-              order: data.Order || 999,
-              category: "Hall of Fame",
-              ...data,
+          // Then fetch from Firebase and merge
+          try {
+            const membersCollection = collection(
+              db,
+              "All_Data",
+              "Governing_Panel",
+              "Hall_of_Fame"
+            );
+            const q = query(membersCollection);
+            const snapshot = await getDocs(q);
+
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              fetchedMembers.push({
+                id: doc.id,
+                name: data.Name || data.name || "Unknown",
+                title: data.Title || data.title || data.Designation || "",
+                image: data.Image || data.image || data.Photo || DEFAULT_IMAGE,
+                facebook: data.Facebook || data.facebook,
+                linkedin: data.Linkedin || data.linkedin,
+                github: data.Github || data.github,
+                email: data.Email || data.email,
+                order: data.Order || 999,
+                category: "Hall of Fame",
+                ...data,
+              });
             });
-          });
+          } catch (firebaseError) {
+            console.error("Error fetching Hall of Fame from Firebase:", firebaseError);
+            // Static data is already added, so we can continue
+          }
         } else {
           const collectionName = getCollectionName(panelId);
 
@@ -681,7 +722,7 @@ export function GoverningPanelPage() {
                         { href: selectedPerson.linkedin, icon: Linkedin, label: "LinkedIn" },
                         { href: selectedPerson.github, icon: Github, label: "GitHub" },
                         { href: selectedPerson.email, icon: Mail, label: "Email", forceMailto: true }
-                      ].filter(social => social.href).map((social, idx) => (
+                      ].filter(social => social.href).map((social) => (
                             <SocialIcon
                               key={social.label}
                               href={social.href}
