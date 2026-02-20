@@ -42,7 +42,7 @@ export function FindAustrcIdPage() {
   const handleDownload = () => {
     if (isAndroid) {
       const link = document.createElement('a');
-      link.href = 'https://drive.google.com/uc?export=download&id=1EYbPcPy--fzPNJwF__y3Ay1_3f1qaD72';
+      link.href = 'https://drive.google.com/file/d/1YUrgKLGEx631u4Joho4TPIHBS2RmgoMN/view?usp=drive_link';
       link.download = 'AUSTRC-App.apk';
       document.body.appendChild(link);
       link.click();
