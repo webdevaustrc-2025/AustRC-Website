@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Quote } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 
@@ -42,6 +42,15 @@ export function TestimonialsSection() {
   const [carouselImages, setCarouselImages] = useState<string[]>([]);
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const lastClickTime = useRef(0);
+
+  const handleCarouselClick = useCallback(() => {
+    const now = Date.now();
+    if (now - lastClickTime.current < 500) return; // 0.5s throttle
+    lastClickTime.current = now;
+    setCarouselIndex((prev) => (prev + 1) % carouselImages.length);
+  }, [carouselImages.length]);
 
   // Fetch images from Firebase
   useEffect(() => {
@@ -109,11 +118,13 @@ export function TestimonialsSection() {
     if (carouselImages.length === 0) return;
 
     const interval = setInterval(() => {
-      setCarouselIndex((prev) => (prev + 1) % carouselImages.length);
-    }, 3000);
+      if (!isHovered) {
+        setCarouselIndex((prev) => (prev + 1) % carouselImages.length);
+      }
+    }, 7000);
 
     return () => clearInterval(interval);
-  }, [carouselImages.length]);
+  }, [carouselImages.length, isHovered]);
 
   return (
     <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
@@ -147,7 +158,12 @@ export function TestimonialsSection() {
             style={{ perspective: "1000px" }}
             className="w-full max-w-[500px]"
           >
-            <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-[rgba(46,204,113,0.3)] shadow-[0_0_50px_0_rgba(46,204,113,0.4)]">
+            <div
+              className="relative aspect-square w-full overflow-hidden rounded-2xl border border-[rgba(46,204,113,0.3)] shadow-[0_0_50px_0_rgba(46,204,113,0.4)] cursor-pointer"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={handleCarouselClick}
+            >
               <AnimatePresence mode="wait">
                 {carouselImages.length > 0 && (
                   <motion.img
@@ -155,27 +171,21 @@ export function TestimonialsSection() {
                     src={cachedImages[`voice_${carouselIndex}`] || carouselImages[carouselIndex]}
                     alt={`Voice of AUSTRC - Image ${carouselIndex + 1}`}
                     className="w-full h-full object-cover"
-                    initial={{ 
-                      opacity: 0, 
-                      scale: 1.3, 
-                      rotateY: -15,
-                      filter: "blur(10px)"
+                    initial={{
+                      opacity: 0,
+                      x: 40
                     }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      rotateY: 0,
-                      filter: "blur(0px)"
+                    animate={{
+                      opacity: 1,
+                      x: 0
                     }}
-                    exit={{ 
-                      opacity: 0, 
-                      scale: 0.8,
-                      rotateY: 15,
-                      filter: "blur(10px)"
+                    exit={{
+                      opacity: 0,
+                      x: -40
                     }}
-                    transition={{ 
-                      duration: 1.2,
-                      ease: [0.25, 0.46, 0.45, 0.94]
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeOut"
                     }}
                   />
                 )}
@@ -194,11 +204,10 @@ export function TestimonialsSection() {
                 {carouselImages.map((_, index) => (
                   <div
                     key={index}
-                    className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
-                      index === carouselIndex
-                        ? "bg-[#2ECC71] w-4 sm:w-6 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]"
-                        : "bg-gray-500"
-                    }`}
+                    className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${index === carouselIndex
+                      ? "bg-[#2ECC71] w-4 sm:w-6 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]"
+                      : "bg-gray-500"
+                      }`}
                   />
                 ))}
               </div>
