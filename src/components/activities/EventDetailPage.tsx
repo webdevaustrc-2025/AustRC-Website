@@ -231,62 +231,60 @@ export function EventDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative">
+    <div className="min-h-screen bg-black text-white relative overflow-x-hidden">
       <HeroBackground />
 
       {/* Back Button */}
-      <div className="fixed top-24 left-4 sm:left-8 z-40">
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => navigate('/activities/events')}
-          className="flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md border border-[#2ECC71]/30 rounded-full text-white hover:bg-[#2ECC71]/20 transition-all"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm font-medium">Back</span>
-        </motion.button>
-      </div>
+      <button
+        onClick={() => navigate('/activities/events')}
+        className="fixed top-24 left-4 sm:left-6 z-40 flex items-center gap-2 px-4 py-2 text-[#2ECC71] hover:text-white bg-black/50 hover:bg-black/80 rounded-lg backdrop-blur-md transition-all border border-[#2ECC71]/30 hover:border-[#2ECC71]"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="hidden sm:inline text-sm font-medium">Back</span>
+      </button>
 
-      {/* Hero / Cover Image */}
-      <div className="relative h-64 sm:h-80 lg:h-[28rem] overflow-hidden">
+      <div className="container mx-auto px-4 pt-20 pb-24 max-w-5xl">
+        {/* Cover Image */}
         {event.Cover_Picture && (
-          <motion.img
-            initial={{ scale: 1.1, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            src={event.Cover_Picture}
-            alt={event.Event_Name}
-            className="w-full h-full object-cover"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71]/10 to-transparent" />
-
-        {/* Title overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 lg:p-14">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#2ECC71] rounded-full mb-4"
+            transition={{ duration: 0.8 }}
+            className="mb-10 sm:mb-12"
           >
-            <Zap className="w-4 h-4 text-black" />
-            <span className="text-black text-xs sm:text-sm font-bold tracking-wider uppercase">Event</span>
+            <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_0_rgba(46,204,113,0.3)]">
+              <div className="aspect-video relative">
+                <img
+                  src={event.Cover_Picture}
+                  alt={event.Event_Name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              </div>
+            </div>
           </motion.div>
+        )}
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight max-w-4xl"
-          >
+        {/* Title Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mb-10 sm:mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.15)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-5">
+            <Zap className="w-4 h-4 text-[#2ECC71]" />
+            <span className="text-[#2ECC71] text-xs sm:text-sm font-bold tracking-wider uppercase">Event</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
             {event.Event_Name}
-          </motion.h1>
-        </div>
-      </div>
+          </h1>
+          <div className="w-20 h-1.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full mt-5" />
+        </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8 sm:space-y-10">
+        {/* Content */}
+        <div className="space-y-8 sm:space-y-10">
         {/* Introduction */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -366,6 +364,7 @@ export function EventDetailPage() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
