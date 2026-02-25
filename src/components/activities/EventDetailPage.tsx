@@ -243,7 +243,7 @@ export function EventDetailPage() {
         <span className="hidden sm:inline text-sm font-medium">Back</span>
       </button>
 
-      <div className="container mx-auto px-4 pt-20 pb-24 max-w-5xl">
+      <div className="relative z-10 container mx-auto px-4 pt-20 pb-24 max-w-5xl">
         {/* Cover Image */}
         {event.Cover_Picture && (
           <motion.div
