@@ -1,5 +1,5 @@
 // components/Navbar.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -23,22 +23,40 @@ export function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
   const [governingPanelDropdownItems, setGoverningPanelDropdownItems] = useState<{ name: string; path: string }[]>([]);
   const [loadingSemesters, setLoadingSemesters] = useState(true);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const desktopNavRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
 
-  // Check if mobile on mount and resize
+  // Detect overlap between logo and desktop nav (handles zoom + resize)
+  const checkMobile = useCallback(() => {
+    // Always mobile on narrow viewports
+    if (window.innerWidth < 1024) {
+      setIsMobile(true);
+      return;
+    }
+    // If both refs are mounted, check for actual overlap
+    if (logoRef.current && desktopNavRef.current) {
+      const logoRect = logoRef.current.getBoundingClientRect();
+      const navRect = desktopNavRef.current.getBoundingClientRect();
+      // Switch to mobile when the logo's right edge is within 16px of the nav's left edge
+      setIsMobile(logoRect.right + 16 >= navRect.left);
+    } else {
+      setIsMobile(window.innerWidth < 1280);
+    }
+  }, []);
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    // Check on mount
     checkMobile();
-
-    // Check on resize
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [checkMobile]);
+
+  // Re-check after fonts/images load which may shift layout
+  useEffect(() => {
+    const timer = setTimeout(checkMobile, 300);
+    return () => clearTimeout(timer);
+  }, [checkMobile]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -200,6 +218,7 @@ export function Navbar() {
           <AnimatePresence>
             {!scrolled && (
               <motion.div
+                ref={logoRef}
                 className="fixed left-6 top-5 z-50"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -236,7 +255,7 @@ export function Navbar() {
           {/* DESKTOP NAVIGATION - Only shows when NOT mobile */}
           {/* ============================================ */}
           {!isMobile && (
-            <div className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)] mx-auto">
+            <div ref={desktopNavRef} className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)] mx-auto">
               {navItems.map((item) =>
                 item.name === 'Activities' ? (
                   <div
