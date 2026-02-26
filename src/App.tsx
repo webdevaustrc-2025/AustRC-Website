@@ -15,6 +15,7 @@ import { Footer } from './components/Footer';
 import { CursorGlow } from './components/CursorGlow';
 import { ContactPage } from './components/ContactPage';
 import { FindAustrcIdPage } from './components/FindAustrcIdPage';
+import NoticesPage from './components/NoticesPage';
 // Sub-Pages
 import { EventsPage } from './components/activities/EventsPage';
 import { AchievementsPage } from './components/activities/AchievementsPage';
@@ -28,6 +29,7 @@ import { AchievementDetailPage } from './components/activities/AchievementDetail
 import { ActivityDetailPage } from './components/activities/ActivityDetailPage';
 import { CollaborationsPage } from './components/CollaborationsPage';
 import { SponsorsPage } from './components/SponsorsPage';
+
 
 // Scroll to top on every route change
 function ScrollToTop() {
@@ -72,7 +74,7 @@ function AppContent() {
         <Route path="/activities/social-activities" element={<SocialActivitiesPage />} />
         <Route path="/activities/educational-activities" element={<EducationalActivitiesPage />} />
         <Route path="/activities/event-website" element={<EventWebsitePage />} />
-
+        <Route path="/notices" element={<NoticesPage />} />
         {/* ✅ THE DYNAMIC ROUTE FOR DETAIL PAGES */}
         <Route
           path="/activity/:category/:id"
