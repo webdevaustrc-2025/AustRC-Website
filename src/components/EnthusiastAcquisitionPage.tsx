@@ -12,7 +12,6 @@ import {
   ArrowRight,
   Mail
 } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function EnthusiastAcquisitionPage() {
   const roles = [
@@ -160,10 +159,10 @@ export function EnthusiastAcquisitionPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/40 to-[#27AE60]/40 rounded-3xl blur-3xl group-hover:blur-[80px] transition-all" />
               <div className="relative aspect-square max-w-md mx-auto bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border-2 border-[#2ECC71]/60 rounded-3xl overflow-hidden shadow-[0_0_100px_0_rgba(46,204,113,0.5)] hover:shadow-[0_0_150px_0_rgba(46,204,113,0.8)] transition-all">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <ImageWithFallback 
-                    src="https://images.unsplash.com/photo-1759395162739-84190996783c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyb2JvdGljcyUyMGNsdWIlMjByZWNydWl0bWVudCUyMHBvc3RlcnxlbnwxfHx8fDE3NjQxNDE0Njd8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                  <img 
+                    src="https://res.cloudinary.com/dxyhzgrul/image/upload/v1772144623/splash_screen_c45pxy.gif"
                     alt="AUST Robotics Club Enthusiast Acquisition Program"
-                    className="w-full h-full object-cover"
+                    className="w-[180%] h-[180%] object-cover object-center"
                   />
                 </div>
               </div>
