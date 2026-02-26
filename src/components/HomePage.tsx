@@ -7,7 +7,7 @@ import { ResearchProjectsHomepageSection } from "./ResearchProjectsHomepageSecti
 import { TestimonialsSection } from "./TestimonialsSection";
 import { CollaborationsSection } from "./CollaborationsSection";
 import { SponsorsSection } from "./SponsorsSection";
-
+import {NoticesBoardHomepageSection} from "./NoticesBoardHomePageSection";
 // Animated background particles - reduced for mobile performance
 function AnimatedBackground() {
   const [isMobile, setIsMobile] = useState(false);
@@ -108,6 +108,9 @@ export function HomePage() {
 
       <AnimatedDivider />
 
+<NoticesBoardHomepageSection />
+
+      <AnimatedDivider />
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
