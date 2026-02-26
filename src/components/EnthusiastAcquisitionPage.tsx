@@ -94,9 +94,7 @@ export function EnthusiastAcquisitionPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="inline-block mb-6"
               >
-                <div className="px-6 py-2 bg-gradient-to-r from-[#2ECC71]/20 to-transparent border border-[#2ECC71]/50 rounded-full backdrop-blur-sm">
-                  <span className="text-[#2ECC71]">AUST Robotics Club Presents</span>
-                </div>
+                
               </motion.div>
 
               <motion.h1
@@ -123,7 +121,7 @@ export function EnthusiastAcquisitionPage() {
                 transition={{ duration: 0.6, delay: 0.5 }}
                 className="text-xl text-gray-400 mb-8 leading-relaxed"
               >
-                Are you ready to be part of one of the leading clubs at AUST?
+                
               </motion.p>
 
               <motion.p
@@ -132,7 +130,7 @@ export function EnthusiastAcquisitionPage() {
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="text-lg text-gray-300 mb-10 leading-relaxed"
               >
-                Whether your passion lies in <span className="text-[#2ECC71]">robotics</span>, <span className="text-[#2ECC71]">event management</span>, <span className="text-[#2ECC71]">content creation</span>, or <span className="text-[#2ECC71]">public relations</span> — there's a place for you to shine.
+                
               </motion.p>
 
               <motion.div
