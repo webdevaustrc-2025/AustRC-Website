@@ -318,16 +318,16 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
                     </div>
 
                     {/* Website Preview with iframe */}
-                    <div className="flex flex-col min-h-[400px] sm:min-h-[500px] lg:min-h-0">
+                    <div className="flex flex-col">
                       <div 
                         className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/20 to-transparent rounded-2xl blur-xl will-change-[opacity]"
                         style={{ animation: 'cardGlow 3s ease-in-out infinite' }}
                       />
                       <div 
-                        className={`relative bg-gradient-to-br ${project.imageColor} border border-[#2ECC71]/30 rounded-2xl overflow-hidden group/image flex flex-col flex-1 hover:scale-[1.02] transition-transform duration-300`}
+                        className={`relative bg-gradient-to-br ${project.imageColor} border border-[#2ECC71]/30 rounded-2xl overflow-hidden group/image flex flex-col hover:scale-[1.02] transition-transform duration-300`}
                       >
                         {/* Actual Website Embed */}
-                        <div className="flex-1 flex flex-col m-4 rounded-xl overflow-hidden bg-black/50 border border-[#2ECC71]/20">
+                        <div className="flex flex-col m-4 rounded-xl overflow-hidden bg-black/50 border border-[#2ECC71]/20">
                           {/* Mock Browser Bar */}
                           <div className="bg-[#0a1810] border-b border-[#2ECC71]/20 p-3 flex items-center gap-2 flex-shrink-0">
                             <div className="w-3 h-3 rounded-full bg-red-500/50 hover:scale-130 transition-transform" />
@@ -339,16 +339,15 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
                           </div>
                           
                           {/* Actual Website iframe */}
-                          <div className="h-[350px] sm:h-[450px] lg:h-[400px]">
-                            <iframe
-                              src={project.link}
-                              title={`${project.title} Preview`}
-                              className="w-full h-full border-0"
-                              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
-                              loading="lazy"
-                              referrerPolicy="no-referrer"
-                            />
-                          </div>
+                          <iframe
+                            src={project.link}
+                            title={`${project.title} Preview`}
+                            className="w-full border-0"
+                            style={{ height: '60vh' }}
+                            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+                            loading="lazy"
+                            referrerPolicy="no-referrer"
+                          />
                         </div>
                         
                         {/* Glowing Corner */}
