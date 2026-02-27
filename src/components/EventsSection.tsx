@@ -165,35 +165,6 @@ const SectionHeader = () => (
         </motion.svg>
       </span>
     </motion.h2>
-
-    {/* Stats Row (Removed Rating) */}
-    <motion.div
-      className="flex flex-wrap justify-center gap-8 sm:gap-12 lg:gap-16 mt-8 sm:mt-12"
-      initial={{ opacity: 0, y: 15 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.35, delay: 0.2 }}
-    >
-      {[
-        { value: '25+', label: 'Events', icon: Zap },
-        { value: '500+', label: 'Attendees', icon: Users },
-      ].map((stat, i) => (
-        <motion.div
-          key={i}
-          className="group flex flex-col items-center"
-          whileHover={{ y: -4 }}
-          transition={{ duration: 0.3 }}
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <stat.icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#2ECC71]/60 group-hover:text-[#2ECC71] transition-colors duration-300" />
-            <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white group-hover:text-[#2ECC71] transition-colors duration-300">
-              {stat.value}
-            </span>
-          </div>
-          <span className="text-xs sm:text-sm text-gray-500">{stat.label}</span>
-        </motion.div>
-      ))}
-    </motion.div>
   </motion.div>
 );
 
@@ -312,7 +283,7 @@ const EventCard = ({
           <div className="p-4 sm:p-6 flex flex-col flex-1 bg-gradient-to-t from-[#2ECC71]/5 to-transparent">
             {/* Title */}
             <motion.h3
-              className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4"
+              className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4 min-h-[3.5rem] sm:min-h-[4rem]"
               animate={{
                 color: isHovered ? '#2ECC71' : '#ffffff',
                 textShadow: isHovered ? '0 0 20px rgba(46,204,113,0.5)' : '0 0 0px rgba(46,204,113,0)',
@@ -322,12 +293,12 @@ const EventCard = ({
             </motion.h3>
 
             {/* Description */}
-            <p className="text-gray-400 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3 leading-relaxed flex-1">
+            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed line-clamp-3">
               {event.Introduction}
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-end pt-6 sm:pt-8 mt-auto border-t border-[#2ECC71]/20">
+            <div className="flex items-center justify-end pt-6 sm:pt-8 mt-4 border-t border-[#2ECC71]/20">
               {/* View Details Button */}
               <motion.button
                 onClick={onClick}
@@ -476,7 +447,7 @@ const EventModal = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-        className="fixed inset-0 flex items-start justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto py-8 sm:py-16"
+        className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-y-auto"
         style={{
           zIndex: 100000,
           WebkitOverflowScrolling: 'touch',
@@ -595,81 +566,6 @@ const EventModal = ({
                   </p>
                 </div>
               </motion.div>
-
-              {/* Headlines with Images and Descriptions */}
-              {event.headlines && event.headlines.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="space-y-8 sm:space-y-10"
-                >
-                  {event.headlines.map((headline, idx) => (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7 + idx * 0.1 }}
-                      className="bg-white/[0.02] rounded-xl sm:rounded-2xl p-6 sm:p-7 lg:p-8 border border-[#2ECC71]/10 backdrop-blur-sm overflow-hidden"
-                    >
-                      {/* Headline Title */}
-                      <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-[#2ECC71] mb-4 sm:mb-5 flex items-center gap-3">
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
-                          className="w-2 h-2 sm:w-3 sm:h-3 bg-[#2ECC71] rounded-full"
-                        />
-                        {headline.heading}
-                      </h4>
-
-                      {/* Images - Grid or Carousel */}
-                      {headline.images && headline.images.length > 0 && (
-                        <div className="mb-6 sm:mb-7">
-                          {headline.images.length === 1 ? (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ duration: 0.5 }}
-                              className="relative h-56 sm:h-72 lg:h-96 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#2ECC71]/20 to-[#27AE60]/10"
-                            >
-                              <img
-                                src={headline.images[0]}
-                                alt={headline.heading}
-                                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                              />
-                            </motion.div>
-                          ) : (
-                            <div className="grid grid-cols-2 gap-4 w-full">
-                              {headline.images.map((img, imgIdx) => (
-                                <motion.div
-                                  key={imgIdx}
-                                  initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{ delay: imgIdx * 0.1, duration: 0.5 }}
-                                  className="relative h-48 sm:h-56 lg:h-64 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#2ECC71]/20 to-[#27AE60]/10"
-                                >
-                                  <img
-                                    src={img}
-                                    alt={`${headline.heading} ${imgIdx + 1}`}
-                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                                  />
-                                </motion.div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Description */}
-                      {headline.description && (
-                        <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
-                          {headline.description}
-                        </p>
-                      )}
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
 
               {/* Close Button at Bottom */}
               <motion.div
