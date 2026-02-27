@@ -231,10 +231,10 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-12"
+          className="mb-12 flex justify-center"
         >
-          <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_0_rgba(46,204,113,0.3)]">
-            <div className="relative bg-black/40 aspect-video max-h-48 sm:max-h-52">
+          <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_0_rgba(46,204,113,0.3)] w-full max-w-[256px]">
+            <div className="relative bg-black/40 h-[254px]">
               {project.carouselImages[currentImageIndex] ? (
                 <img
                   src={project.carouselImages[currentImageIndex]}
@@ -525,14 +525,14 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5, delay: imgIdx * 0.1 }}
-                            className="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] transition-all"
+                            className="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] transition-all w-[256px] h-[254px] mx-auto"
                           >
                             <img
                               src={image}
                               alt={`${section.heading || 'Section'} - Image ${imgIdx + 1}`}
-                              className="w-full h-auto object-contain"
+                              className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                           </motion.div>
                         ))}
                       </div>
