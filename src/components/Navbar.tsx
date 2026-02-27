@@ -255,7 +255,8 @@ export function Navbar() {
           {/* DESKTOP NAVIGATION - Only shows when NOT mobile */}
           {/* ============================================ */}
           {!isMobile && (
-            <div ref={desktopNavRef} className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)] mx-auto">
+            <div className="flex-1 flex justify-center pl-[230px]">
+              <div ref={desktopNavRef} className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)]">
               {navItems.map((item) =>
                 item.name === 'Activities' ? (
                   <div
@@ -365,6 +366,7 @@ export function Navbar() {
                   <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-white rounded-full" />
                 </motion.button>
               </Link>
+            </div>
             </div>
           )}
 
