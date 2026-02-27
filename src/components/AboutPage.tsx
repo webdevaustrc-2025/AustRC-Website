@@ -1,4 +1,4 @@
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
 import {
   Lightbulb,
@@ -24,7 +24,18 @@ import {
   MapPin,
   Phone,
   Code2,
-  Github
+  Github,
+  ChevronLeft,
+  Play,
+  Pause,
+  Calendar,
+  Award,
+  Users2,
+  Medal,
+  Flag,
+  Globe,
+  Car,
+  Drone
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
@@ -169,6 +180,490 @@ const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.Elem
         style={{ transformOrigin: "left" }}
       />
     </motion.div>
+  );
+};
+
+// Gallery Section Component
+const GallerySection = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+  const autoPlayRef = useRef<NodeJS.Timeout>();
+
+  const galleryItems = [
+    {
+      id: 1,
+      title: "Robomania 2.0",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1772196937/robomania_2.0_wowxxl.jpg",
+      description: "Intra-university robotics competition"
+    },
+    {
+      id: 2,
+      title: "3rd National ICT SCOUT JAMBOREE 2025",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1766085598/events/e4jlhrvbwr9oyge4wfhz.jpg",
+      description: "Showcasing drones, bots and smart mapping projects at national level"
+    },
+    {
+      id: 3,
+      title: "Prize Giving Ceremony",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1766086452/events/lwsgdly3ippgzek54219.jpg",
+      description: "Celebrating achievements and honoring winners of various competitions"
+    },
+    {
+      id: 4,
+      title: "AUST ARC Robobot V3 Champion",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1766431438/achievements/zf31x9rf1bhkb8ffrxnj.jpg",
+      description: "Team Robobot V3 securing champion title at AUST ARC 2.0 competition"
+    },
+    {
+      id: 5,
+      title: "AUST ARC 2.0",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1766087880/events/ue1ffajavulkldmybqsm.jpg",
+      description: "Second edition of AUST's robotics competition"
+    }
+  ];
+
+  const visibleIndices = () => {
+    const indices = [];
+    for (let i = -2; i <= 2; i++) {
+      let index = (currentIndex + i + galleryItems.length) % galleryItems.length;
+      indices.push(index);
+    }
+    return indices;
+  };
+
+  const getCardStyle = (offset: number) => {
+    const baseStyle = {
+      position: 'absolute' as const,
+      width: '280px',
+      height: '360px',
+      cursor: 'pointer',
+      transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+    };
+
+    if (offset === 0) {
+      return {
+        ...baseStyle,
+        left: '50%',
+        transform: 'translateX(-50%) translateZ(0px) scale(1)',
+        zIndex: 30,
+        opacity: 1,
+        filter: 'brightness(1)',
+      };
+    } else if (Math.abs(offset) === 1) {
+      const direction = offset > 0 ? 1 : -1;
+      return {
+        ...baseStyle,
+        left: direction > 0 ? '60%' : '40%',
+        transform: `translateX(-50%) translateZ(-100px) rotateY(${direction * 15}deg) scale(0.85)`,
+        zIndex: 20,
+        opacity: 0.8,
+        filter: 'brightness(0.7)',
+      };
+    } else {
+      const direction = offset > 0 ? 1 : -1;
+      return {
+        ...baseStyle,
+        left: direction > 0 ? '70%' : '30%',
+        transform: `translateX(-50%) translateZ(-200px) rotateY(${direction * 30}deg) scale(0.7)`,
+        zIndex: 10,
+        opacity: 0.5,
+        filter: 'brightness(0.5) blur(2px)',
+      };
+    }
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % galleryItems.length);
+    setFlippedIndex(null);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
+    setFlippedIndex(null);
+  };
+
+  const handleCardClick = (index: number) => {
+    const offset = index - currentIndex;
+    if (offset === 0) {
+      setFlippedIndex(flippedIndex === index ? null : index);
+    } else {
+      offset > 0 ? handleNext() : handlePrev();
+    }
+  };
+
+  useEffect(() => {
+    if (isAutoPlaying) {
+      autoPlayRef.current = setInterval(handleNext, 3000);
+    }
+    return () => clearInterval(autoPlayRef.current);
+  }, [isAutoPlaying, currentIndex]);
+
+  return (
+    <section className="py-20 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <SectionDivider title="Gallery" icon={Sparkles} />
+
+        <div className="relative h-[500px] perspective-[1200px] preserve-3d">
+          {/* Cards Container */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            {visibleIndices().map((itemIndex, i) => {
+              const offset = i - 2;
+              const isFlipped = flippedIndex === itemIndex;
+              
+              return (
+                <motion.div
+                  key={galleryItems[itemIndex].id}
+                  style={getCardStyle(offset)}
+                  onClick={() => handleCardClick(itemIndex)}
+                  initial={false}
+                  animate={getCardStyle(offset)}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30
+                  }}
+                  whileHover={offset === 0 ? { scale: 1.05 } : {}}
+                >
+                  <motion.div
+                    className="w-full h-full relative preserve-3d"
+                    animate={{ rotateY: isFlipped ? 180 : 0 }}
+                    transition={{ duration: 0.6, type: "spring" }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    {/* Front */}
+                    <div
+                      className="absolute w-full h-full backface-hidden rounded-2xl overflow-hidden border-2 border-[rgba(46,204,113,0.3)] shadow-2xl"
+                      style={{ backfaceVisibility: 'hidden' }}
+                    >
+                      <img
+                        src={galleryItems[itemIndex].image}
+                        alt={galleryItems[itemIndex].title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                        <h3 className="text-white font-bold">{galleryItems[itemIndex].title}</h3>
+                      </div>
+                    </div>
+
+                    {/* Back */}
+                    <div
+                      className="absolute w-full h-full backface-hidden rounded-2xl bg-gradient-to-br from-[#2ECC71] to-[#27AE60] p-6 flex flex-col items-center justify-center text-center"
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)'
+                      }}
+                    >
+                      <h3 className="text-black font-bold text-xl mb-3">{galleryItems[itemIndex].title}</h3>
+                      <p className="text-black/80">{galleryItems[itemIndex].description}</p>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] hover:border-[#2ECC71] text-white flex items-center justify-center transition-all group"
+          >
+            <ChevronLeft className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] hover:border-[#2ECC71] text-white flex items-center justify-center transition-all group"
+          >
+            <ChevronRight className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          </button>
+
+          {/* Auto-play Toggle */}
+          <button
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            className="absolute top-4 right-4 z-40 w-10 h-10 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] text-white flex items-center justify-center"
+          >
+            {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Indicator Dots */}
+        <div className="flex justify-center gap-2 mt-8">
+          {galleryItems.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setCurrentIndex(index);
+                setFlippedIndex(null);
+              }}
+              className={`h-2 rounded-full transition-all ${
+                index === currentIndex
+                  ? 'w-8 bg-[#2ECC71]'
+                  : 'w-2 bg-[rgba(46,204,113,0.3)] hover:bg-[rgba(46,204,113,0.5)]'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Our Projects Section Component (Updated with requested projects)
+const ProjectsSection = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [direction, setDirection] = useState(0);
+  const autoPlayRef = useRef<NodeJS.Timeout>();
+
+  const projects = [
+    {
+      id: 1,
+      title: "Drone",
+      description: "Advanced autonomous quadcopter with stabilization, object tracking, and aerial imaging capabilities.",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1767125813/educational_programs/hp7kbncibn25mrelg8tn.jpg",
+    },
+    {
+      id: 2,
+      title: "Line Follower Robot (LFR)",
+      description: "High-speed line following robot with PID control, optimized for competitive racing and industrial applications.",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1767125845/educational_programs/luw1ea1j6v5jad81bfpz.jpg",
+    },
+    {
+      id: 3,
+      title: "Bluetooth Controlled Car with LED Indicators",
+      description: "Smart car controlled via Bluetooth with LED indicators for turn signals, brake lights, and headlights.",
+      image: "https://res.cloudinary.com/dxyhzgrul/image/upload/v1766086857/events/sq1y8wrkfet0ifcgevim.jpg",
+    }
+  ];
+
+  const handleNext = () => {
+    setDirection(1);
+    setCurrentIndex((prev) => (prev + 1) % projects.length);
+  };
+
+  const handlePrev = () => {
+    setDirection(-1);
+    setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
+  useEffect(() => {
+    if (isAutoPlaying) {
+      autoPlayRef.current = setInterval(handleNext, 4000);
+    }
+    return () => clearInterval(autoPlayRef.current);
+  }, [isAutoPlaying, currentIndex]);
+
+  return (
+    <section className="py-20 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <SectionDivider title="Our Projects" icon={Rocket} />
+
+        <div className="relative">
+          {/* Projects Carousel */}
+          <div className="relative overflow-hidden rounded-3xl">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                initial={{ opacity: 0, x: 300, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -300, scale: 0.9 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="relative"
+              >
+                {/* Project Image - Made smaller with max-w-2xl */}
+                <div className="relative aspect-video overflow-hidden rounded-2xl border-2 border-[rgba(46,204,113,0.3)] max-w-2xl mx-auto">
+                  <img
+                    src={projects[currentIndex].image}
+                    alt={projects[currentIndex].title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                </div>
+
+                {/* Project Info */}
+                <div className="mt-8 text-center">
+                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                    {projects[currentIndex].title}
+                  </h3>
+                  <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                    {projects[currentIndex].description}
+                  </p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={handlePrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] text-white flex items-center justify-center transition-all"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] text-white flex items-center justify-center transition-all"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Auto-play Toggle */}
+          <button
+            onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-[rgba(46,204,113,0.2)] border border-[rgba(46,204,113,0.3)] hover:bg-[#2ECC71] text-white flex items-center justify-center"
+          >
+            {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+        </div>
+
+        {/* Indicator Dots */}
+        <div className="flex justify-center gap-2 mt-8">
+          {projects.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setDirection(index > currentIndex ? 1 : -1);
+                setCurrentIndex(index);
+              }}
+              className={`h-2 rounded-full transition-all ${
+                index === currentIndex
+                  ? 'w-8 bg-[#2ECC71]'
+                  : 'w-2 bg-[rgba(46,204,113,0.3)] hover:bg-[rgba(46,204,113,0.5)]'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Events & Competitions Section Component (Updated with fixed grid sizes and removed button)
+const EventsSection = () => {
+  const events = [
+    {
+      id: 1,
+      title: "AUST ROVER CHALLENGE 2.0",
+      date: "July 12-13, 2025",
+      location: "AUST Campus",
+      type: "Championship",
+      icon: <Trophy className="w-6 h-6" />,
+      description: "150+ teams from different universities competed in this national robotics event."
+    },
+    {
+      id: 2,
+      title: "ROBOMANIA 1.0",
+      date: "January 27, 2024",
+      location: "AUST",
+      type: "Intra Competition",
+      icon: <Zap className="w-6 h-6" />,
+      description: "First intra-university event with LFR, Robo Fight, and Soccer Bot competitions."
+    },
+    {
+      id: 3,
+      title: "3rd National ICT SCOUT JAMBOREE 2025",
+      date: "2025",
+      location: "National",
+      type: "Exhibition",
+      icon: <Globe className="w-6 h-6" />,
+      description: "Showcased drones, bots, Arduino and smart mapping projects."
+    },
+    {
+      id: 4,
+      title: "NATIONAL ROBOTICS CHAMPIONSHIP 2025",
+      date: "2025",
+      location: "National",
+      type: "Achievement",
+      icon: <Medal className="w-6 h-6" />,
+      description: "Team Robo Bot v3 secured Champion in Robo Soccer segment."
+    },
+    {
+      id: 5,
+      title: "RESEARCH SYMPOSIUM 1.0",
+      date: "2024",
+      location: "IEOM Society AUST",
+      type: "Research",
+      icon: <Award className="w-6 h-6" />,
+      description: "Team Respire achieved 1st Runner-Up position."
+    },
+    {
+      id: 6,
+      title: "TRACTION অভ্যুদয়",
+      date: "2024",
+      location: "BRAC University",
+      type: "Dual Victory",
+      icon: <Flag className="w-6 h-6" />,
+      description: "Team Robo Bot v3 dominated both Soccer and Race segments."
+    }
+  ];
+
+  return (
+    <section className="py-20 px-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <SectionDivider title="Events & Competitions" icon={Calendar} />
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+          {events.map((event, index) => (
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group relative h-full"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-2xl blur opacity-0 group-hover:opacity-30 transition duration-500" />
+              
+              <div className="relative bg-[rgba(46,204,113,0.05)] backdrop-blur-xl border border-[rgba(46,204,113,0.2)] rounded-2xl p-6 hover:border-[rgba(46,204,113,0.5)] transition-all duration-500 h-full flex flex-col">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-gradient-to-br from-[#2ECC71] to-[#27AE60] rounded-xl text-white">
+                      {event.icon}
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium px-3 py-1 bg-[rgba(46,204,113,0.2)] text-[#2ECC71] rounded-full">
+                        {event.type}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#2ECC71] transition-colors line-clamp-2 min-h-[3.5rem]">
+                  {event.title}
+                </h3>
+                <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                  {event.description}
+                </p>
+
+                {/* Footer - Push to bottom */}
+                <div className="mt-auto space-y-2 text-sm">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Calendar className="w-4 h-4 text-[#2ECC71] shrink-0" />
+                    <span className="truncate">{event.date}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <MapPin className="w-4 h-4 text-[#2ECC71] shrink-0" />
+                    <span className="truncate">{event.location}</span>
+                  </div>
+                </div>
+
+                {/* Achievement Badge */}
+                <div className="mt-4 pt-4 border-t border-[rgba(46,204,113,0.2)]">
+                  <span className="text-xs text-[#2ECC71] font-medium">
+                    {event.type === 'Achievement' || event.type === 'Dual Victory' || event.type === 'Championship' 
+                      ? '🏆 Achievement' 
+                      : '✓ Participated'}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -637,6 +1132,9 @@ export function AboutPage() {
           </div>
         </section>
 
+        {/* Gallery Section - NEW */}
+        <GallerySection />
+
         {/* Mission & Vision Section */}
         <section className="py-20 px-6 relative">
           <div className="max-w-7xl mx-auto">
@@ -722,7 +1220,7 @@ export function AboutPage() {
           </div>
         </section>
 
-        {/* Objectives Section */}
+        {/* What We Do Section */}
         <section className="py-20 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <SectionDivider title="What We Do" icon={Zap} />
@@ -773,6 +1271,12 @@ export function AboutPage() {
             </div>
           </div>
         </section>
+
+        {/* Our Projects Section - NEW (Updated with requested projects) */}
+        <ProjectsSection />
+
+        {/* Events & Competitions Section - NEW (Updated with fixed grid sizes and removed button) */}
+        <EventsSection />
 
         {/* Membership & Leadership Section */}
         <section className="py-20 px-6 relative">
@@ -873,7 +1377,7 @@ export function AboutPage() {
           </div>
         </section>
 
-        {/* Stats Section */}
+        {/* Our Achievements Section */}
         <section className="py-20 px-6 relative">
           <div className="max-w-7xl mx-auto">
             <SectionDivider title="Our Achievements" icon={Star} />
@@ -916,7 +1420,7 @@ export function AboutPage() {
           </div>
         </section>
 
-        {/* Contact Section */}
+        {/* Connect With Us Section */}
         <section className="py-20 px-6 relative">
           <div className="max-w-5xl mx-auto">
             <SectionDivider title="Connect With Us" icon={Mail} />
