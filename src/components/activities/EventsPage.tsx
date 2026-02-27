@@ -561,7 +561,7 @@ export function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-12 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white pt-24 pb-24 relative overflow-hidden">
       {/* Background */}
       <HeroBackground />
 

@@ -303,7 +303,7 @@ export function AchievementsPage() {
       <HeroBackground />
       <ScrollProgress />
       
-      <div className="text-white pt-24 pb-12 px-6">
+      <div className="text-white pt-24 pb-24 px-6">
         <div className="container mx-auto relative z-10">
           {/* Header Section */}
           <motion.div

@@ -614,7 +614,7 @@ const ResearchSlider = () => {
 // --- MAIN PAGE COMPONENT ---
 export function EducationalActivitiesPage() {
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-44 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white pt-24 pb-32 relative overflow-hidden">
       {/* Background */}
       <HeroBackground />
 
