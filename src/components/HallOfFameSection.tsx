@@ -4,7 +4,7 @@ import { Quote, Award, Facebook, Linkedin, Mail } from "lucide-react";
 const allHallOfFameMembers = [
   {
     name: "Monjure Mowla",
-    position: "Former VP, AUSTRC",
+    position: "Former President, AUSTRC",
     year: "Embedded Software Engineer (Level - 3), Neural Semiconductor Limited",
     image: "https://ik.imagekit.io/xq2aftghg/hall%20of%20fame/hall%20of%20fame/Monjure%20Mowla.png?updatedAt=1769713923077",
     quote: "As the founding Vice President of the AUST Robotics Club, I had the opportunity to help lead the club's activities for a year. During this time, I worked alongside an amazing team to organize various events, including a national-level competition that brought together passionate minds. It was a rewarding experience, and I'm grateful to have contributed to promoting robotics within our university.",
@@ -14,7 +14,7 @@ const allHallOfFameMembers = [
   },
   {
     name: "Farhat Nahian",
-    position: "Former VP, AUSTRC",
+    position: "Former President, AUSTRC",
     year: "System Engineer, Huawei Technologies (Bangladesh) ltd",
     image: "https://ik.imagekit.io/xq2aftghg/hall%20of%20fame/hall%20of%20fame/Farhat%20Nahian.png?updatedAt=1769713923038",
     quote: "Started this journey as a sub-executive member of the founding panel of the AUST Robotics Club, I was fortunate enough to have ended my journey as one of the leaders of the club. The more my responsibilities grew, the more my skills grew and looking back, I realize that it's the experience and learning that shaped the person I am today. I'm genuinely grateful for the love, respect, and platform the club has offered me. Lastly- no matter your starting point, regardless of your skill level or experience, get involved with dedication and self-belief, you will eventually grow into the person you're meant to be.",
@@ -24,7 +24,7 @@ const allHallOfFameMembers = [
   },
   {
     name: "Abdul Quader",
-    position: "Former VP, AUSTRC",
+    position: "Former President, AUSTRC",
     year: "Graduate Trainee Engineer - Atlas Copco Bangladesh Ltd.",
     image: "https://ik.imagekit.io/xq2aftghg/hall%20of%20fame/hall%20of%20fame/Abdul%20Quader.png?updatedAt=1769713923094",
     quote: "Being a part of the AUST Robotics Club (ARC) was a dream come true. All the enthusiastic people around, creative minds doing things that never happened before. From seminar to national competitions, I have enjoyed it all and learned so many things. I will feel guilty if I do not mention the networking opportunities I had at ARC. Last but not the least, being able to work with the executives was another milestone for me and my self development. Ending my ARC journey being the Vice President was the best experience. All the best to AUSTRC for its future endeavours.",
@@ -34,7 +34,7 @@ const allHallOfFameMembers = [
   },
   {
     name: "Md. Rahat Mahmud",
-    position: "Former VP, AUSTRC",
+    position: "Former President, AUSTRC",
     year: "Enterprise Relationship Manager, Axentec PLC",
     image: "https://ik.imagekit.io/xq2aftghg/hall%20of%20fame/hall%20of%20fame/Md.%20Rahat%20Mahmud.png?updatedAt=1769713923102",
     quote: "Back to 2022, when I was in second year, second semester, I started my journey as an Executive member with AUSTRC. Following the conclusion of my time at university, I left the club in 2024, having held the position of Vice President. In this period of time, I have learned so many things about robotics. This club has given me more personal growth than just robotics knowledge. Leadership, problem-solving skills, and organizational skills are the keys in real life, which I learned from this club. I shall always have the utmost affection for this club and wish it nothing but the best, even after I become an alumni of AUSTRC. I hope new members of this club will take AUSTRC to a new height. GODSPEED.",
@@ -44,7 +44,7 @@ const allHallOfFameMembers = [
   },
   {
     name: "Anas Al Rafin",
-    position: "Former GS, AUSTRC",
+    position: "Former General Secretary, AUSTRC",
     year: "Co-Founder, Craftrix",
     image: "https://ik.imagekit.io/xq2aftghg/hall%20of%20fame/hall%20of%20fame/Anas%20Al%20Rafin.png?updatedAt=1769713923642",
     quote: "I was part of the founding of the AUST Robotics Club (AUSTRC). I started as a sub-executive, then moved up to Joint Secretary, and finally became the General Secretary. One of the best experiences was organizing the first AUST Rover Challenge, where I was in charge of the Rover Competition. I worked with many seniors and juniors, and I learned a lot from them. My time with AUSTRC taught me about robotics, teamwork, and leadership. It was a great experience that helped me grow both personally and professionally.",
