@@ -127,7 +127,7 @@ const ProjectCard = ({
           />
 
           {/* Card Container */}
-          <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black to-gray-900/90 rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl">
+          <div className="relative h-full flex flex-col bg-gradient-to-br from-gray-900/90 via-black to-gray-900/90 rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl">
             {/* Animated Border */}
             <div className="absolute inset-0 rounded-2xl overflow-hidden">
               <motion.div
@@ -147,7 +147,7 @@ const ProjectCard = ({
             </div>
 
             {/* Image Section */}
-            <div className="relative aspect-video max-h-48 overflow-hidden">
+            <div className="relative h-48 sm:h-52 overflow-hidden">
               {project.Cover_Picture ? (
                 <motion.img
                   src={cachedImage || project.Cover_Picture}
@@ -183,10 +183,10 @@ const ProjectCard = ({
             </div>
 
             {/* Content Section */}
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <div className="p-4 sm:p-6 flex flex-col flex-1">
               {/* Title */}
               <motion.h3
-                className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight"
+                className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight mb-3 sm:mb-4"
                 animate={{
                   color: isHovered ? '#2ECC71' : '#ffffff',
                 }}
@@ -196,12 +196,12 @@ const ProjectCard = ({
               </motion.h3>
 
               {/* Description */}
-              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1">
                 {project.Introduction}
               </p>
 
               {/* Arrow Button */}
-              <div className="flex items-center justify-end pt-2">
+              <div className="flex items-center justify-end pt-4 sm:pt-6">
                 <motion.div
                   className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[rgba(46,204,113,0.1)] border border-[rgba(46,204,113,0.3)] flex items-center justify-center"
                   animate={{
@@ -488,7 +488,6 @@ export function ResearchProjectsHomepageSection() {
               />
 
               <span className="relative inline-flex items-center gap-3">
-                <ChevronRight className="w-5 h-5" />
                 Explore All Projects
                 <motion.span
                   animate={{ x: [0, 5, 0] }}

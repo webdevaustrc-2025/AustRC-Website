@@ -561,13 +561,24 @@ export function NoticesBoardHomepageSection() {
               >
                 <motion.button
                   onClick={() => navigate('/notices')}
-                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileHover={{ scale: 1.05, y: -3 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-8 py-3 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-black font-bold text-sm transition-all shadow-lg shadow-[#2ECC71]/20 hover:shadow-[#2ECC71]/40"
+                  className="relative px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full text-white font-bold text-base transition-all duration-300 shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] overflow-hidden group"
                 >
-                  <span className="inline-flex items-center gap-2">
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                    initial={{ x: '-150%' }}
+                    whileHover={{ x: '150%' }}
+                    transition={{ duration: 0.8 }}
+                  />
+                  <span className="relative inline-flex items-center gap-3">
                     View All Notices
-                    <ChevronRight className="w-4 h-4" />
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </motion.span>
                   </span>
                 </motion.button>
               </motion.div>

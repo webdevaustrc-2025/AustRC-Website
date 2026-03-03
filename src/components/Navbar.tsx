@@ -232,7 +232,7 @@ export function Navbar() {
                     transition={{ duration: 0.2 }}
                   >
                     <div className="relative group cursor-pointer">
-                      <div className="relative w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
+                      <div className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
                         <img
                           src="https://ik.imagekit.io/mekt2pafz/Web%20site%20team/logo.png?updatedAt=1769056096931"
                           alt="AUSTRC Logo"
@@ -241,7 +241,7 @@ export function Navbar() {
                       </div>
                     </div>
                     <div>
-                      <span className="tracking-tight text-white block">
+                      <span className="tracking-tight text-white text-sm">
                         Aust Robotics Club
                       </span>
                     </div>
@@ -256,7 +256,7 @@ export function Navbar() {
           {/* ============================================ */}
           {!isMobile && (
             <div className="flex-1 flex justify-center pl-[230px]">
-              <div ref={desktopNavRef} className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)]">
+              <div ref={desktopNavRef} className="flex items-center gap-6 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)]">
               {navItems.map((item) =>
                 item.name === 'Activities' ? (
                   <div
