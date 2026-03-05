@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { 
@@ -24,54 +24,66 @@ interface ReviewCardProps {
 }
 
 function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
-  const MAX_CHARS = 160;
-  const isTruncatable = item.experience.length > MAX_CHARS;
-  const displayText =
-    isExpanded || !isTruncatable
-      ? item.experience
-      : item.experience.slice(0, MAX_CHARS) + '…';
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [isTruncatable, setIsTruncatable] = useState(false);
+  const designationWithTeam = [item.designation, item.team].filter(Boolean).join(' • ');
+
+  useEffect(() => {
+    if (isExpanded) return;
+    const el = textRef.current;
+    if (!el) return;
+
+    const checkTruncation = () => {
+      setIsTruncatable(el.scrollHeight > el.clientHeight + 1);
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [item.experience, isExpanded]);
 
   return (
-    <div className="review-card bg-gray-800/50 backdrop-blur-xl border border-[#2ECC71]/20 rounded-2xl p-5 flex flex-col gap-6 hover:border-[#2ECC71]/50 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.25)] transition-all duration-300">
+    <div className="review-card bg-gray-900/50 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-5 flex flex-col gap-4 hover:border-[#2ECC71]/55 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.2)] transition-all duration-300">
       {/* Reviewer info */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-3">
         {item.photo ? (
-          <img
-            src={item.photo}
-            alt={item.name}
-            className="w-12 h-12 rounded-full object-cover border-2 border-[#2ECC71]/40 flex-shrink-0"
-          />
+          <div className="w-12 h-12 aspect-square rounded-full overflow-hidden border border-[#2ECC71]/35 flex-shrink-0 shadow-[0_0_18px_0_rgba(46,204,113,0.28)]">
+            <img
+              src={item.photo}
+              alt={item.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
         ) : (
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2ECC71]/40 to-[#27AE60]/40 flex items-center justify-center flex-shrink-0 border-2 border-[#2ECC71]/40">
-            <span className="text-[#2ECC71] text-lg font-bold">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2ECC71]/35 to-[#27AE60]/35 flex items-center justify-center flex-shrink-0 border border-[#2ECC71]/35 shadow-[0_0_18px_0_rgba(46,204,113,0.25)]">
+            <span className="text-[#E6FFF1] text-lg font-semibold">
               {item.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
-        <div className="min-w-0">
-          <p className="text-white font-semibold text-sm leading-tight truncate">{item.name}</p>
-          <p className="text-[#2ECC71] text-xs truncate">{item.designation}</p>
-          <p className="text-gray-400 text-xs truncate">{item.team}</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-white font-semibold text-xl leading-tight truncate">{item.name}</p>
+          <p className="text-[#2ECC71] text-sm leading-tight truncate mt-0.5">{designationWithTeam}</p>
         </div>
       </div>
 
       {/* Experience text */}
-      <div className="flex-1 py-2">
-        <p className="text-gray-300 text-sm leading-relaxed">{displayText}</p>
+      <div className="flex-1 flex flex-col">
+        <p
+          ref={textRef}
+          className={`review-text text-gray-300 text-base leading-relaxed ${isExpanded ? 'expanded' : ''}`}
+        >
+          “{item.experience}”
+        </p>
         {isTruncatable && (
           <button
             onClick={() => onToggle(cardKey)}
-            className="text-[#2ECC71] text-xs mt-2 hover:underline focus:outline-none"
+            className="text-[#2ECC71] text-xs mt-2 hover:underline focus:outline-none text-left"
           >
             {isExpanded ? 'See less' : 'See more'}
           </button>
         )}
       </div>
-
-      {/* Time */}
-      {item.time && (
-        <p className="text-gray-500 text-xs mt-auto">{item.time}</p>
-      )}
     </div>
   );
 }
@@ -348,30 +360,88 @@ export function EnthusiastAcquisitionPage() {
       {/* Panel Member Reviews Section */}
       <section className="py-24 px-6 relative overflow-hidden">
         <style>{`
-          @keyframes marquee-left {
-            0%   { transform: translateX(0); }
+          @keyframes lane-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+          }
+
+          @keyframes lane-left {
+            0% { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
           }
-          @keyframes marquee-right {
-            0%   { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
+
+          .review-card {
+            width: 365px;
+            min-height: 160px;
+            flex: 0 0 auto;
+            margin: 1rem;
           }
-          .marquee-left  { animation: marquee-left  40s linear infinite; }
-          .marquee-right { animation: marquee-right 46s linear infinite; }
-          .marquee-track:hover .marquee-left,
-          .marquee-track:hover .marquee-right {
+
+          .review-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: calc(1.45em * 3);
+          }
+
+          .review-text.expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+            overflow: visible;
+            min-height: 0;
+          }
+
+          .review-lane {
+            overflow: hidden;
+            padding: 0.25rem 0;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+          }
+
+          .review-track {
+            display: flex;
+            gap: 1.5rem;
+            width: max-content;
+            align-items: stretch;
+          }
+
+          .review-track-upper {
+            animation: lane-right 22s linear infinite;
+          }
+
+          .review-track-lower {
+            animation: lane-left 22s linear infinite;
+          }
+
+          .review-grid-wrap {
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .review-lane:hover .review-track-upper,
+          .review-lane:hover .review-track-lower {
             animation-play-state: paused;
           }
-          .review-card {
-            width: 400px;
-            flex-shrink: 0;
+
+          @media (max-width: 1023px) {
+            .review-card {
+              width: 320px;
+              min-height: 170px;
+            }
+
+            .review-track-upper,
+            .review-track-lower {
+              animation-duration: 18s;
+            }
           }
+
           @media (max-width: 640px) {
-            .review-card { width: 300px; }
-          }
-          .marquee-fade {
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-            mask-image:         linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            .review-card {
+              width: 280px;
+            }
           }
         `}</style>
 
@@ -410,29 +480,31 @@ export function EnthusiastAcquisitionPage() {
               ))}
             </div>
           ) : (
-            <>
-              {/* Row 1 — scrolls left */}
-              <div className="marquee-track marquee-fade overflow-hidden mb-6 select-none py-3">
-                <div className="flex gap-6 w-max marquee-left items-stretch">
-                  {[...row1Reviews, ...row1Reviews].map((item, i) => {
-                    const cardKey = `row1-${item.id}-${i}`;
-                    const isExpanded = expandedCards.has(cardKey);
-                    return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
-                  })}
+            <div className="review-grid-wrap space-y-6 md:space-y-8">
+              {row1Reviews.length > 0 && (
+                <div className="review-lane">
+                  <div className="review-track review-track-upper">
+                    {[...row1Reviews, ...row1Reviews].map((item, i) => {
+                      const cardKey = `row1-${item.id}-${i}`;
+                      const isExpanded = expandedCards.has(cardKey);
+                      return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Row 2 — scrolls right */}
-              <div className="marquee-track marquee-fade overflow-hidden select-none py-3">
-                <div className="flex gap-6 w-max marquee-right items-stretch">
-                  {[...row2Reviews, ...row2Reviews].map((item, i) => {
-                    const cardKey = `row2-${item.id}-${i}`;
-                    const isExpanded = expandedCards.has(cardKey);
-                    return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
-                  })}
+              {row2Reviews.length > 0 && (
+                <div className="review-lane">
+                  <div className="review-track review-track-lower">
+                    {[...row2Reviews, ...row2Reviews].map((item, i) => {
+                      const cardKey = `row2-${item.id}-${i}`;
+                      const isExpanded = expandedCards.has(cardKey);
+                      return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
+                    })}
+                  </div>
                 </div>
-              </div>
-            </>
+              )}
+            </div>
           )}
         </div>
       </section>
