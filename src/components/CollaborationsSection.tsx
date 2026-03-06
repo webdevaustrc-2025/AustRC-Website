@@ -94,13 +94,13 @@ export function CollaborationsSection() {
   });
 
   return (
-    <section className="py-20 bg-black relative overflow-hidden">
+    <section className="w-full py-20 bg-black relative">
       {/* Background gradient */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(46,204,113,0.05)] via-transparent to-transparent" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -111,8 +111,8 @@ export function CollaborationsSection() {
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
             <span className="text-[#2ECC71] text-sm">Partners & Sponsors</span>
           </div>
-          <h2 className="mb-4 tracking-tight text-white text-3xl sm:text-4xl md:text-5xl">Event Collaborations</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <h2 className="mb-4 tracking-tight text-white text-5xl break-words">Event Collaborations</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto break-words">
             Proud to collaborate with leading institutions, industry partners, and innovation hubs.
           </p>
         </motion.div>
