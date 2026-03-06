@@ -1,50 +1,14 @@
 import { motion, AnimatePresence } from "motion/react";
-import { Card, CardContent } from "./ui/card";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { Quote } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
 
-const testimonials = [
-  {
-    name: "Alex Thompson",
-    role: "Alumni, Software Engineer at Tesla",
-    content:
-      "AUSRC gave me the foundation I needed to pursue my dreams in robotics. The mentorship and hands-on projects were invaluable.",
-    initials: "AT",
-  },
-  {
-    name: "Priya Sharma",
-    role: "Current Member, Research Assistant",
-    content:
-      "The research opportunities and collaborative environment at AUSRC have accelerated my learning beyond anything I imagined.",
-    initials: "PS",
-  },
-  {
-    name: "Marcus Johnson",
-    role: "Alumni, Robotics Engineer",
-    content:
-      "Being part of AUSRC was transformative. I learned not just technical skills, but also how to work in teams and lead projects.",
-    initials: "MJ",
-  },
-  {
-    name: "Sophie Chen",
-    role: "Current Member, Team Leader",
-    content:
-      "The community at AUSRC is amazing. Everyone is passionate, supportive, and driven to create innovative solutions.",
-    initials: "SC",
-  },
-];
-
 export function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const [carouselImages, setCarouselImages] = useState<string[]>([]);
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const lastClickTime = useRef(0);
 
   // clicking the carousel shouldn't advance it, just pause playback
   const handleCarouselClick = useCallback(() => {

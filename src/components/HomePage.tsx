@@ -11,6 +11,8 @@ import { CollaborationsSection } from "./CollaborationsSection";
 import { SponsorsSection } from "./SponsorsSection";
 
 // Animated background particles
+import {NoticesBoardHomepageSection} from "./NoticesBoardHomePageSection";
+// Animated background particles - reduced for mobile performance
 function AnimatedBackground() {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -100,7 +102,9 @@ export function HomePage() {
       >
         <HeroSection />
       </motion.div>
+<AnimatedDivider />
 
+<NoticesBoardHomepageSection />
       <AnimatedDivider />
 
       <motion.div
@@ -112,8 +116,9 @@ export function HomePage() {
         <EventsSection />
       </motion.div>
 
-      <AnimatedDivider />
+      
 
+      <AnimatedDivider />
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
