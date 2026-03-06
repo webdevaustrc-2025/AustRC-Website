@@ -1,4 +1,7 @@
 import { motion } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/config/firebase';
 import { 
   Users, 
   Calendar, 
@@ -13,7 +16,136 @@ import {
   Mail
 } from 'lucide-react';
 
+interface ReviewCardProps {
+  item: Review;
+  cardKey: string;
+  isExpanded: boolean;
+  onToggle: (key: string) => void;
+}
+
+function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [isTruncatable, setIsTruncatable] = useState(false);
+  const designationWithTeam = [item.designation, item.team].filter(Boolean).join(' • ');
+
+  useEffect(() => {
+    if (isExpanded) return;
+    const el = textRef.current;
+    if (!el) return;
+
+    const checkTruncation = () => {
+      setIsTruncatable(el.scrollHeight > el.clientHeight + 1);
+    };
+
+    checkTruncation();
+    window.addEventListener('resize', checkTruncation);
+    return () => window.removeEventListener('resize', checkTruncation);
+  }, [item.experience, isExpanded]);
+
+  return (
+    <div className="review-card bg-gray-900/50 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-5 flex flex-col gap-4 hover:border-[#2ECC71]/55 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.2)] transition-all duration-300">
+      {/* Reviewer info */}
+      <div className="flex items-center gap-3">
+        {item.photo ? (
+          <div className="w-12 h-12 aspect-square rounded-full overflow-hidden border border-[#2ECC71]/35 flex-shrink-0 shadow-[0_0_18px_0_rgba(46,204,113,0.28)]">
+            <img
+              src={item.photo}
+              alt={item.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#2ECC71]/35 to-[#27AE60]/35 flex items-center justify-center flex-shrink-0 border border-[#2ECC71]/35 shadow-[0_0_18px_0_rgba(46,204,113,0.25)]">
+            <span className="text-[#E6FFF1] text-lg font-semibold">
+              {item.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
+        <div className="min-w-0 flex-1">
+          <p className="text-white font-semibold text-xl leading-tight truncate">{item.name}</p>
+          <p className="text-[#2ECC71] text-sm leading-tight truncate mt-0.5">{designationWithTeam}</p>
+        </div>
+      </div>
+
+      {/* Experience text */}
+      <div className="flex-1 flex flex-col justify-center min-h-[104px]">
+        <p
+          ref={textRef}
+          className={`review-text text-gray-300 text-base leading-relaxed ${isExpanded ? 'expanded' : ''}`}
+        >
+          “{item.experience}”
+        </p>
+        {isTruncatable && (
+          <button
+            onClick={() => onToggle(cardKey)}
+            className="text-[#2ECC71] text-xs mt-3 hover:underline focus:outline-none text-left self-start"
+          >
+            {isExpanded ? 'See less' : 'See more'}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface Review {
+  id: string;
+  name: string;
+  designation: string;
+  team: string;
+  experience: string;
+  photo: string;
+  time: string;
+}
+
 export function EnthusiastAcquisitionPage() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    const reviewsRef = collection(db, 'Club_review');
+    const unsubscribe = onSnapshot(
+      reviewsRef,
+      (snapshot) => {
+        const fetchedReviews: Review[] = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          fetchedReviews.push({
+            id: doc.id,
+            name: data.name || '',
+            designation: data.designation || '',
+            team: data.team || '',
+            experience: data.experience || '',
+            photo: data.photo || '',
+            time: data.time || '',
+          });
+        });
+        setReviews(fetchedReviews);
+      },
+      (err) => {
+        console.error('Error fetching Club_review:', err);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
+  const midpoint = Math.ceil(reviews.length / 2);
+  const upperRowReviews = reviews.slice(0, midpoint);
+  const lowerRowReviews = reviews.slice(midpoint);
+
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+
+  const toggleExpand = (key: string) => {
+    setExpandedCards(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
   const roles = [
     {
       icon: <Users className="w-8 h-8" />,
@@ -225,134 +357,151 @@ export function EnthusiastAcquisitionPage() {
       </section>
 
       {/* Panel Member Reviews Section */}
-      <section className="py-20 px-6 relative overflow-hidden">
+      <section className="my-16 px-6 md:px-8 lg:px-12 relative overflow-hidden">
         <style>{`
-          @keyframes marquee-left {
-            0% { transform: translateX(0); }
+          @keyframes lane-move-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+          }
+
+          @keyframes lane-move-left {
+            0% { transform: translateX(0%); }
             100% { transform: translateX(-50%); }
           }
-          @keyframes marquee-right {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0); }
+
+          .review-card {
+            width: 360px;
+            min-height: 220px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
           }
-          .marquee-left {
-            animation: marquee-left 30s linear infinite;
+
+          .review-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: calc(1.45em * 3);
           }
-          .marquee-right {
-            animation: marquee-right 36s linear infinite;
+
+          .review-text.expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+            overflow: visible;
+            min-height: 0;
           }
-          .marquee-track:hover .marquee-left,
-          .marquee-track:hover .marquee-right {
+
+          .review-grid-wrap {
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
+          .review-lane {
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%);
+          }
+
+          .review-track {
+            display: flex;
+            align-items: stretch;
+            gap: 1.5rem;
+            width: max-content;
+          }
+
+          .review-track-upper {
+            animation: lane-move-right 20s linear infinite;
+          }
+
+          .review-track-lower {
+            animation: lane-move-left 20s linear infinite;
+          }
+
+          .review-lane:hover .review-track-upper,
+          .review-lane:hover .review-track-lower {
             animation-play-state: paused;
+          }
+
+          @media (max-width: 767px) {
+            .review-card {
+              width: 300px;
+              min-height: 205px;
+            }
           }
         `}</style>
 
-        {/* Background Effect */}
-        <div className="absolute inset-0">
-          <div className="absolute w-[600px] h-[600px] bg-[#27AE60]/20 rounded-full blur-[180px] top-0 right-0 animate-pulse" />
-          <div className="absolute w-[500px] h-[500px] bg-[#2ECC71]/20 rounded-full blur-[160px] bottom-0 left-0 animate-pulse" style={{ animationDelay: '1.5s' }} />
+        {/* Background glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute w-[700px] h-[700px] bg-[#27AE60]/15 rounded-full blur-[200px] -top-32 right-0 animate-pulse" />
+          <div className="absolute w-[600px] h-[600px] bg-[#2ECC71]/15 rounded-full blur-[180px] bottom-0 -left-20 animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
 
         <div className="max-w-7xl mx-auto relative z-10">
+          {/* Section heading */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
-            <div className="inline-block px-6 py-2 bg-gradient-to-r from-[#2ECC71]/20 to-transparent border border-[#2ECC71]/50 rounded-full backdrop-blur-sm mb-6">
-              <span className="text-[#2ECC71] text-sm font-medium tracking-widest uppercase">Voices of Experience</span>
+            <div className="inline-flex items-center gap-2 px-5 py-2 bg-[#2ECC71]/10 border border-[#2ECC71]/40 rounded-full backdrop-blur-sm mb-5">
+              <span className="w-2 h-2 rounded-full bg-[#2ECC71] animate-pulse" />
+              <span className="text-[#2ECC71] text-xs font-semibold tracking-widest uppercase">Voices of Experience</span>
             </div>
-            <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-[#2ECC71] via-green-400 to-[#2ECC71] bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#2ECC71] via-green-300 to-[#2ECC71] bg-clip-text text-transparent">
               Hear From Our Panel Members
             </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
               Real experiences from those who have shaped and led AUST Robotics Club
             </p>
           </motion.div>
 
-          {/* Row 1 — scrolls left */}
-          <div className="marquee-track overflow-hidden mb-6 select-none">
-            <div className="flex gap-6 w-max marquee-left">
-              {[
-                { name: 'Rafi Ahmed', role: 'Administration Lead', initials: 'RA', color: 'from-emerald-500 to-green-600', line1: 'Leading the panel taught me empathy', line2: 'and decisive thinking under real pressure.' },
-                { name: 'Nusrat Jahan', role: 'Event Management', initials: 'NJ', color: 'from-teal-500 to-emerald-600', line1: 'Organizing national robotics competitions', line2: 'sharpened skills no classroom could teach.' },
-                { name: 'Tanvir Hossain', role: 'R&D Member', initials: 'TH', color: 'from-green-500 to-teal-600', line1: 'The R&D team let me experiment freely.', line2: 'I built my first autonomous bot here.' },
-                { name: 'Sumaya Khatun', role: 'Graphics Design', initials: 'SK', color: 'from-lime-500 to-green-600', line1: 'My portfolio doubled in quality here.', line2: 'Designing for thousands was career-defining.' },
-                { name: 'Arif Billah', role: 'Public Relations', initials: 'AB', color: 'from-emerald-600 to-cyan-600', line1: 'PR work sharpened my communication skills.', line2: 'Connections I made here I still rely on.' },
-                // duplicates for seamless loop
-                { name: 'Rafi Ahmed', role: 'Administration Lead', initials: 'RA', color: 'from-emerald-500 to-green-600', line1: 'Leading the panel taught me empathy', line2: 'and decisive thinking under real pressure.' },
-                { name: 'Nusrat Jahan', role: 'Event Management', initials: 'NJ', color: 'from-teal-500 to-emerald-600', line1: 'Organizing national robotics competitions', line2: 'sharpened skills no classroom could teach.' },
-                { name: 'Tanvir Hossain', role: 'R&D Member', initials: 'TH', color: 'from-green-500 to-teal-600', line1: 'The R&D team let me experiment freely.', line2: 'I built my first autonomous bot here.' },
-                { name: 'Sumaya Khatun', role: 'Graphics Design', initials: 'SK', color: 'from-lime-500 to-green-600', line1: 'My portfolio doubled in quality here.', line2: 'Designing for thousands was career-defining.' },
-                { name: 'Arif Billah', role: 'Public Relations', initials: 'AB', color: 'from-emerald-600 to-cyan-600', line1: 'PR work sharpened my communication skills.', line2: 'Connections I made here I still rely on.' },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="w-80 flex-shrink-0 bg-gray-800/60 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-6 hover:border-[#2ECC71]/70 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-lg shadow-[0_0_20px_0_rgba(46,204,113,0.4)] flex-shrink-0`}>
-                      {item.initials}
-                    </div>
-                    <div>
-                      <p className="text-white font-semibold">{item.name}</p>
-                      <p className="text-[#2ECC71] text-xs">{item.role}</p>
-                    </div>
-                    <div className="ml-auto flex gap-0.5">
-                      {[...Array(5)].map((_, s) => (
-                        <svg key={s} className="w-4 h-4 text-[#2ECC71]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.164c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.967c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.286-3.967a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.164a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">“{item.line1}</p>
-                  <p className="text-gray-400 text-sm leading-relaxed mt-1">{item.line2}”</p>
+          {reviews.length === 0 ? (
+            /* Empty / loading state */
+            <div className="review-grid-wrap">
+              <div className="review-lane">
+                <div className="review-track">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="review-card rounded-2xl bg-gray-800/40 border border-[#2ECC71]/10 animate-pulse" />
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="review-grid-wrap">
+              {upperRowReviews.length > 0 && (
+                <div className="review-lane">
+                  <div className="review-track review-track-upper">
+                    {[...upperRowReviews, ...upperRowReviews].map((item, i) => {
+                      const cardKey = `upper-${item.id}-${i}`;
+                      const isExpanded = expandedCards.has(cardKey);
+                      return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
+                    })}
+                  </div>
+                </div>
+              )}
 
-          {/* Row 2 — scrolls right */}
-          <div className="marquee-track overflow-hidden select-none">
-            <div className="flex gap-6 w-max marquee-right">
-              {[
-                { name: 'Mehedi Hasan', role: 'Website Management', initials: 'MH', color: 'from-cyan-500 to-teal-600', line1: 'Club website work pushed me deep into', line2: 'React & SEO — I left a full-stack developer.' },
-                { name: 'Fariha Islam', role: 'Content Writing', initials: 'FI', color: 'from-green-400 to-emerald-600', line1: 'The club gave my writing a real audience.', line2: 'Inspiring engineers through words is priceless.' },
-                { name: 'Imran Khan', role: 'Video Editing', initials: 'IK', color: 'from-teal-400 to-green-500', line1: 'Producing competition documentaries was unreal.', line2: 'My reel landed me a freelance gig in year 2.' },
-                { name: 'Sadia Afrin', role: 'Administration', initials: 'SA', color: 'from-emerald-400 to-lime-600', line1: 'Club ops taught me real project planning.', line2: 'Keeping 50+ members aligned was top training.' },
-                { name: 'Karim Molla', role: 'Event Management', initials: 'KM', color: 'from-green-600 to-teal-500', line1: 'Every event here was a masterclass.', line2: 'No internship builds confidence this fast.' },
-                // duplicates
-                { name: 'Mehedi Hasan', role: 'Website Management', initials: 'MH', color: 'from-cyan-500 to-teal-600', line1: 'Club website work pushed me deep into', line2: 'React & SEO — I left a full-stack developer.' },
-                { name: 'Fariha Islam', role: 'Content Writing', initials: 'FI', color: 'from-green-400 to-emerald-600', line1: 'The club gave my writing a real audience.', line2: 'Inspiring engineers through words is priceless.' },
-                { name: 'Imran Khan', role: 'Video Editing', initials: 'IK', color: 'from-teal-400 to-green-500', line1: 'Producing competition documentaries was unreal.', line2: 'My reel landed me a freelance gig in year 2.' },
-                { name: 'Sadia Afrin', role: 'Administration', initials: 'SA', color: 'from-emerald-400 to-lime-600', line1: 'Club ops taught me real project planning.', line2: 'Keeping 50+ members aligned was top training.' },
-                { name: 'Karim Molla', role: 'Event Management', initials: 'KM', color: 'from-green-600 to-teal-500', line1: 'Every event here was a masterclass.', line2: 'No internship builds confidence this fast.' },
-              ].map((item, i) => (
-                <div
-                  key={i}
-                  className="w-80 flex-shrink-0 bg-gray-800/60 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-6 hover:border-[#2ECC71]/70 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] transition-all duration-300"
-                >
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-white font-bold text-lg shadow-[0_0_20px_0_rgba(46,204,113,0.4)] flex-shrink-0`}>
-                      {item.initials}
-                    </div>
-                    <div>
-                      <p className="text-white font-semibold">{item.name}</p>
-                      <p className="text-[#2ECC71] text-xs">{item.role}</p>
-                    </div>
-                    <div className="ml-auto flex gap-0.5">
-                      {[...Array(5)].map((_, s) => (
-                        <svg key={s} className="w-4 h-4 text-[#2ECC71]" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.164c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.967c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.286-3.967a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.164a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-                      ))}
-                    </div>
+              {lowerRowReviews.length > 0 && (
+                <div className="review-lane">
+                  <div className="review-track review-track-lower">
+                    {[...lowerRowReviews, ...lowerRowReviews].map((item, i) => {
+                      const cardKey = `lower-${item.id}-${i}`;
+                      const isExpanded = expandedCards.has(cardKey);
+                      return <ReviewCard key={cardKey} item={item} cardKey={cardKey} isExpanded={isExpanded} onToggle={toggleExpand} />;
+                    })}
                   </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">“{item.line1}</p>
-                  <p className="text-gray-400 text-sm leading-relaxed mt-1">{item.line2}”</p>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          )}
         </div>
       </section>
 
