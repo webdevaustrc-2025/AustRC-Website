@@ -163,7 +163,7 @@ export function HomePage() {
         <CollaborationsSection />
         <Link
           to="/collaborations"
-          className="mt-10 group flex items-center gap-3 px-10 py-4 bg-[#2ECC71] text-black font-black rounded-2xl hover:shadow-[0_0_30px_rgba(46,204,113,0.4)] transition-all duration-300 transform hover:-translate-y-1 uppercase tracking-widest text-sm"
+          className="mt-10 group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base"
         >
           <span>Explore All Collaborations</span>
           <ArrowRight
@@ -186,7 +186,7 @@ export function HomePage() {
         <SponsorsSection />
         <Link
           to="/sponsors"
-          className="mt-10 group flex items-center gap-3 px-10 py-4 bg-[#2ECC71] text-black font-black rounded-2xl hover:shadow-[0_0_30px_rgba(46,204,113,0.4)] transition-all duration-300 transform hover:-translate-y-1 uppercase tracking-widest text-sm"
+          className="mt-10 group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base"
         >
           <span>Meet Our Full Sponsor Network</span>
           <ArrowRight

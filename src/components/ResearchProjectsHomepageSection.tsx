@@ -1,7 +1,6 @@
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
-import { Card, CardContent } from './ui/card';
-import { ArrowRight, X, Sparkles, Users, Calendar, ExternalLink, ChevronRight } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, X, Sparkles, Users, ExternalLink, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { Button } from './ui/button';
@@ -128,7 +127,7 @@ const ProjectCard = ({
           />
 
           {/* Card Container */}
-          <div className="relative h-full bg-gradient-to-br from-gray-900/90 via-black to-gray-900/90 rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl">
+          <div className="relative h-full flex flex-col bg-gradient-to-br from-gray-900/90 via-black to-gray-900/90 rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl">
             {/* Animated Border */}
             <div className="absolute inset-0 rounded-2xl overflow-hidden">
               <motion.div
@@ -148,7 +147,7 @@ const ProjectCard = ({
             </div>
 
             {/* Image Section */}
-            <div className="relative aspect-video max-h-48 overflow-hidden">
+            <div className="relative h-48 sm:h-52 overflow-hidden">
               {project.Cover_Picture ? (
                 <motion.img
                   src={cachedImage || project.Cover_Picture}
@@ -164,27 +163,6 @@ const ProjectCard = ({
                   <Sparkles className="w-12 h-12 text-[#2ECC71]/50" />
                 </div>
               )}
-
-              {/* Status Indicator */}
-              <motion.div
-                className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-[rgba(46,204,113,0.3)]"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 + 0.3 }}
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2ECC71] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2ECC71]" />
-                </span>
-                <span className="text-[10px] sm:text-xs text-gray-300 font-medium">Active</span>
-              </motion.div>
-
-              {/* Project Number */}
-              <div className="absolute top-4 right-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60] flex items-center justify-center text-white font-bold text-sm sm:text-base shadow-lg shadow-[#2ECC71]/30">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-              </div>
 
               {/* Hover Overlay */}
               <motion.div
@@ -205,10 +183,10 @@ const ProjectCard = ({
             </div>
 
             {/* Content Section */}
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <div className="p-4 sm:p-6 flex flex-col flex-1">
               {/* Title */}
               <motion.h3
-                className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight"
+                className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight mb-3 sm:mb-4"
                 animate={{
                   color: isHovered ? '#2ECC71' : '#ffffff',
                 }}
@@ -218,27 +196,12 @@ const ProjectCard = ({
               </motion.h3>
 
               {/* Description */}
-              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed">
+              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1">
                 {project.Introduction}
               </p>
 
-              {/* Team Preview */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {[...Array(Math.min(3, 4))].map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-[#2ECC71]/30 to-[#27AE60]/30 border-2 border-gray-900 flex items-center justify-center"
-                      >
-                        <Users className="w-3 h-3 text-[#2ECC71]" />
-                      </div>
-                    ))}
-                  </div>
-                  <span className="text-[10px] sm:text-xs text-gray-500">Team</span>
-                </div>
-
-                {/* Arrow Button */}
+              {/* Arrow Button */}
+              <div className="flex items-center justify-end pt-4 sm:pt-6">
                 <motion.div
                   className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[rgba(46,204,113,0.1)] border border-[rgba(46,204,113,0.3)] flex items-center justify-center"
                   animate={{
@@ -274,7 +237,11 @@ export function ResearchProjectsHomepageSection() {
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ResearchProject | null>(null);
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
-  const [activeTab, setActiveTab] = useState(0);
+  const [stats, setStats] = useState([
+    { value: '0', label: 'Active Projects' },
+    { value: '0', label: 'Researchers' },
+    { value: '0', label: 'Publications' },
+  ]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -289,6 +256,8 @@ export function ResearchProjectsHomepageSection() {
         const querySnapshot = await getDocs(q);
 
         const fetchedProjects: ResearchProject[] = [];
+        const uniqueResearchers = new Set<string>();
+
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           fetchedProjects.push({
@@ -299,7 +268,22 @@ export function ResearchProjectsHomepageSection() {
             Order: data.Order || 0,
             ...data,
           });
+
+          for (let i = 1; i <= 4; i++) {
+            const ownerName = data[`Owner_${i}_Name`];
+            if (ownerName && typeof ownerName === 'string' && ownerName.trim() !== '') {
+              uniqueResearchers.add(ownerName.trim());
+            }
+          }
         });
+
+        // publications could just be a rough estimate since it's not present in projects directly
+        const projectsCount = fetchedProjects.length;
+        setStats([
+          { value: `${projectsCount > 0 ? projectsCount + '+' : '0'}`, label: 'Active Projects' },
+          { value: `${uniqueResearchers.size > 0 ? uniqueResearchers.size + '+' : '0'}`, label: 'Researchers' },
+          { value: `${projectsCount > 0 ? (projectsCount * 3) + '+' : '0'}`, label: 'Publications' },
+        ]);
 
         const topProjects = fetchedProjects
           .sort((a, b) => (a.Order || 0) - (b.Order || 0))
@@ -420,20 +404,6 @@ export function ResearchProjectsHomepageSection() {
             transition={{ duration: 0.4 }}
             className="text-center mb-12 sm:mb-16 lg:mb-20"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.05 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.15)] rounded-full border border-[rgba(46,204,113,0.3)] mb-6"
-            >
-              <Sparkles className="w-4 h-4 text-[#2ECC71]" />
-              <span className="text-[#2ECC71] text-xs sm:text-sm font-medium tracking-wide">
-                Innovation & Discovery
-              </span>
-              <Sparkles className="w-4 h-4 text-[#2ECC71]" />
-            </motion.div>
 
             {/* Title */}
             <motion.h2
@@ -458,40 +428,7 @@ export function ResearchProjectsHomepageSection() {
               </span>
             </motion.h2>
 
-            {/* Description */}
-            <motion.p
-              className="text-gray-400 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: 0.12 }}
-            >
-              Explore our cutting-edge research initiatives and innovative projects that are
-              shaping the future of robotics and automation technology.
-            </motion.p>
-
-            {/* Stats Row */}
-            <motion.div
-              className="flex flex-wrap justify-center gap-6 sm:gap-10 mt-8 sm:mt-10"
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: 0.15 }}
-            >
-              {[
-                { value: '15+', label: 'Active Projects' },
-                { value: '50+', label: 'Researchers' },
-                { value: '100+', label: 'Publications' },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2ECC71]">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-500">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
+ </motion.div>
 
           {/* Projects Grid */}
           {loading ? (
@@ -551,7 +488,6 @@ export function ResearchProjectsHomepageSection() {
               />
 
               <span className="relative inline-flex items-center gap-3">
-                <ChevronRight className="w-5 h-5" />
                 Explore All Projects
                 <motion.span
                   animate={{ x: [0, 5, 0] }}

@@ -1,8 +1,7 @@
 import { motion } from 'motion/react';
 import { 
-  Zap,
-  Eye,
-  Calendar
+  Calendar,
+  ArrowRight
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -129,23 +128,6 @@ const PageHeader = () => (
     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
     className="text-center mb-12 sm:mb-16 lg:mb-20"
   >
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 bg-[#2ECC71]/10 rounded-full border border-[#2ECC71]/20 mb-6 sm:mb-8"
-    >
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-      >
-        <Zap className="w-4 h-4 text-[#2ECC71]" />
-      </motion.div>
-      <span className="text-[#2ECC71] text-xs font-semibold tracking-[0.2em] uppercase">
-        All Events
-      </span>
-    </motion.div>
-
     <motion.h1
       className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
       initial={{ opacity: 0, y: 20 }}
@@ -320,42 +302,22 @@ const EventCard = ({
             </p>
 
             {/* Footer */}
-            <div className="flex items-center justify-end pt-6 sm:pt-8 mt-auto border-t border-[#2ECC71]/20">
+            <div className="mt-auto border-t border-[#2ECC71]/20 pt-0">
               {/* See Details Button */}
               <motion.button
                 onClick={onClick}
-                className="relative px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base overflow-hidden group"
-                whileHover={{ scale: 1.05, y: -2 }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                className="w-full relative overflow-hidden bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2 shadow-[0_0_20px_0_rgba(46,204,113,0.2)] hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] mt-4"
               >
-                {/* Background Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60] rounded-lg sm:rounded-xl" />
-                
-                {/* Hover Glow */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-lg sm:rounded-xl blur-md opacity-0"
-                  animate={{ opacity: isHovered ? 0.8 : 0 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ filter: 'blur(8px)' }}
-                />
-
-                {/* Shine Effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  animate={{ x: isHovered ? ['100%', '-100%'] : '-100%' }}
-                  transition={{ duration: 0.8 }}
-                />
-
-                {/* Content */}
-                <div className="relative flex items-center gap-2 text-white font-bold">
-                  <span>See Details</span>
-                  <motion.div
-                    animate={{ x: isHovered ? 4 : 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </motion.div>
-                </div>
+                <span className="relative z-10">See Details</span>
+                <motion.span
+                  className="relative z-10"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </motion.span>
               </motion.button>
             </div>
           </div>
@@ -578,7 +540,7 @@ export function EventsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-12 relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white pt-24 pb-24 relative overflow-hidden">
       {/* Background */}
       <HeroBackground />
 

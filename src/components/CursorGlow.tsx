@@ -1,10 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function CursorGlow() {
   const outerGlowRef = useRef<HTMLDivElement>(null);
   const innerGlowRef = useRef<HTMLDivElement>(null);
+  const [isTouchDevice, setIsTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    // Check via media query (most reliable — true pointer means mouse/trackpad)
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    if (!hasFinePointer) return true;
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isNarrow = window.innerWidth < 1024;
+    return hasTouch && isNarrow;
+  });
 
   useEffect(() => {
+    // If a touch event ever fires, permanently disable glow
+    const disableOnTouch = () => setIsTouchDevice(true);
+    window.addEventListener('touchstart', disableOnTouch, { once: true });
+    return () => window.removeEventListener('touchstart', disableOnTouch);
+  }, []);
+
+  useEffect(() => {
+    if (isTouchDevice) return;
     const handleMouseMove = (e: MouseEvent) => {
       if (outerGlowRef.current) {
         outerGlowRef.current.style.transform = `translate(${e.clientX - 200}px, ${e.clientY - 200}px)`;
@@ -28,7 +45,9 @@ export function CursorGlow() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.body.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, []);
+  }, [isTouchDevice]);
+
+  if (isTouchDevice) return null;
 
   return (
     <>

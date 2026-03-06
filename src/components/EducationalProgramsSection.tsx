@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Card, CardContent } from './ui/card';
-import { ArrowRight, BookOpen, Users, Clock, Star, GraduationCap } from 'lucide-react';
+import { ArrowRight, BookOpen, Users, Clock, GraduationCap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
@@ -20,6 +20,11 @@ export function EducationalProgramsSection() {
   const [loading, setLoading] = useState(true);
   const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [stats, setStats] = useState([
+    { icon: Users, value: '0', label: 'Students Enrolled' },
+    { icon: BookOpen, value: '0', label: 'Programs Available' },
+    { icon: Clock, value: '0', label: 'Hours of Content' }
+  ]);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -45,6 +50,32 @@ export function EducationalProgramsSection() {
           .slice(0, 2);
 
         setPrograms(topPrograms);
+
+        let totalStudents = 0;
+        let totalHours = 0;
+        let validStudentsCount = 0;
+        let validHoursCount = 0;
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const students = Number(data.Students_Enrolled || data.StudentsEnrolled || data.students || data.Students || data.Enrolled || 0);
+          const hours = Number(data.Hours_of_Content || data.HoursOfContent || data.hours || data.Hours || 0);
+          
+          if (students > 0) validStudentsCount++;
+          if (hours > 0) validHoursCount++;
+          
+          totalStudents += isNaN(students) ? 0 : students;
+          totalHours += isNaN(hours) ? 0 : hours;
+        });
+
+        const newStats = [
+          { icon: Users, value: validStudentsCount > 0 ? `${totalStudents}+` : `${fetchedPrograms.length * 20}+`, label: 'Students Enrolled' },
+          { icon: BookOpen, value: `${fetchedPrograms.length}+`, label: 'Programs Available' },
+          { icon: Clock, value: validHoursCount > 0 ? `${totalHours}+` : `${fetchedPrograms.length * 10}+`, label: 'Hours of Content' }
+        ];
+        
+        setStats(newStats);
+
       } catch (error) {
         console.error('Error fetching educational programs:', error);
       } finally {
@@ -82,12 +113,7 @@ export function EducationalProgramsSection() {
     }
   }, [programs]);
 
-  const stats = [
-    { icon: Users, value: '500+', label: 'Students Enrolled' },
-    { icon: BookOpen, value: '25+', label: 'Bootcamps Available' },
-    { icon: Clock, value: '100+', label: 'Hours of Content' }
-    
-  ];
+
 
   return (
     <section id="programs" className="py-24 bg-black relative overflow-hidden">
@@ -130,16 +156,6 @@ export function EducationalProgramsSection() {
           transition={{ duration: 0.4 }}
           className="text-center mb-20"
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[rgba(46,204,113,0.15)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-6 backdrop-blur-sm"
-          >
-            <GraduationCap className="w-4 h-4 text-[#2ECC71]" />
-            <span className="text-[#2ECC71] text-sm font-medium tracking-wide">Learn & Grow</span>
-          </motion.div>
 
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
@@ -163,44 +179,6 @@ export function EducationalProgramsSection() {
             </span>
           </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35, delay: 0.1 }}
-            className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed"
-          >
-            Transform your career with our comprehensive programs. Simple steps to mastery,
-            no technical background required.
-          </motion.p>
-        </motion.div>
-
-        {/* Stats Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.35, delay: 0.05 }}
-          className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto"
-        >
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: 0.05 * index }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="relative p-4 rounded-xl bg-gradient-to-br from-[rgba(46,204,113,0.1)] to-transparent border border-[rgba(46,204,113,0.2)] backdrop-blur-sm group cursor-default"
-            >
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[rgba(46,204,113,0.2)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative flex flex-col items-center text-center">
-                <stat.icon className="w-5 h-5 text-[#2ECC71] mb-2" />
-                <span className="text-2xl font-bold text-white">{stat.value}</span>
-                <span className="text-xs text-gray-400 mt-1">{stat.label}</span>
-              </div>
-            </motion.div>
-          ))}
         </motion.div>
 
         {/* Programs Grid */}
@@ -273,27 +251,7 @@ export function EducationalProgramsSection() {
                       </div>
                     )}
 
-                    {/* Program number badge */}
-                    <motion.div
-                      className="absolute top-4 left-4 z-10"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                    >
-                      <div className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-[rgba(46,204,113,0.4)] flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#2ECC71] rounded-full animate-pulse shadow-[0_0_10px_0_rgba(46,204,113,0.8)]" />
-                        <span className="text-[#2ECC71] text-xs font-semibold">Program {program.Order}</span>
-                      </div>
-                    </motion.div>
 
-                    {/* Floating elements */}
-                    <motion.div
-                      className="absolute top-4 right-4 z-10"
-                      animate={{ y: [-3, 3, -3] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <div className="w-10 h-10 bg-[rgba(46,204,113,0.2)] backdrop-blur-md rounded-full flex items-center justify-center border border-[rgba(46,204,113,0.3)]">
-                        <BookOpen className="w-5 h-5 text-[#2ECC71]" />
-                      </div>
-                    </motion.div>
                   </div>
 
                   {/* Content Section */}
@@ -306,17 +264,7 @@ export function EducationalProgramsSection() {
                         {program.Name}
                       </motion.h3>
 
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          Self-paced
-                        </span>
-                        <span className="w-1 h-1 bg-gray-600 rounded-full" />
-                        <span className="flex items-center gap-1">
-                          <Users className="w-3 h-3" />
-                          All Levels
-                        </span>
-                      </div>
+
                     </div>
 
                     <p
@@ -335,7 +283,7 @@ export function EducationalProgramsSection() {
                       onClick={() => navigate(`/activity/educational-activities/${program.id}`)}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full relative overflow-hidden bg-transparent group-hover:bg-[#2ECC71] border border-[rgba(46,204,113,0.4)] group-hover:border-[#2ECC71] text-[#2ECC71] group-hover:text-white transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] mt-4"
+                      className="w-full relative overflow-hidden bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm inline-flex items-center justify-center gap-2 shadow-[0_0_20px_0_rgba(46,204,113,0.2)] hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] mt-4"
                     >
                       <span className="relative z-10">Explore Program</span>
                       <motion.span

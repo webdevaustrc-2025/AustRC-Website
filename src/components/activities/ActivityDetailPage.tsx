@@ -140,17 +140,26 @@ export function ActivityDetailPage() {
       <div className="h-32 md:h-40 w-full" />
 
       {/* Main Container */}
-      <div className="container mx-auto px-6 max-w-5xl relative z-10 pb-20">
+      <div className="container mx-auto px-6 max-w-5xl relative z-10 pb-32">
         
-        {/* ✅ FIX 2: Back Button Container - High Z-Index & bright colors */}
+        {/* Back Button */}
         <div className="w-full flex justify-start mb-8 relative z-50">
-          <button 
+          <motion.button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 border border-[#2ECC71]/30 rounded-full text-[#2ECC71] hover:bg-[#2ECC71] hover:text-black transition-all duration-300 cursor-pointer shadow-lg backdrop-blur-md"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.05, x: -4 }}
+            whileTap={{ scale: 0.95 }}
+            className="group inline-flex items-center gap-3 px-6 py-3 bg-black/40 border border-[#2ECC71]/30 rounded-full text-[#2ECC71] hover:border-[#2ECC71] hover:shadow-[0_0_25px_rgba(46,204,113,0.3)] transition-all duration-300 cursor-pointer backdrop-blur-xl"
           >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-bold tracking-wide">Back</span>
-          </button>
+            <motion.div
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2ECC71]/10 group-hover:bg-[#2ECC71] transition-all duration-300"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#2ECC71] group-hover:text-black transition-colors duration-300" />
+            </motion.div>
+            <span className="font-semibold text-sm tracking-wide text-white/90 group-hover:text-white transition-colors duration-300">Back</span>
+          </motion.button>
         </div>
 
         {/* Content Wrapper */}
@@ -195,7 +204,7 @@ export function ActivityDetailPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="w-full max-w-4xl aspect-video rounded-3xl overflow-hidden border border-[#2ECC71]/30 bg-[#0a1810] shadow-[0_0_50px_rgba(46,204,113,0.15)] mb-12 relative group"
+            className="w-full max-w-4xl h-[400px] rounded-3xl overflow-hidden border border-[#2ECC71]/30 bg-[#0a1810] shadow-[0_0_50px_rgba(46,204,113,0.15)] mb-12 relative group"
           >
             {data.Image ? (
               <img src={data.Image} alt={data.Name} className="w-full h-full object-cover" />

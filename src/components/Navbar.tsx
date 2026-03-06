@@ -1,5 +1,5 @@
 // components/Navbar.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -23,22 +23,40 @@ export function Navbar() {
   const [isMobile, setIsMobile] = useState(false);
   const [governingPanelDropdownItems, setGoverningPanelDropdownItems] = useState<{ name: string; path: string }[]>([]);
   const [loadingSemesters, setLoadingSemesters] = useState(true);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const desktopNavRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
 
-  // Check if mobile on mount and resize
+  // Detect overlap between logo and desktop nav (handles zoom + resize)
+  const checkMobile = useCallback(() => {
+    // Always mobile on narrow viewports
+    if (window.innerWidth < 1024) {
+      setIsMobile(true);
+      return;
+    }
+    // If both refs are mounted, check for actual overlap
+    if (logoRef.current && desktopNavRef.current) {
+      const logoRect = logoRef.current.getBoundingClientRect();
+      const navRect = desktopNavRef.current.getBoundingClientRect();
+      // Switch to mobile when the logo's right edge is within 16px of the nav's left edge
+      setIsMobile(logoRect.right + 16 >= navRect.left);
+    } else {
+      setIsMobile(window.innerWidth < 1280);
+    }
+  }, []);
+
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    // Check on mount
     checkMobile();
-
-    // Check on resize
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [checkMobile]);
+
+  // Re-check after fonts/images load which may shift layout
+  useEffect(() => {
+    const timer = setTimeout(checkMobile, 300);
+    return () => clearTimeout(timer);
+  }, [checkMobile]);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -200,6 +218,7 @@ export function Navbar() {
           <AnimatePresence>
             {!scrolled && (
               <motion.div
+                ref={logoRef}
                 className="fixed left-6 top-5 z-50"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -213,7 +232,7 @@ export function Navbar() {
                     transition={{ duration: 0.2 }}
                   >
                     <div className="relative group cursor-pointer">
-                      <div className="relative w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden">
+                      <div className="relative w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
                         <img
                           src="https://ik.imagekit.io/mekt2pafz/Web%20site%20team/logo.png?updatedAt=1769056096931"
                           alt="AUSTRC Logo"
@@ -222,7 +241,7 @@ export function Navbar() {
                       </div>
                     </div>
                     <div>
-                      <span className="tracking-tight text-white block">
+                      <span className="tracking-tight text-white text-sm">
                         Aust Robotics Club
                       </span>
                     </div>
@@ -236,7 +255,8 @@ export function Navbar() {
           {/* DESKTOP NAVIGATION - Only shows when NOT mobile */}
           {/* ============================================ */}
           {!isMobile && (
-            <div className="flex items-center gap-8 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)] mx-auto">
+            <div className="flex-1 flex justify-center pl-[230px]">
+              <div ref={desktopNavRef} className="flex items-center gap-6 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)]">
               {navItems.map((item) =>
                 item.name === 'Activities' ? (
                   <div
@@ -347,6 +367,7 @@ export function Navbar() {
                 </motion.button>
               </Link>
             </div>
+            </div>
           )}
 
           {/* ============================================ */}
@@ -450,18 +471,26 @@ export function Navbar() {
                       animate="open"
                       className="border-b border-white/5"
                     >
-                      <button
-                        className="w-full flex items-center justify-between py-4 px-3 text-gray-300 hover:text-[#2ECC71] transition-colors"
-                        onClick={() => setMobileActivitiesOpen(!mobileActivitiesOpen)}
-                      >
-                        <span className="text-base font-medium">{item.name}</span>
-                        <motion.div
-                          animate={{ rotate: mobileActivitiesOpen ? 180 : 0 }}
-                          transition={{ duration: 0.3 }}
+                      <div className="flex items-center justify-between py-4 px-3">
+                        <Link
+                          to="/activities"
+                          className="flex-1 text-gray-300 hover:text-[#2ECC71] transition-colors text-base font-medium"
+                          onClick={() => setMobileMenuOpen(false)}
                         >
-                          <ChevronDown className="w-5 h-5" />
-                        </motion.div>
-                      </button>
+                          {item.name}
+                        </Link>
+                        <button
+                          className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-300 hover:text-[#2ECC71] transition-colors -mr-2"
+                          onClick={() => setMobileActivitiesOpen(!mobileActivitiesOpen)}
+                        >
+                          <motion.div
+                            animate={{ rotate: mobileActivitiesOpen ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <ChevronDown className="w-5 h-5" />
+                          </motion.div>
+                        </button>
+                      </div>
                       <AnimatePresence>
                         {mobileActivitiesOpen && (
                           <motion.div

@@ -192,15 +192,31 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
   const pdfPreviewUrl = project.pdfLink;
 
   return (
-    <main className="min-h-screen bg-black relative overflow-x-hidden">
+    <main className="min-h-screen bg-black relative overflow-x-hidden pb-24">
+      {/* Spacer to push content below navbar */}
+      <div className="h-32 md:h-40 w-full" />
+
       {/* Back Button */}
-      <button
-        onClick={handleBack}
-        className="fixed top-24 left-6 z-40 flex items-center gap-2 px-4 py-2 text-[#2ECC71] hover:text-white bg-black/50 hover:bg-black/80 rounded-lg backdrop-blur-md transition-all border border-[#2ECC71]/30 hover:border-[#2ECC71]"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="hidden sm:inline">Back</span>
-      </button>
+      <div className="container mx-auto px-6 max-w-5xl">
+        <div className="w-full flex justify-start mb-8 relative z-50">
+          <motion.button
+            onClick={handleBack}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.05, x: -4 }}
+            whileTap={{ scale: 0.95 }}
+            className="group inline-flex items-center gap-3 px-6 py-3 text-[#2ECC71] hover:border-[#2ECC71] hover:shadow-[0_0_25px_rgba(46,204,113,0.3)] transition-all duration-300 cursor-pointer backdrop-blur-xl"
+          >
+            <motion.div
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2ECC71]/10 group-hover:bg-[#2ECC71] transition-all duration-300"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#2ECC71] group-hover:text-black transition-colors duration-300" />
+            </motion.div>
+            <span className="font-semibold text-sm tracking-wide text-white/90 group-hover:text-white transition-colors duration-300">Back</span>
+          </motion.button>
+        </div>
+      </div>
 
       {/* Animated background */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
@@ -225,16 +241,16 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
         ))}
       </div>
 
-      <div className="container mx-auto px-4 pt-20 pb-24 max-w-6xl">
+      <div className="container mx-auto px-4 pb-24 max-w-6xl">
         {/* Image Carousel */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-12"
+          className="mb-12 flex justify-center"
         >
-          <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_0_rgba(46,204,113,0.3)]">
-            <div className="relative bg-black/40 aspect-video max-h-48 sm:max-h-52">
+          <div className="relative rounded-2xl overflow-hidden shadow-[0_0_60px_0_rgba(46,204,113,0.3)] w-full max-w-2xl">
+            <div className="relative bg-black/40 h-[300px]">
               {project.carouselImages[currentImageIndex] ? (
                 <img
                   src={project.carouselImages[currentImageIndex]}
@@ -525,14 +541,14 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5, delay: imgIdx * 0.1 }}
-                            className="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] transition-all"
+                            className="relative group overflow-hidden rounded-xl shadow-lg hover:shadow-[0_0_30px_0_rgba(46,204,113,0.4)] transition-all w-[256px] h-[254px] mx-auto"
                           >
                             <img
                               src={image}
                               alt={`${section.heading || 'Section'} - Image ${imgIdx + 1}`}
-                              className="w-full h-auto object-contain"
+                              className="w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                           </motion.div>
                         ))}
                       </div>
