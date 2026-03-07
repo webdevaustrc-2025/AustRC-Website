@@ -498,18 +498,6 @@ const EventModal = ({
 
               {/* Title Section */}
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8 lg:p-10">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#2ECC71] rounded-full mb-4 sm:mb-6"
-                >
-                  <Zap className="w-4 h-4 text-black" />
-                  <span className="text-black text-xs sm:text-sm font-bold tracking-wider uppercase">
-                    Featured Event
-                  </span>
-                </motion.div>
-
                 <motion.h2
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -561,14 +549,14 @@ const EventModal = ({
                     onClose();
                     navigate(`/activities/events/${slugify(event.Event_Name)}`);
                   }}
-                  className="flex-1 inline-flex items-center justify-center bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-black font-bold h-12 sm:h-13 rounded-xl text-sm sm:text-base shadow-lg shadow-[#2ECC71]/20 transition-all"
+                  className="flex-1 inline-flex items-center justify-center bg-gradient-to-r from-[#2ECC71] to-[#27AE60] hover:from-[#27AE60] hover:to-[#2ECC71] text-black font-bold py-3.5 rounded-xl text-sm sm:text-base shadow-lg shadow-[#2ECC71]/20 transition-all"
                 >
                   <span>View Full Event</span>
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 inline-flex items-center justify-center bg-white/5 border-2 border-[#2ECC71]/30 hover:bg-[#2ECC71]/10 text-white font-bold h-12 sm:h-13 rounded-xl text-sm sm:text-base transition-all"
+                  className="flex-1 inline-flex items-center justify-center bg-white/5 border-2 border-[#2ECC71]/30 hover:bg-[#2ECC71]/10 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base transition-all"
                 >
                   <span>Close</span>
                 </button>
