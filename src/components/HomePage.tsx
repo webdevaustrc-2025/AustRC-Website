@@ -91,7 +91,7 @@ function ScrollProgress() {
 
 export function HomePage() {
   return (
-    <main className="relative min-h-screen bg-black w-full overflow-x-hidden">
+    <main className="relative min-h-screen bg-black w-full overflow-clip">
       <AnimatedBackground />
       <ScrollProgress />
 

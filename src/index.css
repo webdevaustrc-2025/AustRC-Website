@@ -4341,6 +4341,7 @@ html, body {
 .select-none { user-select: none; -webkit-user-select: none; }
 .origin-right { transform-origin: right; }
 .overflow-x-hidden { overflow-x: hidden; }
+.overflow-clip { overflow: clip; }
 
 .bg-gradient-to-l {
   --tw-gradient-position: to left in oklab;

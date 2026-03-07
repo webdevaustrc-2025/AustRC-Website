@@ -20,14 +20,14 @@ const milestones = [
     period: "March 2024",
     tag: "The Beginning",
     side: "right",
-    title: "Rakib Takes the Initiative",
+    title: "Rakibul Hasan Takes the Initiative",
     description:
-      "Rakib became the pioneer of AUST Robotics Club's digital presence. He independently took the initiative to build the club's very first website from scratch — designing the main backbone architecture and creating several key pages. This was a landmark breakthrough: for the first time, the club had a digital home.",
+      "Rakibul Hasan became the pioneer of AUST Robotics Club's digital presence. He independently took the initiative to build the club's very first website from scratch — designing the main backbone architecture and creating several key pages. This was a landmark breakthrough: for the first time, the club had a digital home.",
     achievement: "First ever website for AUST Robotics Club",
     people: [
       {
-        name: "Rakib",
-        role: "Founder & Initiator",
+        name: "Rakibul Hasan",
+        role: "President, Fall'23 Founder & Initiator",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/rakib.jpg",
       },
     ],
@@ -47,7 +47,7 @@ const milestones = [
   },
   {
     id: "panel1",
-    period: "Panel 01",
+    period: "Spring 24",
     tag: "Team Founded",
     side: "right",
     title: "Birth of the Website Team",
@@ -57,12 +57,12 @@ const milestones = [
     people: [
       {
         name: "Showmik Majumder",
-        role: "Director",
+        role: "Director, Website Team, Spring'24",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/showmik.jpg",
       },
       {
         name: "Ahnaf Amer",
-        role: "Assistant Director",
+        role: "Joint Secretary, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
     ],
@@ -70,7 +70,7 @@ const milestones = [
   },
   {
     id: "arc2",
-    period: "Panel 01",
+    period: "Spring 24",
     tag: "First Event Website",
     side: "left",
     title: "ARC 2.0 — First National Event Website",
@@ -80,27 +80,27 @@ const milestones = [
     people: [
       {
         name: "Meherunnesa Hossain Ibnath",
-        role: "President (Guidance)",
+        role: "President, Spring'24",
         img: "https://placeholder.com/president-dummy.jpg",
       },
       {
         name: "Khalid Hasan Drobo",
-        role: "General Secretary (Guidance)",
+        role: "President, Fall'24",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/481122189_5220465148179168_1504737387793126728_n.jpg",
       },
       {
         name: "Showmik Majumder",
-        role: "Director",
+        role: "Director, Website Team, Spring'24",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/showmik.jpg",
       },
       {
         name: "Ahnaf Amer",
-        role: "Asst. Director (Web Dev)",
+        role: "Joint Secretary, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
       {
         name: "Khorshed Alam",
-        role: "Asst. Director (RND)",
+        role: "President, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
       },
     ],
@@ -108,7 +108,7 @@ const milestones = [
   },
   {
     id: "panel2",
-    period: "Panel 02",
+    period: "Fall 24",
     tag: "Full Stack Vision",
     side: "right",
     title: "The Leap to Full Stack",
@@ -118,22 +118,40 @@ const milestones = [
     people: [
       {
         name: "Ahnaf Amer",
-        role: "Director",
+        role: "Joint Secretary, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
       {
         name: "Saobia Tinni",
-        role: "Assistant Director",
+        role: "Director, Web and App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
     ],
     icon: "💻",
   },
   {
-    id: "robomania2",
-    period: "Panel 02",
-    tag: "Intra Event Website",
+    id: "bootcamp",
+    period: "Fall 24",
+    tag: "Bootcamp Website",
     side: "left",
+    title: "Bootcamp Website Built & Launched",
+    description:
+      "During Panel 02, the Website Team delivered yet another milestone — a fully functional Bootcamp website. Khorshed Alam single-handedly designed and developed the entire platform, providing AUST Robotics Club with a dedicated digital space for its bootcamp programs and training sessions.",
+    achievement: "Fully functional Bootcamp website successfully built and launched",
+    people: [
+      {
+        name: "Khorshed Alam",
+        role: "President, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
+      },
+    ],
+    icon: "📚",
+  },
+  {
+    id: "robomania2",
+    period: "Fall 24",
+    tag: "Intra Event Website",
+    side: "right",
     title: "Robomania 2.0 — Intra Event Website Launched",
     description:
       "During Panel 02's tenure, the Website Team expanded its portfolio beyond the main club site. Under Director Ahnaf Amer and Assistant Director Saobia Tinni, the team designed and launched a dedicated website for Robomania 2.0 — an intra-university event organized by the club. This further cemented the team's capability to deliver event-specific digital platforms.",
@@ -141,20 +159,43 @@ const milestones = [
     people: [
       {
         name: "Ahnaf Amer",
-        role: "Director",
+        role: "Joint Secretary, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
       {
         name: "Saobia Tinni",
-        role: "Assistant Director",
+        role: "Director, Web and App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
     ],
     icon: "🎯",
   },
   {
+    id: "mobileapp",
+    period: "Spring 25",
+    tag: "Mobile App",
+    side: "left",
+    title: "AUST Robotics Club Official Mobile App",
+    description:
+      "Shajedul Kabir Rafi, as Head Developer, designed and developed the AUST Robotics Club's first-ever official mobile application, with Samanta Islam contributing as Co-Developer. Built from the ground up, the app brought the club's digital presence into every member's pocket — providing seamless access to events, updates, and resources on the go.",
+    achievement: "First ever official mobile application built and launched",
+    people: [
+      {
+        name: "Shajedul Kabir Rafi",
+        role: "Assistant Director, Web & App Development Team, Spring'25 (Head Developer)",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Shajedul%20Kabir%20Rafi.jpg?updatedAt=1769118153733",
+      },
+      {
+        name: "Samanta Islam",
+        role: "Deputy Executive, Spring'25 (Co-Developer)",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Samanta%20Islam%20-%20Samanta%20Islam.jpg?updatedAt=1769118154095",
+      },
+    ],
+    icon: "📱",
+  },
+  {
     id: "panel3",
-    period: "Current Panel",
+    period: "Spring 25",
     tag: "Mission Accomplished",
     side: "right",
     title: "Full Stack Website & Mobile App Completed",
@@ -164,17 +205,17 @@ const milestones = [
     people: [
       {
         name: "Saobia Tinni",
-        role: "Director",
+        role: "Director, Web and App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
       {
         name: "Shajedul Kabir Rafi",
-        role: "Assistant Director",
+        role: "Assistant Director, Web & App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Shajedul%20Kabir%20Rafi.jpg?updatedAt=1769118153733",
       },
       {
         name: "Arany Hasan",
-        role: "Assistant Director",
+        role: "Assistant Director, Web & App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Arany%20-%20Arany%20Hasan.jpeg?updatedAt=1769118153821",
       },
     ],
@@ -519,7 +560,7 @@ function Hero() {
           {[
             { v: "2024", l: "Founded" },
             { v: "4", l: "Panels" },
-            { v: "4", l: "Websites" },
+            { v: "5", l: "Websites" },
             { v: "∞", l: "Ambition" },
           ].map((s) => (
             <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
@@ -599,7 +640,7 @@ export default function JourneyPage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full overflow-x-hidden bg-gradient-to-br from-black via-gray-900 to-black">
+    <main className="relative min-h-screen w-full overflow-clip bg-gradient-to-br from-black via-gray-900 to-black">
       <ScrollProgress />
       <Hero />
 
