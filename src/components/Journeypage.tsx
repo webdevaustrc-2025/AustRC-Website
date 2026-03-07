@@ -286,5 +286,99 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
             animate={{ scale: [1, 1.65], opacity: [0.2, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: index * 0.3 + 0.6 }}
             className="absolute inset-0 rounded-full border border-[#2ECC71]/15"
+          />
+        </motion.div>
+
+        {/* Period badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.18 }}
+          className="mt-2.5 px-3 py-1.5 rounded-full bg-black border border-[#2ECC71]/22 whitespace-nowrap"
+        >
+          <span className="text-[#2ECC71] font-black text-xs tracking-widest" style={{ fontFamily: "'Sora',sans-serif" }}>
+            {item.period}
+          </span>
+        </motion.div>
+      </div>
+
+      {/* Spacer */}
+      <div className={`w-[calc(50%-68px)] ${isLeft ? "mr-auto" : "ml-auto"}`} />
+    </div>
+  );
+}
+
+// â”€â”€ MOBILE CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]; index: number; isLast: boolean }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
+  return (
+    <div ref={ref} className="relative flex">
+      {/* spine */}
+      <div className="flex flex-col items-center mr-4 flex-shrink-0" style={{ width: "36px" }}>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={isInView ? { scale: 1 } : {}}
+          transition={{ type: "spring", stiffness: 200, delay: 0.05 }}
+          className="relative w-9 h-9 rounded-full border border-[#2ECC71]/28 bg-black flex items-center justify-center flex-shrink-0 mt-1"
+        >
+          <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60] shadow-[0_0_12px_3px_rgba(46,204,113,0.4)]" />
+          <motion.div
+            animate={{ scale: [1, 1.8], opacity: [0.35, 0] }}
+            transition={{ duration: 2, repeat: Infinity, delay: index * 0.35 }}
+            className="absolute inset-0 rounded-full border border-[#2ECC71]/30"
+          />
+        </motion.div>
+        {!isLast && (
+          <div className="flex-1 w-px bg-gradient-to-b from-[#2ECC71]/28 to-[#2ECC71]/04 mt-1" />
+        )}
+      </div>
+
+      {/* content */}
+      <motion.div
+        initial={{ opacity: 0, x: 22 }}
+        animate={isInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        className="flex-1 pb-10"
+      >
+        <div className="flex items-center gap-2 mb-2.5">
+          <span className="text-[10px] font-black tracking-[0.22em] uppercase text-[#2ECC71]" style={{ fontFamily: "'Sora',sans-serif" }}>
+            {item.period}
+          </span>
+          <span className="text-white/18">Â·</span>
+          <span className="text-white/35 text-[10px] uppercase tracking-wider" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+            {item.tag}
+          </span>
+        </div>
+
+        <div className="rounded-xl overflow-hidden border border-white/[0.07] bg-white/[0.025]">
+          <div className="h-[2px] bg-gradient-to-r from-[#2ECC71] to-transparent" />
+          <div className="p-4">
+            <div className="flex items-center gap-2 mb-2.5">
+              <span className="text-lg">{item.icon}</span>
+              <h3 className="text-white font-bold text-[15px] leading-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+                {item.title}
+              </h3>
+            </div>
+            <p className="text-white/45 text-xs leading-relaxed mb-4" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+              {item.description}
+            </p>
+            <div className="flex items-start gap-1.5 p-2.5 rounded-lg bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-4">
+              <span className="text-[#2ECC71] text-xs mt-0.5 flex-shrink-0">âœ¦</span>
+              <p className="text-[#2ECC71]/75 text-[11px] leading-relaxed" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+                {item.achievement}
+              </p>
+            </div>
+            {item.people.length > 0 && (
+              <div className="flex flex-wrap gap-4">
+                {item.people.map((p: (typeof milestones)[number]["people"][number], pi: number) => (
+                  <Avatar key={p.name} person={p} delay={0.1 + pi * 0.1} isInView={isInView} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
 
 export default function JourneyPage() { return <div />; }
