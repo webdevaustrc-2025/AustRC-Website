@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Facebook, Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone, Code2 } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone, Code2, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 
