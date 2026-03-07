@@ -25,10 +25,11 @@ import { EventWebsitePage } from './components/activities/EventWebsitePage';
 import { EventDetailPage } from './components/activities/EventDetailPage';
 import { AchievementDetailPage } from './components/activities/AchievementDetailPage';
 
-// ✅ THIS IMPORT IS VITAL
+// âœ… THIS IMPORT IS VITAL
 import { ActivityDetailPage } from './components/activities/ActivityDetailPage';
 import { CollaborationsPage } from './components/CollaborationsPage';
 import { SponsorsPage } from './components/SponsorsPage';
+import JourneyPage from './components/Journeypage';
 
 
 // Scroll to top on every route change
@@ -76,7 +77,7 @@ function AppContent() {
         <Route path="/activities/educational-activities" element={<EducationalActivitiesPage />} />
         <Route path="/activities/event-website" element={<EventWebsitePage />} />
         <Route path="/notices" element={<NoticesPage />} />
-        {/* ✅ THE DYNAMIC ROUTE FOR DETAIL PAGES */}
+        {/* âœ… THE DYNAMIC ROUTE FOR DETAIL PAGES */}
         <Route
           path="/activity/:category/:id"
           element={<ActivityDetailPage />}
@@ -104,6 +105,7 @@ function AppContent() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/get-app" element={<AppDownloadPage />} />
         <Route path="/find-austrc-id" element={<FindAustrcIdPage />} />
+        <Route path="/website-journey" element={<JourneyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </div>
