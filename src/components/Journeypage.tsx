@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useInView, useSpring } from "motion/react";
+import { Link } from "react-router-dom";
 
 // ── FONT LOADER ───────────────────────────────────────────────────────────────
 function useFonts() {
@@ -68,10 +69,48 @@ const milestones = [
     icon: "👥",
   },
   {
+    id: "arc2",
+    period: "Panel 01",
+    tag: "First Event Website",
+    side: "left",
+    title: "ARC 2.0 — First National Event Website",
+    description:
+      "After forming the Website Team, the club took its next bold step — building the very first national event website for ARC 2.0. Under the overall guidance of President Meherunnesa Hossain Ibnath and General Secretary Khalid Hasan Drobo, the website team delivered the event's digital presence. Showmik Majumder (Director), Ahnaf Amer (Assistant Director, Web Development), and Khorshed Alam (Assistant Director, RND) worked together to design, develop, and publish the ARC 2.0 website.",
+    achievement: "First ever national event website built and published — ARC 2.0",
+    people: [
+      {
+        name: "Meherunnesa Hossain Ibnath",
+        role: "President (Guidance)",
+        img: "https://placeholder.com/president-dummy.jpg",
+      },
+      {
+        name: "Khalid Hasan Drobo",
+        role: "General Secretary (Guidance)",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/481122189_5220465148179168_1504737387793126728_n.jpg",
+      },
+      {
+        name: "Showmik Majumder",
+        role: "Director",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/showmik.jpg",
+      },
+      {
+        name: "Ahnaf Amer",
+        role: "Asst. Director (Web Dev)",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
+      },
+      {
+        name: "Khorshed Alam",
+        role: "Asst. Director (RND)",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
+      },
+    ],
+    icon: "🌐",
+  },
+  {
     id: "panel2",
     period: "Panel 02",
     tag: "Full Stack Vision",
-    side: "left",
+    side: "right",
     title: "The Leap to Full Stack",
     description:
       "Ahnaf Amer stepped up as Director with Saobia Tinni joining as Assistant Director. This panel marked a visionary turning point — the team dared to dream beyond Google Sites. For the first time, the club decided to build a fully-fledged Full Stack website and a dedicated mobile application. Development began in earnest on both fronts.",
@@ -89,6 +128,29 @@ const milestones = [
       },
     ],
     icon: "💻",
+  },
+  {
+    id: "robomania2",
+    period: "Panel 02",
+    tag: "Intra Event Website",
+    side: "left",
+    title: "Robomania 2.0 — Intra Event Website Launched",
+    description:
+      "During Panel 02's tenure, the Website Team expanded its portfolio beyond the main club site. Under Director Ahnaf Amer and Assistant Director Saobia Tinni, the team designed and launched a dedicated website for Robomania 2.0 — an intra-university event organized by the club. This further cemented the team's capability to deliver event-specific digital platforms.",
+    achievement: "Robomania 2.0 intra event website designed and launched",
+    people: [
+      {
+        name: "Ahnaf Amer",
+        role: "Director",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
+      },
+      {
+        name: "Saobia Tinni",
+        role: "Assistant Director",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
+      },
+    ],
+    icon: "🎯",
   },
   {
     id: "panel3",
@@ -120,14 +182,7 @@ const milestones = [
   },
 ];
 
-// ── ANIMATED BACKGROUND ───────────────────────────────────────────────────────
-function AnimatedBackground() {
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-    </div>
-  );
-}
+
 
 // ── SCROLL PROGRESS ───────────────────────────────────────────────────────────
 function ScrollProgress() {
@@ -464,7 +519,7 @@ function Hero() {
           {[
             { v: "2024", l: "Founded" },
             { v: "4", l: "Panels" },
-            { v: "2", l: "Platforms" },
+            { v: "4", l: "Websites" },
             { v: "∞", l: "Ambition" },
           ].map((s) => (
             <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
@@ -512,20 +567,21 @@ function Closing() {
         The best chapter is the next one.
       </h2>
       <p className="text-white/32 text-sm max-w-sm mx-auto mb-10" style={{ fontFamily: "'DM Sans',sans-serif" }}>
-        Built with passion by a team that believed in something bigger than a website.
+        See our developers who are dedicatedly building the Full Stack Website.
       </p>
-      <motion.a
-        href="#"
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.97 }}
-        className="inline-flex items-center gap-3 px-9 py-3.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_40px_rgba(46,204,113,0.3)] hover:shadow-[0_0_60px_rgba(46,204,113,0.5)] transition-shadow duration-300 text-sm tracking-wide"
-        style={{ fontFamily: "'Sora',sans-serif" }}
-      >
-        <span>Explore Our Work</span>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </motion.a>
+      <Link to="/developers">
+        <motion.button
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+          className="inline-flex items-center gap-3 px-9 py-3.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_40px_rgba(46,204,113,0.3)] hover:shadow-[0_0_60px_rgba(46,204,113,0.5)] transition-shadow duration-300 text-sm tracking-wide"
+          style={{ fontFamily: "'Sora',sans-serif" }}
+        >
+          <span>Meet Our Contributors</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </motion.button>
+      </Link>
     </motion.div>
   );
 }
@@ -543,8 +599,7 @@ export default function JourneyPage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen bg-black w-full overflow-x-hidden">
-      <AnimatedBackground />
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-gradient-to-br from-black via-gray-900 to-black">
       <ScrollProgress />
       <Hero />
 

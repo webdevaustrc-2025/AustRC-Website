@@ -196,6 +196,32 @@ export function HomePage() {
         </Link>
       </motion.div>
 
+      {/* --- WEBSITE & APP JOURNEY SECTION --- */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="flex flex-col items-center pb-20 text-center px-4"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+          Behind the Screens
+        </h2>
+        <p className="text-gray-400 text-sm md:text-base max-w-xl mb-8">
+          Discover how a small team turned a bold idea into a full-stack website and mobile app — one panel at a time.
+        </p>
+        <Link
+          to="/website-journey"
+          className="group inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(39,174,96,0.1)] hover:from-[#2ECC71] hover:to-[#27AE60] border border-[rgba(46,204,113,0.4)] hover:border-[#2ECC71] text-[#2ECC71] hover:text-white font-bold rounded-full shadow-[0_0_20px_rgba(46,204,113,0.15)] hover:shadow-[0_0_50px_rgba(46,204,113,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base"
+        >
+          <span>Our Website and App Development Journey</span>
+          <ArrowRight
+            size={20}
+            className="group-hover:translate-x-1 transition-transform"
+          />
+        </Link>
+      </motion.div>
+
       <div className="hidden lg:block fixed bottom-10 right-10 w-32 h-32 bg-[#2ECC71]/20 rounded-full blur-3xl pointer-events-none z-0" />
     </main>
   );

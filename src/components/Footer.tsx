@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Facebook, Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone, Code2, Globe } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
 
@@ -171,16 +171,7 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                     Meet our Developers
                   </motion.button>
                 </Link>
-                <Link to="/website-journey">
-                  <motion.button
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(39,174,96,0.1)] hover:from-[#2ECC71] hover:to-[#27AE60] border border-[rgba(46,204,113,0.4)] hover:border-[#2ECC71] text-[#2ECC71] hover:text-black px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-[0_0_20px_rgba(46,204,113,0.4)]"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Globe className="w-4 h-4" />
-                    Our Website Journey
-                  </motion.button>
-                </Link>
+
               </div>
             </div>
           </motion.div>
