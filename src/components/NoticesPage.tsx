@@ -293,7 +293,7 @@ const FullNoticeCard = ({
             </motion.h3>
 
             {/* Description */}
-            <p className="text-gray-400 text-sm leading-relaxed line-clamp-4 mb-5 flex-1">
+            <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-5 flex-1">
               {notice.Short_Description}
             </p>
 

@@ -95,7 +95,7 @@ const NoticeCard = ({
         />
 
         {/* Card Container */}
-        <div className="relative bg-gradient-to-br from-gray-900/90 via-black/95 to-gray-900/90 rounded-xl border border-[rgba(46,204,113,0.2)] p-4 sm:p-5 backdrop-blur-sm overflow-hidden">
+        <div className="relative bg-gradient-to-br from-gray-900/90 via-black/95 to-gray-900/90 rounded-xl border border-[rgba(46,204,113,0.2)] p-4 sm:p-5 backdrop-blur-sm overflow-hidden min-h-[148px] sm:min-h-[160px] flex flex-col justify-between">
           {/* Animated Border Effect */}
           <div className="absolute inset-0 rounded-xl overflow-hidden">
             <motion.div
@@ -162,7 +162,7 @@ const NoticeCard = ({
                 })()}
               </div>
 
-              <p className="text-gray-400 text-xs sm:text-sm line-clamp-2 mb-3 leading-relaxed">
+              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 mb-3 leading-relaxed">
                 {notice.Short_Description}
               </p>
 

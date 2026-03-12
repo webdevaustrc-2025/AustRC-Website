@@ -52,8 +52,7 @@ const milestones = [
     side: "right",
     title: "Birth of the Website Team",
     description:
-      "In <strong>Spring ’24</strong>, for the first time in the history of the <strong>AUST Robotics Club</strong>, the official journey of the Web Development Team began. With the support of the then <strong>President Meherunnesa Hossain Ibnath</strong> and <strong>General Secretary Khalid Hasan Drobo</strong>, the formation of the team was successfully initiated.<br><strong>Showmik Majumder</strong> was appointed as the inaugural Director, and <strong>Ahnaf Amer</strong> joined as Assistant Director. Together, they refined and improved the <strong>Google Sites</strong> website, transforming it into a stronger digital identity and official online presence of the club.",
-    achievement: "Official Website Team established — Google Site elevated to club identity",
+"In <strong>Spring '24</strong>, for the first time in the history of the <strong>AUST Robotics Club</strong>, the official journey of the Web Development Team began. With the <strong>support and guidance of President Meherunnesa Hossain Ibnath and General Secretary Khalid Hasan Drobo</strong>, the formation of the team was successfully initiated. <strong>Showmik Majumder</strong> was appointed as the inaugural Director, and <strong>Ahnaf Amer</strong> joined as Assistant Director. Together, with the contribution of <strong>Khorshed Alam</strong> (President, Spring '25), they refined and improved the <strong>Google Sites</strong> website — transforming it into a stronger digital identity and official online presence of the club.",    achievement: "Official Website Team established — Google Site elevated to club identity",
     people: [
       {
         name: "Meherunnesa Hossain Ibnath",
@@ -74,6 +73,11 @@ const milestones = [
         name: "Ahnaf Amer",
         role: "Joint Secretary, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
+      },
+      {
+        name: "Khorshed Alam",
+        role: "President, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
       },
     ],
     icon: "👥",
@@ -113,7 +117,7 @@ const milestones = [
     side: "left",
     title: "Bootcamp Website Built & Launched",
     description:
-      "During Panel 02, the Website Team delivered yet another milestone — a fully functional Bootcamp website.<br>Khorshed Alam single-handedly designed and developed the entire platform, providing AUST Robotics Club with a dedicated digital space for its bootcamp programs and training sessions.",
+      "During Panel 02, under the guidence of President Khalid Hasan Drobo, the Website Team delivered yet another milestone — a fully functional Bootcamp website.<br>Khorshed Alam single-handedly designed and developed the entire platform, providing AUST Robotics Club with a dedicated digital space for its bootcamp programs and training sessions.",
     achievement: "Fully functional Bootcamp website successfully built and launched",
     people: [
       {
@@ -177,7 +181,7 @@ const milestones = [
     side: "left",
     title: "AUST Robotics Club Official Mobile App",
     description:
-      "Shajedul Kabir Rafi, as Head Developer, designed and developed the AUST Robotics Club's first-ever official mobile application, with Samanta Islam contributing as Co-Developer. Built from the ground up, the app brought the club's digital presence into every member's pocket — providing seamless access to events, updates, and resources on the go.",
+      "Under the supervision of the <strong>Fall ’24 Panel Director, Ahnaf Amer</strong>, <strong>Shajedul Kabir Rafi</strong>, as Head Developer, designed and developed the <strong>AUST Robotics Club’s first-ever official mobile application</strong>, with <strong>Samanta Islam</strong> contributing as Co-Developer.<br>Built from the ground up, the app brings the club’s digital presence into every member’s pocket — providing seamless access to events, updates, announcements, and resources on the go.",
     achievement: "First ever official mobile application built and launched",
     people: [
       {
@@ -200,8 +204,8 @@ const milestones = [
     side: "right",
     title: "Full Stack Website & Mobile App Completed",
     description:
-      "Under the leadership of <strong>Director Saobia Islam Tinni</strong>, with <strong>Assistant Directors Shajedul Kabir Rafi and Arany Hasan</strong>, the team has successfully completed the official <strong>Full Stack Website and Mobile Application</strong> for the club.<br>Every single member of the website team was <strong>incredibly active, skilled, and dedicated</strong> throughout the entire process — proving themselves and delivering with both <strong>precision and passion</strong>. Their excitement and enthusiasm for this project was visible every step of the way. It was their <strong>collective dedication</strong> that made it possible to complete a <strong>full-scale, production-ready Full Stack Website and Mobile Application in a remarkably short time.</strong><br><strong>Director Saobia Islam Tinni's outstanding leadership</strong> kept every team member <strong>motivated, aligned, and excited</strong> to give their absolute best and that made all the difference.<br>A heartfelt thanks to <strong>Fall '24 Director Ahnaf Amer</strong> for his <strong>vision and guidance</strong> that laid the foundation for this historic milestone — the club's <strong>first-ever live deployment</strong> of a full stack platform.<br>To every panel member of <strong>Spring '25</strong> thank you for your hard work, talent and dedication. </strong> The club's digital journey has reached a new pinnacle, and it's all because of them. This is not just a milestone; it's a legacy that will inspire future generations of the AUST Robotics Club.",
-    achievement: "Full Stack Website ✦ Mobile App — both completed",
+"Under the leadership of <strong>Director Saobia Islam Tinni</strong>, with <strong>Assistant Directors Shajedul Kabir Rafi and Arany Hasan</strong>, the team has successfully completed the official <strong>Full Stack Website and Mobile Application</strong> for the club. Every member was <strong>incredibly active, skilled, and dedicated</strong> delivering with <strong>precision and passion</strong>, and it was their <strong>collective dedication</strong> that made it possible to complete a <strong>full-scale, production ready platform in a remarkably short time.</strong> <strong>Director Saobia Islam Tinni's outstanding leadership</strong> kept every team member <strong>motivated, aligned, and excited</strong> to give their absolute best. A heartfelt thanks to <strong>Fall '24 Director Ahnaf Amer</strong> for his <strong>vision and guidance</strong> that laid the foundation for the club's <strong>first-ever live deployment</strong> of a full stack platform. To every panel member of <strong>Spring '25</strong> — thank you. This is not just a milestone; it's a <strong>legacy</strong> that will inspire future generations of the AUST Robotics Club.",   
+ achievement: "Full Stack Website ✦ Mobile App — both completed",
     people: [
       {
         name: "Saobia Islam Tinni",
@@ -658,3 +662,5 @@ export default function JourneyPage() {
     </main>
   );
 }
+
+
