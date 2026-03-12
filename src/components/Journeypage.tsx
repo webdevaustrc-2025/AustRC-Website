@@ -52,9 +52,19 @@ const milestones = [
     side: "right",
     title: "Birth of the Website Team",
     description:
-      "For the first time in AUST Robotics Club history, a dedicated Website Team was officially formed. Showmik Majumder was appointed as the inaugural Director and Ahnaf Amer joined as Assistant Director. Together they refined and improved the Google Sites website, transforming it into a true identity and digital face of the club.",
+      "In <strong>Spring ’24</strong>, for the first time in the history of the <strong>AUST Robotics Club</strong>, the official journey of the Web Development Team began. With the support of the then <strong>President Meherunnesa Hossain Ibnath</strong> and <strong>General Secretary Khalid Hasan Drobo</strong>, the formation of the team was successfully initiated.<br><strong>Showmik Majumder</strong> was appointed as the inaugural Director, and <strong>Ahnaf Amer</strong> joined as Assistant Director. Together, they refined and improved the <strong>Google Sites</strong> website, transforming it into a stronger digital identity and official online presence of the club.",
     achievement: "Official Website Team established — Google Site elevated to club identity",
     people: [
+      {
+        name: "Meherunnesa Hossain Ibnath",
+        role: "President, Spring'24",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/383d5018-80b5-4c7e-bb0e-e3d016e791c5.jpg",
+      },
+      {
+        name: "Khalid Hasan Drobo",
+        role: "President, Fall'24",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/481122189_5220465148179168_1504737387793126728_n.jpg",
+      },
       {
         name: "Showmik Majumder",
         role: "Director, Website Team, Spring'24",
@@ -75,19 +85,9 @@ const milestones = [
     side: "left",
     title: "ARC 2.0 — First National Event Website",
     description:
-      "After forming the Website Team, the club took its next bold step — building the very first national event website for ARC 2.0. Under the overall guidance of President Meherunnesa Hossain Ibnath and General Secretary Khalid Hasan Drobo, the website team delivered the event's digital presence. Showmik Majumder (Director), Ahnaf Amer (Assistant Director, Web Development), and Khorshed Alam (Assistant Director, RND) worked together to design, develop, and publish the ARC 2.0 website.",
+      "After forming the Website Team, the club took its next bold step by building the very first <strong>national event website</strong> for <strong>ARC 2.0</strong>.<br><strong>Showmik Majumder (Director)</strong>, <strong>Ahnaf Amer (Assistant Director, Web Development)</strong>, and <strong>Khorshed Alam (Assistant Director, R&D)</strong> worked together to design, develop, and publish the ARC 2.0 website, which was built using <strong>WordPress</strong>.<br>This initiative marked an important milestone for the club, demonstrating its capability to manage large-scale event platforms and strengthening its digital presence.",
     achievement: "First ever national event website built and published — ARC 2.0",
     people: [
-      {
-        name: "Meherunnesa Hossain Ibnath",
-        role: "President, Spring'24",
-        img: "https://placeholder.com/president-dummy.jpg",
-      },
-      {
-        name: "Khalid Hasan Drobo",
-        role: "President, Fall'24",
-        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/481122189_5220465148179168_1504737387793126728_n.jpg",
-      },
       {
         name: "Showmik Majumder",
         role: "Director, Website Team, Spring'24",
@@ -107,13 +107,31 @@ const milestones = [
     icon: "🌐",
   },
   {
+    id: "bootcamp",
+    period: "Fall 24",
+    tag: "Bootcamp Website",
+    side: "left",
+    title: "Bootcamp Website Built & Launched",
+    description:
+      "During Panel 02, the Website Team delivered yet another milestone — a fully functional Bootcamp website.<br>Khorshed Alam single-handedly designed and developed the entire platform, providing AUST Robotics Club with a dedicated digital space for its bootcamp programs and training sessions.",
+    achievement: "Fully functional Bootcamp website successfully built and launched",
+    people: [
+      {
+        name: "Khorshed Alam",
+        role: "President, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
+      },
+    ],
+    icon: "📚",
+  },
+  {
     id: "panel2",
     period: "Fall 24",
     tag: "Full Stack Vision",
     side: "right",
     title: "The Leap to Full Stack",
     description:
-      "Ahnaf Amer stepped up as Director with Saobia Tinni joining as Assistant Director. This panel marked a visionary turning point — the team dared to dream beyond Google Sites. For the first time, the club decided to build a fully-fledged Full Stack website and a dedicated mobile application. Development began in earnest on both fronts.",
+      "<strong>Ahnaf Amer</strong> stepped up as Director, with <strong>Saobia Islam Tinni</strong> joining as Assistant Director.<br>This panel marked a visionary turning point for the club — the team dared to dream beyond Google Sites and aimed for something far more ambitious.<br>For the first time in the club’s history, the decision was made to build a fully-fledged <strong>Full Stack website</strong> along with a <strong>dedicated mobile application</strong>.<br>Development began in earnest on both fronts, marking the start of a new era in the club’s digital journey.<br>During <strong>Amer’s panel</strong>, upgrades to both the <strong>WordPress</strong> and <strong>Google Sites</strong> websites were also completed, further strengthening the club’s online presence.<br>With the dedication and collaborative effort of all panel members, the team successfully demonstrated their commitment to innovation and development.",
     achievement: "Full Stack website & Mobile App development begins",
     people: [
       {
@@ -130,31 +148,13 @@ const milestones = [
     icon: "💻",
   },
   {
-    id: "bootcamp",
-    period: "Fall 24",
-    tag: "Bootcamp Website",
-    side: "left",
-    title: "Bootcamp Website Built & Launched",
-    description:
-      "During Panel 02, the Website Team delivered yet another milestone — a fully functional Bootcamp website. Khorshed Alam single-handedly designed and developed the entire platform, providing AUST Robotics Club with a dedicated digital space for its bootcamp programs and training sessions.",
-    achievement: "Fully functional Bootcamp website successfully built and launched",
-    people: [
-      {
-        name: "Khorshed Alam",
-        role: "President, Spring'25",
-        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/khorshed.jpg",
-      },
-    ],
-    icon: "📚",
-  },
-  {
     id: "robomania2",
     period: "Fall 24",
     tag: "Intra Event Website",
     side: "right",
     title: "Robomania 2.0 — Intra Event Website Launched",
     description:
-      "During Panel 02's tenure, the Website Team expanded its portfolio beyond the main club site. Under Director Ahnaf Amer and Assistant Director Saobia Tinni, the team designed and launched a dedicated website for Robomania 2.0 — an intra-university event organized by the club. This further cemented the team's capability to deliver event-specific digital platforms.",
+      "During the tenure of the <strong>Fall '24 panel</strong>, the Website Team expanded its portfolio beyond the main club website. Under the leadership of <strong>Director Ahnaf Amer</strong> and <strong>Assistant Director Saobia Islam Tinni</strong>, the team designed and launched a dedicated website for <strong>Robomania 2.0</strong> — an intra-university event organized by the club.<br>This achievement further demonstrated the team's capability to develop event-specific digital platforms and support the club's growing digital ecosystem.",
     achievement: "Robomania 2.0 intra event website designed and launched",
     people: [
       {
@@ -163,7 +163,7 @@ const milestones = [
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Ahnaf%20Amer.jpg?updatedAt=1769118153474",
       },
       {
-        name: "Saobia Tinni",
+        name: "Saobia Islam Tinni",
         role: "Director, Web and App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
@@ -200,11 +200,11 @@ const milestones = [
     side: "right",
     title: "Full Stack Website & Mobile App Completed",
     description:
-      "Saobia Tinni ascended to Director with Shajedul Kabir Rafi and Arany Hasan as Assistant Directors. This panel delivered what was once only a vision — Shajedul Kabir Rafi single-handedly built the complete mobile application, and the full-stack website was brought to completion. The club now has a world-class digital ecosystem.",
+      "Under the leadership of <strong>Director Saobia Islam Tinni</strong>, with <strong>Assistant Directors Shajedul Kabir Rafi and Arany Hasan</strong>, the team has successfully completed the official <strong>Full Stack Website and Mobile Application</strong> for the club.<br>Every single member of the website team was <strong>incredibly active, skilled, and dedicated</strong> throughout the entire process — proving themselves and delivering with both <strong>precision and passion</strong>. Their excitement and enthusiasm for this project was visible every step of the way. It was their <strong>collective dedication</strong> that made it possible to complete a <strong>full-scale, production-ready Full Stack Website and Mobile Application in a remarkably short time.</strong><br><strong>Director Saobia Islam Tinni's outstanding leadership</strong> kept every team member <strong>motivated, aligned, and excited</strong> to give their absolute best and that made all the difference.<br>A heartfelt thanks to <strong>Fall '24 Director Ahnaf Amer</strong> for his <strong>vision and guidance</strong> that laid the foundation for this historic milestone — the club's <strong>first-ever live deployment</strong> of a full stack platform.<br>To every panel member of <strong>Spring '25</strong> thank you for your hard work, talent and dedication. </strong> The club's digital journey has reached a new pinnacle, and it's all because of them. This is not just a milestone; it's a legacy that will inspire future generations of the AUST Robotics Club.",
     achievement: "Full Stack Website ✦ Mobile App — both completed",
     people: [
       {
-        name: "Saobia Tinni",
+        name: "Saobia Islam Tinni",
         role: "Director, Web and App Development Team, Spring'25",
         img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
       },
@@ -333,9 +333,7 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
                 {item.title}
               </h3>
 
-              <p className="text-white/48 text-sm leading-relaxed mb-5" style={{ fontFamily: "'DM Sans',sans-serif" }}>
-                {item.description}
-              </p>
+              <p className="text-white/48 text-sm leading-relaxed mb-5 [&_strong]:text-white [&_strong]:font-bold" style={{ fontFamily: "'DM Sans',sans-serif" }} dangerouslySetInnerHTML={{ __html: item.description }} />
 
               {/* achievement */}
               <div className="flex items-start gap-2 p-3 rounded-xl bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-5">
@@ -457,9 +455,7 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
                 {item.title}
               </h3>
             </div>
-            <p className="text-white/45 text-xs leading-relaxed mb-4" style={{ fontFamily: "'DM Sans',sans-serif" }}>
-              {item.description}
-            </p>
+            <p className="text-white/45 text-xs leading-relaxed mb-4 [&_strong]:text-white [&_strong]:font-bold" style={{ fontFamily: "'DM Sans',sans-serif" }} dangerouslySetInnerHTML={{ __html: item.description }} />
             <div className="flex items-start gap-1.5 p-2.5 rounded-lg bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-4">
               <span className="text-[#2ECC71] text-xs mt-0.5 flex-shrink-0">✦</span>
               <p className="text-[#2ECC71]/75 text-[11px] leading-relaxed" style={{ fontFamily: "'DM Sans',sans-serif" }}>
