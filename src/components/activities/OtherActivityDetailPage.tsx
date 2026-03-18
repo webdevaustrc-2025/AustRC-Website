@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { slugify } from '@/utils/slugify';
 import { db } from '@/config/firebase';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Sparkles, X, ZoomIn } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Sparkles, XIcon, ZoomIn } from 'lucide-react';
 
 interface Section {
   title: string;
@@ -161,82 +162,85 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
         )}
       </div>
 
-      {/* Zoom Modal */}
-      <AnimatePresence>
-        {zoomed && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
-            onClick={() => setZoomed(false)}
-          >
-            {/* Close */}
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoomed(false); }}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 border border-[#2ECC71]/40 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300 z-[100000]"
+      {createPortal(
+        <AnimatePresence>
+          {zoomed && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
+              style={{ zIndex: 99999 }}
+              onClick={() => setZoomed(false)}
             >
-              <X className="w-5 h-5" />
-            </button>
+              {/* Close */}
+              <button
+                onClick={(e) => { e.stopPropagation(); setZoomed(false); }}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 border border-[#2ECC71]/40 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+              >
+                <XIcon className="w-5 h-5" />
+              </button>
 
-            {/* Counter */}
-            {images.length > 1 && (
-              <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-[#2ECC71]/20 text-[#2ECC71] text-xs font-medium">
-                {current + 1} / {images.length}
-              </div>
-            )}
+              {/* Counter */}
+              {images.length > 1 && (
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-[#2ECC71]/20 text-[#2ECC71] text-xs font-medium">
+                  {current + 1} / {images.length}
+                </div>
+              )}
 
-            {/* Image */}
-            <motion.img
-              key={current}
-              src={images[current]}
-              alt={`${title} ${current + 1}`}
-              className="max-w-full max-h-[90vh] object-contain rounded-xl select-none"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-            />
+              {/* Image */}
+              <motion.img
+                key={current}
+                src={images[current]}
+                alt={`${title} ${current + 1}`}
+                className="max-w-full max-h-[90vh] object-contain rounded-xl select-none"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={(e) => e.stopPropagation()}
+              />
 
-            {/* Nav arrows in modal */}
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={prev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={next}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </>
-            )}
-
-            {/* Dots in modal */}
-            {images.length > 1 && (
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-                {images.map((_, idx) => (
+              {/* Nav arrows */}
+              {images.length > 1 && (
+                <>
                   <button
-                    key={idx}
-                    onClick={(e) => { e.stopPropagation(); setCurrent(idx); }}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === current
-                        ? 'w-6 bg-[#2ECC71] shadow-[0_0_10px_#2ECC71]'
-                        : 'w-2 bg-gray-500/50 hover:bg-gray-400'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    onClick={(e) => { e.stopPropagation(); prev(); }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); next(); }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+
+              {/* Dots */}
+              {images.length > 1 && (
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+                  {images.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => { e.stopPropagation(); setCurrent(idx); }}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        idx === current
+                          ? 'w-6 bg-[#2ECC71] shadow-[0_0_10px_#2ECC71]'
+                          : 'w-2 bg-gray-500/50 hover:bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
