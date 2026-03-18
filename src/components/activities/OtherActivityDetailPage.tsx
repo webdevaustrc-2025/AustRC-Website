@@ -170,21 +170,25 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
+              className="fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 overflow-hidden"
               style={{ zIndex: 99999 }}
               onClick={() => setZoomed(false)}
             >
               {/* Close */}
               <button
-                onClick={(e) => { e.stopPropagation(); setZoomed(false); }}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/60 border border-[#2ECC71]/40 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomed(false);
+                }}
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/60 border border-[#2ECC71]/40 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300 pointer-events-auto"
               >
                 <XIcon className="w-5 h-5" />
               </button>
 
               {/* Counter */}
               {images.length > 1 && (
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 border border-[#2ECC71]/20 text-[#2ECC71] text-xs font-medium">
+                <div className="absolute top-4 left-4 z-10 px-3 py-1 rounded-full bg-black/60 border border-[#2ECC71]/20 text-[#2ECC71] text-xs font-medium pointer-events-none">
                   {current + 1} / {images.length}
                 </div>
               )}
@@ -194,7 +198,8 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
                 key={current}
                 src={images[current]}
                 alt={`${title} ${current + 1}`}
-                className="max-w-full max-h-[90vh] object-contain rounded-xl select-none"
+                className="block max-w-[80vw] max-h-[75vh] w-auto h-auto object-contain rounded-xl select-none pointer-events-auto"
+                style={{ flexShrink: 0 }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
@@ -206,14 +211,22 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
               {images.length > 1 && (
                 <>
                   <button
-                    onClick={(e) => { e.stopPropagation(); prev(); }}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prev();
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300 pointer-events-auto"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={(e) => { e.stopPropagation(); next(); }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      next();
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-black/60 border border-[#2ECC71]/30 text-[#2ECC71] flex items-center justify-center hover:bg-[#2ECC71] hover:text-black transition-all duration-300 pointer-events-auto"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -222,11 +235,15 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
 
               {/* Dots */}
               {images.length > 1 && (
-                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2">
                   {images.map((_, idx) => (
                     <button
                       key={idx}
-                      onClick={(e) => { e.stopPropagation(); setCurrent(idx); }}
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCurrent(idx);
+                      }}
                       className={`h-1.5 rounded-full transition-all duration-300 ${
                         idx === current
                           ? 'w-6 bg-[#2ECC71] shadow-[0_0_10px_#2ECC71]'
