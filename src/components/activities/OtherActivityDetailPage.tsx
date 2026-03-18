@@ -198,8 +198,16 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
                 key={current}
                 src={images[current]}
                 alt={`${title} ${current + 1}`}
-                className="block max-w-[80vw] max-h-[75vh] w-auto h-auto object-contain rounded-xl select-none pointer-events-auto"
-                style={{ flexShrink: 0 }}
+                className="rounded-xl select-none pointer-events-auto"
+                style={{
+                  maxWidth: '80vw',
+                  maxHeight: '75vh',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                  flexShrink: 0,
+                }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
