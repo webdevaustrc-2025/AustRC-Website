@@ -7,6 +7,78 @@ import { useTokens } from "@/tokens/useTokens";
    All animations: CSS stroke-dashoffset only — compositor thread.
    ───────────────────────────────────────────────────────────────────────────── */
 
+/* Mobile/tablet — corner PCB traces in all 4 corners */
+function MobileCircuit({ g }: { g: string }) {
+  return (
+    <div className="hs-mobile-circuit absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <svg className="w-full h-full" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice" fill="none">
+        <defs>
+          <filter id="pcb-glow-m" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="2.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        {/* ── TOP-LEFT ── */}
+        <g stroke={g} strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.18">
+          <path d="M0,60 H40 V30 H90 V60 H130 V30" />
+          <path d="M0,100 H30 V130 H70 V100 H110 V130 H150" />
+          <path d="M30,130 V160 H0" />
+          <path d="M70,130 V170 H110 V150 H150" />
+        </g>
+        <g fill={g} opacity="0.25">
+          {[[40,30],[90,30],[40,60],[90,60],[130,30],[30,100],[70,100],[110,100],[30,130],[70,130],[110,150]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
+        </g>
+        <path d="M0,60 H40 V30 H90 V60 H130 V30 M150,100 H110 V130 H70 V100 H30 V130 H0"
+          stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
+          filter="url(#pcb-glow-m)" className="hs-pulse-m-a" />
+
+        {/* ── TOP-RIGHT ── */}
+        <g stroke={g} strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.18">
+          <path d="M400,60 H360 V30 H310 V60 H270 V30" />
+          <path d="M400,100 H370 V130 H330 V100 H290 V130 H250" />
+          <path d="M370,130 V160 H400" />
+          <path d="M330,130 V170 H290 V150 H250" />
+        </g>
+        <g fill={g} opacity="0.25">
+          {[[360,30],[310,30],[360,60],[310,60],[270,30],[370,100],[330,100],[290,100],[370,130],[330,130],[290,150]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
+        </g>
+        <path d="M400,60 H360 V30 H310 V60 H270 V30 M250,100 H290 V130 H330 V100 H370 V130 H400"
+          stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
+          filter="url(#pcb-glow-m)" className="hs-pulse-m-b" />
+
+        {/* ── BOTTOM-LEFT ── */}
+        <g stroke={g} strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.18">
+          <path d="M0,600 H40 V630 H90 V600 H130 V630" />
+          <path d="M0,560 H30 V530 H70 V560 H110 V530 H150" />
+          <path d="M30,530 V510 H0" />
+          <path d="M70,530 V500 H110 V520 H150" />
+        </g>
+        <g fill={g} opacity="0.25">
+          {[[40,630],[90,630],[40,600],[90,600],[130,630],[30,560],[70,560],[110,560],[30,530],[70,530],[110,520]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
+        </g>
+        <path d="M0,600 H40 V630 H90 V600 H130 V630 M150,560 H110 V530 H70 V560 H30 V530 H0"
+          stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
+          filter="url(#pcb-glow-m)" className="hs-pulse-m-a" />
+
+        {/* ── BOTTOM-RIGHT ── */}
+        <g stroke={g} strokeWidth="1" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.18">
+          <path d="M400,600 H360 V630 H310 V600 H270 V630" />
+          <path d="M400,560 H370 V530 H330 V560 H290 V530 H250" />
+          <path d="M370,530 V510 H400" />
+          <path d="M330,530 V500 H290 V520 H250" />
+        </g>
+        <g fill={g} opacity="0.25">
+          {[[360,630],[310,630],[360,600],[310,600],[270,630],[370,560],[330,560],[290,560],[370,530],[330,530],[290,520]].map(([cx,cy],i)=><circle key={i} cx={cx} cy={cy} r="2.5"/>)}
+        </g>
+        <path d="M400,600 H360 V630 H310 V600 H270 V630 M250,560 H290 V530 H330 V560 H370 V530 H400"
+          stroke={g} strokeWidth="1.5" fill="none" strokeLinecap="round"
+          filter="url(#pcb-glow-m)" className="hs-pulse-m-b" />
+      </svg>
+    </div>
+  );
+}
+
 function CircuitBoard({ g }: { g: string }) {
   return (
     <div className="hs-boards absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
@@ -180,7 +252,16 @@ export function HeroSection() {
         .hs-pulse-a { animation: hpa 18s linear infinite;     }
         .hs-pulse-b { animation: hpb 18s linear infinite 6s;  }
 
-        /* Hide boards on small screens */
+        /* Mobile circuit — shown below 1024px */
+        .hs-mobile-circuit { display: block; }
+        @media (min-width: 1024px) { .hs-mobile-circuit { display: none; } }
+
+        @keyframes hpma { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -560; } }
+        @keyframes hpmb { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -560; } }
+        .hs-pulse-m-a { stroke-dasharray: 20 9999; will-change: stroke-dashoffset; animation: hpma 12s linear infinite; }
+        .hs-pulse-m-b { stroke-dasharray: 20 9999; will-change: stroke-dashoffset; animation: hpmb 12s linear infinite 6s; }
+
+        /* Hide full boards on small screens */
         .hs-boards { display: none; }
         @media (min-width: 1024px) { .hs-boards { display: block; } }
 
@@ -191,9 +272,9 @@ export function HeroSection() {
         }
         .hs-title { animation: hs-glow 4s ease-in-out infinite; }
 
-        /* Kill animations on mobile */
+        /* Kill desktop board animations on mobile */
         @media (max-width: 1023px) {
-          .hs-pulse-a, .hs-pulse-b, .hs-title { animation: none !important; }
+          .hs-pulse-a, .hs-pulse-b { animation: none !important; }
         }
       `}</style>
 
@@ -205,8 +286,10 @@ export function HeroSection() {
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(ellipse 55% 45% at 50% 50%, ${G}18 0%, transparent 70%)` }} />
 
-        {/* Circuit board */}
+        {/* Circuit board — desktop */}
         <CircuitBoard g={G} />
+        {/* Circuit corners — mobile / tablet */}
+        <MobileCircuit g={G} />
 
         {/* Main content */}
         <div className="container mx-auto px-4 py-28 sm:py-32 relative z-10">
