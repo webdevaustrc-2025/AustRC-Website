@@ -3,3 +3,5 @@ dist/
 .vite/
 .env
 node_modules
+src/config/firebase.ts
+temp.js
