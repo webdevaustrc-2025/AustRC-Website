@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Users, FileText, ChevronDown, ChevronUp } from 'lucide-react';
+import { useTokens } from '@/tokens/useTokens';
 import { Card, CardContent } from '@/components/ui/card';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -14,6 +15,7 @@ interface ProjectDetailPageProps {
 }
 
 export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetailPageProps) {
+  const t = useTokens();
   const { projectSlug } = useParams<{ projectSlug?: string }>();
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -169,7 +171,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-black flex items-center justify-center">
+      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.pageBg }}>
         <div className="text-[#2ECC71] text-2xl">Loading project...</div>
       </main>
     );
@@ -177,8 +179,8 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
 
   if (error || !project) {
     return (
-      <main className="min-h-screen bg-black flex flex-col items-center justify-center gap-6">
-        <div className="text-white text-2xl">Project not found</div>
+      <main className="min-h-screen flex flex-col items-center justify-center gap-6" style={{ backgroundColor: t.pageBg }}>
+        <div className="text-2xl" style={{ color: t.textPrimary }}>Project not found</div>
         <button
           onClick={handleBack}
           className="px-6 py-3 bg-[#2ECC71] text-white rounded-lg font-semibold hover:bg-[#27AE60] transition-all"
@@ -192,7 +194,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
   const pdfPreviewUrl = project.pdfLink;
 
   return (
-    <main className="min-h-screen bg-black relative overflow-x-hidden pb-24">
+    <main className="min-h-screen relative overflow-x-hidden pb-24" style={{ backgroundColor: t.pageBg }}>
       {/* Spacer to push content below navbar */}
       <div className="h-32 md:h-40 w-full" />
 
@@ -312,7 +314,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-6">
             <span className="text-[#2ECC71] text-sm">Research Project</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight" style={{ color: t.textPrimary }}>
             {project.title}
           </h1>
           {project.tags && project.tags.length > 0 && (
@@ -358,7 +360,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                           {member.name.charAt(0)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h4 className="text-white font-semibold mb-1 truncate">
+                          <h4 className="font-semibold mb-1 truncate" style={{ color: t.textPrimary }}>
                             {member.name}
                           </h4>
                           {member.role && (
@@ -366,7 +368,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                               {member.role}
                             </p>
                           )}
-                          <p className="text-gray-400 text-xs">
+                          <p className="text-xs" style={{ color: t.textSecondary }}>
                             {member.designation}
                           </p>
                         </div>
@@ -437,7 +439,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.6 + idx * 0.1 }}
-                        className="text-gray-300 leading-relaxed text-base md:text-lg"
+                        className="leading-relaxed text-base md:text-lg" style={{ color: t.textSecondary }}
                       >
                         {paragraph.trim()}
                       </motion.p>
@@ -483,7 +485,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                               expandedCodeSections[sectionIdx] ? '' : 'max-h-[200px] overflow-hidden'
                             }`}>
                               <pre className="bg-gradient-to-br from-gray-900 to-black border border-[#2ECC71]/30 rounded-xl p-6 overflow-x-auto shadow-lg">
-                                <code className="text-white text-sm font-mono leading-loose whitespace-pre block">
+                                <code className="text-sm font-mono leading-loose whitespace-pre block" style={{ color: t.textPrimary }}>
                                   {section.description}
                                 </code>
                               </pre>
@@ -517,7 +519,7 @@ export function ProjectDetailPage({ project: propProject, onBack }: ProjectDetai
                             {section.description.split('\n\n').map((paragraph, idx) => (
                               <p
                                 key={idx}
-                                className="text-gray-300 leading-relaxed text-base md:text-lg mb-6"
+                                className="leading-relaxed text-base md:text-lg mb-6" style={{ color: t.textSecondary }}
                               >
                                 {paragraph.trim()}
                               </p>

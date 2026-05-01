@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
+import { useTokens } from '@/tokens/useTokens';
 
 // Floating Particles Component (optimized: CSS animations, reduced count)
 const PARTICLES_DATA = Array.from({ length: 15 }, (_, i) => ({
@@ -117,6 +118,7 @@ const AnimatedCounter = ({ value, suffix = '' }: { value: string; suffix?: strin
 
 // Section Divider Component
 const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.ElementType }) => {
+  const t = useTokens();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -145,7 +147,7 @@ const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.Elem
         <div style={{ animation: 'about-spin 8s linear infinite' }}>
           <Icon className="w-5 h-5 text-[#2ECC71]" />
         </div>
-        <span className="text-white font-semibold text-lg">{title}</span>
+        <span className="font-semibold text-lg" style={{ color: t.textPrimary }}>{title}</span>
       </motion.div>
       <motion.div
         className="h-px bg-gradient-to-l from-transparent to-[#2ECC71] flex-1 max-w-[100px]"
@@ -160,6 +162,7 @@ const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.Elem
 
 // Gallery Section Component
 const GallerySection = () => {
+  const t = useTokens();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
@@ -316,7 +319,7 @@ const GallerySection = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
-                        <h3 className="text-white font-bold">{galleryItems[itemIndex].title}</h3>
+                        <h3 className="font-bold" style={{ color: t.textPrimary }}>{galleryItems[itemIndex].title}</h3>
                       </div>
                     </div>
 
@@ -384,6 +387,7 @@ const GallerySection = () => {
 
 // Our Projects Section Component (Updated with requested projects)
 const ProjectsSection = () => {
+  const t = useTokens();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [direction, setDirection] = useState(0);
@@ -457,10 +461,10 @@ const ProjectsSection = () => {
 
                 {/* Project Info - Fixed height */}
                 <div className="mt-6 text-center px-4">
-                  <h3 className="text-3xl md:text-4xl font-bold text-white mb-3 line-clamp-1">
+                  <h3 className="text-3xl md:text-4xl font-bold mb-3 line-clamp-1" style={{ color: t.textPrimary }}>
                     {projects[currentIndex].title}
                   </h3>
-                  <p className="text-gray-300 text-lg max-w-2xl mx-auto line-clamp-2">
+                  <p className="text-lg max-w-2xl mx-auto line-clamp-2" style={{ color: t.textSecondary }}>
                     {projects[currentIndex].description}
                   </p>
                 </div>
@@ -515,6 +519,7 @@ const ProjectsSection = () => {
 
 // Events & Competitions Section Component (Updated with fixed grid sizes and removed button)
 const EventsSection = () => {
+  const t = useTokens();
   const events = [
     {
       id: 1,
@@ -605,20 +610,20 @@ const EventsSection = () => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#2ECC71] transition-colors line-clamp-2 min-h-[3.5rem]">
+                <h3 className="text-xl font-bold mb-2 group-hover:text-[#2ECC71] transition-colors line-clamp-2 min-h-[3.5rem]" style={{ color: t.textPrimary }}>
                   {event.title}
                 </h3>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-2">
+                <p className="text-sm mb-4 line-clamp-2" style={{ color: t.textSecondary }}>
                   {event.description}
                 </p>
 
                 {/* Footer - Push to bottom */}
                 <div className="mt-auto space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-gray-400">
+                  <div className="flex items-center gap-2" style={{ color: t.textSecondary }}>
                     <Calendar className="w-4 h-4 text-[#2ECC71] shrink-0" />
                     <span className="truncate">{event.date}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-400">
+                  <div className="flex items-center gap-2" style={{ color: t.textSecondary }}>
                     <MapPin className="w-4 h-4 text-[#2ECC71] shrink-0" />
                     <span className="truncate">{event.location}</span>
                   </div>
@@ -643,6 +648,7 @@ const EventsSection = () => {
 
 // Dark Footer Component (Inline)
 const DarkFooter = () => {
+  const t = useTokens();
   const footerLinks = {
     quickLinks: [
       { name: 'About', href: '/about' },
@@ -663,7 +669,7 @@ const DarkFooter = () => {
   ];
 
   return (
-    <footer className="relative bg-black mt-20">
+    <footer className="relative mt-20" style={{ backgroundColor: t.pageBg }}>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
@@ -692,11 +698,11 @@ const DarkFooter = () => {
                   alt="AUSTRC Logo"
                   className="w-10 h-10 object-contain"
                 />
-                <span className="tracking-tight font-semibold text-white">
+                <span className="tracking-tight font-semibold" style={{ color: t.textPrimary }}>
                   Aust Robotics Club
                 </span>
               </div>
-              <p className="text-sm mb-4 text-gray-400">
+              <p className="text-sm mb-4" style={{ color: t.textSecondary }}>
                 Making robotics accessible through innovation and cutting-edge technology.
               </p>
               <div className="flex gap-3">
@@ -707,7 +713,7 @@ const DarkFooter = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="w-10 h-10 bg-[rgba(46,204,113,0.1)] text-gray-400 hover:bg-[#2ECC71] border border-[rgba(46,204,113,0.3)] rounded-lg flex items-center justify-center transition-all hover:shadow-[0_0_20px_0_rgba(46,204,113,0.6)] hover:text-white"
+                    className="w-10 h-10 bg-[rgba(46,204,113,0.1)] hover:bg-[#2ECC71] border border-[rgba(46,204,113,0.3)] rounded-lg flex items-center justify-center transition-all hover:shadow-[0_0_20px_0_rgba(46,204,113,0.6)] hover:text-white" style={{ color: t.textMuted }}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -724,7 +730,7 @@ const DarkFooter = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h3 className="mb-4 font-semibold tracking-tight text-white">
+              <h3 className="mb-4 font-semibold tracking-tight" style={{ color: t.textPrimary }}>
                 Quick Links
               </h3>
               <ul className="space-y-3">
@@ -732,7 +738,8 @@ const DarkFooter = () => {
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-gray-400 hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                      className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                      style={{ color: t.textSecondary }}
                     >
                       <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all duration-300" />
                       {link.name}
@@ -749,7 +756,7 @@ const DarkFooter = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h3 className="mb-4 font-semibold tracking-tight text-white">
+              <h3 className="mb-4 font-semibold tracking-tight" style={{ color: t.textPrimary }}>
                 Resources
               </h3>
               <ul className="space-y-3">
@@ -758,7 +765,8 @@ const DarkFooter = () => {
                     {link.href.startsWith('/') ? (
                       <Link
                         to={link.href}
-                        className="text-gray-400 hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        style={{ color: t.textSecondary }}
                       >
                         <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all duration-300" />
                         {link.name}
@@ -766,7 +774,8 @@ const DarkFooter = () => {
                     ) : (
                       <a
                         href={link.href}
-                        className="text-gray-400 hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        style={{ color: t.textSecondary }}
                       >
                         <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all duration-300" />
                         {link.name}
@@ -784,18 +793,19 @@ const DarkFooter = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h3 className="mb-4 font-semibold tracking-tight text-white">
+              <h3 className="mb-4 font-semibold tracking-tight" style={{ color: t.textPrimary }}>
                 Contact Us
               </h3>
               <ul className="space-y-4">
-                <li className="flex items-start gap-3 text-sm text-gray-400">
+                <li className="flex items-start gap-3 text-sm" style={{ color: t.textSecondary }}>
                   <MapPin className="w-5 h-5 text-[#2ECC71] shrink-0 mt-0.5" />
                   <span>AUST Campus, Dhaka, Bangladesh</span>
                 </li>
                 <li>
                   <a
                     href="mailto:contact@ausrc.edu"
-                    className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#2ECC71] transition-colors"
+                    className="flex items-center gap-3 text-sm hover:text-[#2ECC71] transition-colors"
+                    style={{ color: t.textSecondary }}
                   >
                     <Mail className="w-5 h-5 text-[#2ECC71] shrink-0" />
                     <span>contact@ausrc.edu</span>
@@ -804,7 +814,8 @@ const DarkFooter = () => {
                 <li>
                   <a
                     href="tel:+8801234567890"
-                    className="flex items-center gap-3 text-sm text-gray-400 hover:text-[#2ECC71] transition-colors"
+                    className="flex items-center gap-3 text-sm hover:text-[#2ECC71] transition-colors"
+                    style={{ color: t.textSecondary }}
                   >
                     <Phone className="w-5 h-5 text-[#2ECC71] shrink-0" />
                     <span>+880 123 456 7890</span>
@@ -823,7 +834,7 @@ const DarkFooter = () => {
             className="pt-8 border-t border-[rgba(46,204,113,0.2)]"
           >
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm" style={{ color: t.textSecondary }}>
                 © 2026 Aust Robotics Club. All rights reserved.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -850,6 +861,7 @@ const DarkFooter = () => {
 };
 
 export function AboutPage() {
+  const t = useTokens();
   const [typedText, setTypedText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
   const fullText = 'AUST Robotics Club';
@@ -931,7 +943,7 @@ export function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden pb-24">
+    <div className="min-h-screen relative overflow-hidden pb-24" style={{ backgroundColor: t.pageBg }}>
       {/* Performance-optimized CSS keyframes for infinite animations */}
       <style>{`
         @keyframes about-float{0%,100%{transform:translateY(0) scale(0);opacity:0}50%{transform:translateY(-100px) scale(1);opacity:.6}}
@@ -953,7 +965,7 @@ export function AboutPage() {
 
       {/* Animated Background - Fixed position so it stays while scrolling */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }} />
         <div
           className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] blur-3xl"
           style={{ animation: 'about-bg-pulse 4s ease-in-out infinite', willChange: 'opacity' }}
@@ -1016,7 +1028,8 @@ export function AboutPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-2xl md:text-3xl mb-4 text-gray-300 italic"
+                className="text-2xl md:text-3xl mb-4 italic"
+                style={{ color: t.textSecondary }}
               >
                 "Robotics for Building a Safer Future"
               </motion.p>
@@ -1025,7 +1038,8 @@ export function AboutPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-xl text-gray-400"
+                className="text-xl"
+                style={{ color: t.textSecondary }}
               >
                
               </motion.p>
@@ -1078,7 +1092,7 @@ export function AboutPage() {
                 <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#2ECC71] rounded-tl-3xl opacity-50" />
                 <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#2ECC71] rounded-br-3xl opacity-50" />
 
-                <p className="text-xl text-gray-300 leading-relaxed text-center">
+                <p className="text-xl leading-relaxed text-center" style={{ color: t.textSecondary }}>
                   AUSTRC is a leading robotics club at Ahsanullah University of Science and Technology established in <span className="text-[#2ECC71] font-semibold">Fall 2021</span>
                   An active community builds robotics projects from micro to large scale.<span className="text-[#2ECC71] font-semibold">Mars Rover</span> & <span className="text-[#2ECC71] font-semibold">autonomous quadcopters</span>.
                 </p>
@@ -1124,7 +1138,7 @@ export function AboutPage() {
                     </motion.div>
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Our Mission</h3>
                   </div>
-                  <p className="text-lg text-gray-300 leading-relaxed">
+                  <p className="text-lg leading-relaxed" style={{ color: t.textSecondary }}>
                   To advance robotics and sustainability through structured learning, workshops, and competitions.
                   </p>
                 </div>
@@ -1158,7 +1172,7 @@ export function AboutPage() {
                     </motion.div>
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Our Vision</h3>
                   </div>
-                  <p className="text-lg text-gray-300 leading-relaxed">
+                  <p className="text-lg leading-relaxed" style={{ color: t.textSecondary }}>
                     To build strong collaborations within and beyond AUST that advance technology, innovation, and social impact.
                   </p>
                 </div>
@@ -1207,10 +1221,10 @@ export function AboutPage() {
                     >
                       {objective.icon}
                     </motion.div>
-                    <h3 className="text-2xl font-semibold mb-4 text-white group-hover:text-[#2ECC71] transition-colors">
+                    <h3 className="text-2xl font-semibold mb-4 group-hover:text-[#2ECC71] transition-colors" style={{ color: t.textPrimary }}>
                       {objective.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed">
+                    <p className="leading-relaxed" style={{ color: t.textSecondary }}>
                       {objective.description}
                     </p>
                   </div>
@@ -1254,11 +1268,11 @@ export function AboutPage() {
                     </motion.div>
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Who Can Join</h3>
                   </div>
-                  <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                  <p className="text-lg leading-relaxed mb-6" style={{ color: t.textSecondary }}>
                     AUSTRC welcomes all AUST students passionate about robotics, technology, and innovation.
                   </p>
                   <div className="bg-[rgba(46,204,113,0.1)] border-l-4 border-[#2ECC71] p-6 rounded-lg">
-                    <p className="text-gray-300">
+                    <p style={{ color: t.textSecondary }}>
                       A one-time fee gives you full access to all club workshops, equipment, mentorship, and activities
                     </p>
                   </div>
@@ -1287,7 +1301,7 @@ export function AboutPage() {
                     </motion.div>
                     <h3 className="text-3xl font-bold text-[#2ECC71]">Leadership Structure</h3>
                   </div>
-                  <p className="text-lg text-gray-300 leading-relaxed mb-6">
+                  <p className="text-lg leading-relaxed mb-6" style={{ color: t.textSecondary }}>
                     The club is led by a dedicated Executive Committee ensuring smooth operations and sustained growth.
                   </p>
                   <div className="space-y-3 mb-6">
@@ -1304,7 +1318,7 @@ export function AboutPage() {
                           className="w-2 h-2 bg-[#2ECC71] rounded-full shadow-[0_0_10px_rgba(46,204,113,0.8)]"
                           style={{ animation: `about-dot 2s ${idx * 0.2}s ease-in-out infinite` }}
                         />
-                        <span className="text-gray-300 group-hover/item:text-[#2ECC71] transition-colors">{role}</span>
+                        <span className="group-hover/item:text-[#2ECC71] transition-colors" style={{ color: t.textSecondary }}>{role}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -1355,7 +1369,7 @@ export function AboutPage() {
                     <div className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] bg-clip-text text-transparent">
                       <AnimatedCounter value={stat.number} suffix={stat.suffix} />
                     </div>
-                    <div className="text-gray-400">{stat.label}</div>
+                    <div style={{ color: t.textSecondary }}>{stat.label}</div>
                   </div>
                 </motion.div>
               ))}
@@ -1388,7 +1402,7 @@ export function AboutPage() {
                   >
                     <Mail className="w-12 h-12 text-white" />
                   </motion.div>
-                  <h3 className="text-2xl font-semibold mb-4 text-white">Email Us</h3>
+                  <h3 className="text-2xl font-semibold mb-4" style={{ color: t.textPrimary }}>Email Us</h3>
                   <motion.a
                     href="mailto:austrc@aust.edu"
                     className="text-xl text-[#2ECC71] hover:text-[#27AE60] transition-colors"
@@ -1400,7 +1414,7 @@ export function AboutPage() {
 
                 {/* Social Links */}
                 <div className="border-t border-[rgba(46,204,113,0.3)] pt-12">
-                  <h3 className="text-2xl font-semibold mb-8 text-center text-white">Follow Us On Social Media</h3>
+                  <h3 className="text-2xl font-semibold mb-8 text-center" style={{ color: t.textPrimary }}>Follow Us On Social Media</h3>
                   <div className="flex justify-center gap-6">
                     {socialLinks.map((social, index) => (
                       <motion.a
@@ -1452,7 +1466,7 @@ export function AboutPage() {
 
                 {/* CTA */}
                 <div className="mt-12 text-center">
-                  <p className="text-xl text-gray-300 mb-6">
+                  <p className="text-xl mb-6" style={{ color: t.textSecondary }}>
                     Join us in building the future of robotics!
                   </p>
                   <Link

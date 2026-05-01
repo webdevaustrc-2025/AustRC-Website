@@ -6,6 +6,7 @@ import { slugify } from '@/utils/slugify';
 import { db } from '@/config/firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Sparkles, XIcon, ZoomIn } from 'lucide-react';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Section {
   title: string;
@@ -22,21 +23,22 @@ interface OtherActivityDetail {
 }
 
 function HeroBackground() {
+  const t = useTokens();
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+    <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-0" style={{ backgroundColor: t.pageBg }} />
+      <div
+        className="absolute top-0 left-0 w-full h-full opacity-30"
+        style={{ background: 'linear-gradient(to right, rgba(46,204,113,0.1), transparent, rgba(46,204,113,0.1))', filter: 'blur(40px)' }}
+      />
       <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden">
-        <motion.div
-          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        <div
+          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full gpu-orb gpu-orb-pulse"
+          style={{ filter: 'blur(100px)', '--dur': '5s' } as React.CSSProperties}
         />
-        <motion.div
-          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        <div
+          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full gpu-orb gpu-orb-pulse-reverse"
+          style={{ filter: 'blur(100px)', '--dur': '6s' } as React.CSSProperties}
         />
       </div>
       <div className="lg:hidden absolute inset-0 opacity-20 overflow-hidden">
@@ -271,6 +273,7 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
 }
 
 export function OtherActivityDetailPage() {
+  const t = useTokens();
   const { slug: id } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [data, setData] = useState<OtherActivityDetail | null>(null);
@@ -342,7 +345,7 @@ export function OtherActivityDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.pageBg }}>
         <HeroBackground />
         <div className="w-10 h-10 border-2 border-[#2ECC71] border-t-transparent rounded-full animate-spin" />
       </div>
@@ -351,7 +354,7 @@ export function OtherActivityDetailPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white pt-32">
+      <div className="min-h-screen flex flex-col items-center justify-center pt-32" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
         <HeroBackground />
         <h2 className="text-2xl font-bold mb-4 text-[#2ECC71]">Content Not Found</h2>
         <button
@@ -365,7 +368,7 @@ export function OtherActivityDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       <HeroBackground />
 
       <div className="h-32 md:h-40 w-full" />
@@ -397,7 +400,8 @@ export function OtherActivityDetailPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-4xl md:text-6xl font-bold text-center text-white mb-4 leading-tight drop-shadow-[0_0_15px_rgba(46,204,113,0.3)]"
+            className="text-4xl md:text-6xl font-bold text-center mb-4 leading-tight drop-shadow-[0_0_15px_rgba(46,204,113,0.3)]"
+            style={{ color: t.textPrimary }}
           >
             {data.Name}
           </motion.h1>
@@ -418,13 +422,14 @@ export function OtherActivityDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="w-full bg-[#0a1810]/50 border border-white/5 p-8 md:p-10 rounded-2xl backdrop-blur-sm"
+            className="w-full p-8 md:p-10 rounded-2xl backdrop-blur-sm"
+            style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="h-8 w-1 bg-[#2ECC71] rounded-full" />
-              <h3 className="text-xl font-bold text-white uppercase tracking-wider">About This Activity</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider" style={{ color: t.textPrimary }}>About This Activity</h3>
             </div>
-            <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-line font-light">
+            <p className="text-lg leading-relaxed whitespace-pre-line font-light" style={{ color: t.textSecondary }}>
               {data.Description}
             </p>
           </motion.div>
@@ -447,15 +452,15 @@ export function OtherActivityDetailPage() {
 
               {/* Section Text */}
               {(section.title || section.description) && (
-                <div className="bg-[#0a1810]/50 border border-white/5 p-8 md:p-10 rounded-2xl backdrop-blur-sm">
+                <div className="p-8 md:p-10 rounded-2xl backdrop-blur-sm" style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}>
                   {section.title && (
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-8 w-1 bg-[#2ECC71] rounded-full" />
-                      <h3 className="text-xl font-bold text-white uppercase tracking-wider">{section.title}</h3>
+                      <h3 className="text-xl font-bold uppercase tracking-wider" style={{ color: t.textPrimary }}>{section.title}</h3>
                     </div>
                   )}
                   {section.description && (
-                    <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-line font-light">
+                    <p className="text-lg leading-relaxed whitespace-pre-line font-light" style={{ color: t.textSecondary }}>
                       {section.description}
                     </p>
                   )}

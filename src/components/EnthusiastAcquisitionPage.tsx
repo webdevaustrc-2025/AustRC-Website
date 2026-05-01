@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
+import { useTokens } from '@/tokens/useTokens';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { 
@@ -24,6 +25,7 @@ interface ReviewCardProps {
 }
 
 function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
+  const t = useTokens();
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isTruncatable, setIsTruncatable] = useState(false);
   const designationWithTeam = [item.designation, item.team].filter(Boolean).join(' • ');
@@ -43,7 +45,7 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
   }, [item.experience, isExpanded]);
 
   return (
-    <div className="review-card bg-gray-900/50 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-5 flex flex-col gap-4 hover:border-[#2ECC71]/55 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.2)] transition-all duration-300">
+    <div className="review-card backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-5 flex flex-col gap-4 hover:border-[#2ECC71]/55 hover:shadow-[0_0_30px_0_rgba(46,204,113,0.2)] transition-all duration-300" style={{ backgroundColor: t.surfaceCard }}>
       {/* Reviewer info */}
       <div className="flex items-center gap-3">
         {item.photo ? (
@@ -62,7 +64,7 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-white font-semibold text-xl leading-tight truncate">{item.name}</p>
+          <p className="font-semibold text-xl leading-tight truncate" style={{ color: t.textPrimary }}>{item.name}</p>
           <p className="text-[#2ECC71] text-sm leading-tight truncate mt-0.5">{designationWithTeam}</p>
         </div>
       </div>
@@ -71,7 +73,8 @@ function ReviewCard({ item, cardKey, isExpanded, onToggle }: ReviewCardProps) {
       <div className="flex-1 flex flex-col justify-center min-h-[104px]">
         <p
           ref={textRef}
-          className={`review-text text-gray-300 text-base leading-relaxed ${isExpanded ? 'expanded' : ''}`}
+          className={`review-text text-base leading-relaxed ${isExpanded ? 'expanded' : ''}`}
+          style={{ color: t.textSecondary }}
         >
           “{item.experience}”
         </p>
@@ -99,6 +102,7 @@ interface Review {
 }
 
 export function EnthusiastAcquisitionPage() {
+  const t = useTokens();
   const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
@@ -192,7 +196,7 @@ export function EnthusiastAcquisitionPage() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#1a1a2e] to-gray-900 text-white pt-20">
+    <div className="min-h-screen pt-20" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})`, color: t.textPrimary }}>
       {/* Hero Section */}
       <section className="relative py-20 px-6 overflow-hidden">
         {/* Animated Background */}
@@ -241,7 +245,7 @@ export function EnthusiastAcquisitionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-2xl md:text-3xl mb-8 text-gray-300"
+                className="text-2xl md:text-3xl mb-8" style={{ color: t.textSecondary }}
               >
                 Sub-Executive Recruitment
               </motion.h2>
@@ -250,7 +254,7 @@ export function EnthusiastAcquisitionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
-                className="text-xl text-gray-400 mb-8 leading-relaxed"
+                className="text-xl mb-8 leading-relaxed" style={{ color: t.textSecondary }}
               >
                 
               </motion.p>
@@ -259,7 +263,7 @@ export function EnthusiastAcquisitionPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
-                className="text-lg text-gray-300 mb-10 leading-relaxed"
+                className="text-lg mb-10 leading-relaxed" style={{ color: t.textSecondary }}
               >
                 
               </motion.p>
@@ -321,7 +325,7 @@ export function EnthusiastAcquisitionPage() {
             <h2 className="text-4xl md:text-5xl mb-6 bg-gradient-to-r from-[#2ECC71] via-green-400 to-[#2ECC71] bg-clip-text text-transparent">
               Sub-Executive Team Roles
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: t.textSecondary }}>
               Choose the team that matches your passion and skills. Each role offers unique opportunities for growth and impact.
             </p>
           </motion.div>
@@ -337,16 +341,16 @@ export function EnthusiastAcquisitionPage() {
                 className="relative group"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/30 to-transparent rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                <div className="relative bg-gray-800/50 backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-6 h-full hover:border-[#2ECC71]/60 transition-all hover:shadow-[0_0_40px_0_rgba(46,204,113,0.4)] hover:-translate-y-1 duration-300">
+                <div className="relative backdrop-blur-xl border border-[#2ECC71]/30 rounded-2xl p-6 h-full hover:border-[#2ECC71]/60 transition-all hover:shadow-[0_0_40px_0_rgba(46,204,113,0.4)] hover:-translate-y-1 duration-300" style={{ backgroundColor: t.surfaceCard }}>
                   <div className="bg-gradient-to-br from-[#2ECC71]/20 to-transparent p-4 rounded-xl inline-block mb-4 border border-[#2ECC71]/40 group-hover:shadow-[0_0_30px_0_rgba(46,204,113,0.5)] transition-all">
                     <div className="text-[#2ECC71]">
                       {role.icon}
                     </div>
                   </div>
-                  <h3 className="text-xl mb-3 text-white group-hover:text-[#2ECC71] transition-colors">
+                  <h3 className="text-xl mb-3 group-hover:text-[#2ECC71] transition-colors" style={{ color: t.textPrimary }}>
                     {role.title}
                   </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed" style={{ color: t.textSecondary }}>
                     {role.description}
                   </p>
                 </div>
@@ -459,7 +463,7 @@ export function EnthusiastAcquisitionPage() {
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#2ECC71] via-green-300 to-[#2ECC71] bg-clip-text text-transparent">
               Hear From Our Panel Members
             </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: t.textSecondary }}>
               Real experiences from those who have shaped and led AUST Robotics Club
             </p>
           </motion.div>
@@ -470,7 +474,7 @@ export function EnthusiastAcquisitionPage() {
               <div className="review-lane">
                 <div className="review-track">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="review-card rounded-2xl bg-gray-800/40 border border-[#2ECC71]/10 animate-pulse" />
+                    <div key={i} className="review-card rounded-2xl border border-[#2ECC71]/10 animate-pulse" style={{ backgroundColor: t.surfaceCard }} />
                   ))}
                 </div>
               </div>
@@ -521,7 +525,10 @@ export function EnthusiastAcquisitionPage() {
             className="relative"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/40 to-[#27AE60]/40 rounded-3xl blur-3xl" />
-            <div className="relative bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-xl border-2 border-[#2ECC71]/60 rounded-3xl p-12 md:p-16 text-center shadow-[0_0_100px_0_rgba(46,204,113,0.6)]">
+            <div
+              className="relative backdrop-blur-xl border-2 border-[#2ECC71]/60 rounded-3xl p-12 md:p-16 text-center shadow-[0_0_100px_0_rgba(46,204,113,0.6)]"
+              style={{ background: `linear-gradient(to bottom right, ${t.surfaceCardHover}cc, ${t.pageBg}cc)` }}
+            >
               <motion.div
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
@@ -536,20 +543,20 @@ export function EnthusiastAcquisitionPage() {
                 Ready to Join Us?
               </h2>
 
-              <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-xl mb-10 max-w-2xl mx-auto leading-relaxed" style={{ color: t.textSecondary }}>
                 Take the first step towards an exciting journey with AUST Robotics Club. Apply now and become part of our innovative community!
               </p>
 
               <div className="space-y-6 mb-10">
-                <div className="flex items-center justify-center gap-3 text-gray-400">
+                <div className="flex items-center justify-center gap-3" style={{ color: t.textSecondary }}>
                   <CheckCircle className="w-5 h-5 text-[#2ECC71]" />
                   <span>Open to all AUST students</span>
                 </div>
-                <div className="flex items-center justify-center gap-3 text-gray-400">
+                <div className="flex items-center justify-center gap-3" style={{ color: t.textSecondary }}>
                   <CheckCircle className="w-5 h-5 text-[#2ECC71]" />
                   <span>No prior experience required</span>
                 </div>
-                <div className="flex items-center justify-center gap-3 text-gray-400">
+                <div className="flex items-center justify-center gap-3" style={{ color: t.textSecondary }}>
                   <CheckCircle className="w-5 h-5 text-[#2ECC71]" />
                   <span>Multiple team options available</span>
                 </div>
@@ -567,14 +574,15 @@ export function EnthusiastAcquisitionPage() {
                 </a>
                 <a
                   href="mailto:austrc@aust.edu"
-                  className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-gray-700/50 border border-[#2ECC71]/50 rounded-xl text-white text-lg hover:bg-gray-700/70 hover:border-[#2ECC71] hover:shadow-[0_0_40px_0_rgba(46,204,113,0.4)] transition-all group"
+                  className="inline-flex items-center justify-center gap-3 px-10 py-4 border border-[#2ECC71]/50 rounded-xl text-lg hover:border-[#2ECC71] hover:shadow-[0_0_40px_0_rgba(46,204,113,0.4)] transition-all group"
+                  style={{ backgroundColor: t.surfaceCard, color: t.textPrimary }}
                 >
                   <Mail className="w-5 h-5" />
                   Contact Us
                 </a>
               </div>
 
-              <p className="text-gray-500 mt-8 text-sm">
+              <p className="mt-8 text-sm" style={{ color: t.textMuted }}>
                 Application deadline will be announced soon. Stay tuned!
               </p>
             </div>

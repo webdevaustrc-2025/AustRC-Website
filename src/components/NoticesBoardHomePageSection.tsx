@@ -6,6 +6,7 @@ import { db } from '@/config/firebase';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Notice {
   id: string;
@@ -52,8 +53,9 @@ const NoticeCard = ({
   index: number;
   onClick: () => void;
 }) => {
+  const t = useTokens();
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const formatDateForBadge = (date: any) => {
     if (!date) return { month: '', day: '', year: '' };
     const dateObj = date.toDate ? date.toDate() : new Date(date);
@@ -95,7 +97,7 @@ const NoticeCard = ({
         />
 
         {/* Card Container */}
-        <div className="relative bg-gradient-to-br from-gray-900/90 via-black/95 to-gray-900/90 rounded-xl border border-[rgba(46,204,113,0.2)] p-4 sm:p-5 backdrop-blur-sm overflow-hidden min-h-[148px] sm:min-h-[160px] flex flex-col justify-between">
+        <div className="relative rounded-xl border border-[rgba(46,204,113,0.2)] p-4 sm:p-5 backdrop-blur-sm overflow-hidden min-h-[148px] sm:min-h-[160px] flex flex-col justify-between" style={{ backgroundColor: t.surfaceCard }}>
           {/* Animated Border Effect */}
           <div className="absolute inset-0 rounded-xl overflow-hidden">
             <motion.div
@@ -123,14 +125,14 @@ const NoticeCard = ({
                   <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-black" />
                 </div>
                 {/* Date Content */}
-                <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black px-1">
+                <div className="flex-1 flex flex-col items-center justify-center px-1" style={{ backgroundColor: t.surfaceCard }}>
                   <span className="text-[#2ECC71] text-[8px] sm:text-[9px] font-bold tracking-wider">
                     {dateInfo.month}
                   </span>
-                  <span className="text-white text-m sm:text-m font-bold leading-none">
+                  <span className="text-m sm:text-m font-bold leading-none" style={{ color: t.textPrimary }}>
                     {dateInfo.day}
                   </span>
-                  <span className="text-gray-500 text-[7px] sm:text-[8px] font-medium mt-0.5">
+                  <span className="text-[7px] sm:text-[8px] font-medium mt-0.5" style={{ color: t.textMuted }}>
                     {dateInfo.year}
                   </span>
                 </div>
@@ -141,9 +143,9 @@ const NoticeCard = ({
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2 mb-2">
                 <motion.h3
-                  className="text-base sm:text-lg font-bold text-white line-clamp-1"
+                  className="text-base sm:text-lg font-bold line-clamp-1"
                   animate={{
-                    color: isHovered ? '#2ECC71' : '#ffffff',
+                    color: isHovered ? '#2ECC71' : t.textPrimary,
                   }}
                   transition={{ duration: 0.3 }}
                 >
@@ -162,13 +164,13 @@ const NoticeCard = ({
                 })()}
               </div>
 
-              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 mb-3 leading-relaxed">
+              <p className="text-xs sm:text-sm line-clamp-3 mb-3 leading-relaxed" style={{ color: t.textSecondary }}>
                 {notice.Short_Description}
               </p>
 
               {/* Footer */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-gray-500 text-xs">
+                <div className="flex items-center gap-2 text-xs" style={{ color: t.textMuted }}>
                   <Clock className="w-3.5 h-3.5" />
                   <span>{formatDate(notice.Date)}</span>
                 </div>
@@ -200,6 +202,7 @@ const NoticeDetailModal = ({
   notice: Notice;
   onClose: () => void;
 }) => {
+  const t = useTokens();
   const formatDate = (date: any) => {
     if (!date) return '';
     const dateObj = date.toDate ? date.toDate() : new Date(date);
@@ -236,7 +239,7 @@ const NoticeDetailModal = ({
           className="relative w-full max-w-3xl my-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black rounded-2xl border border-[#2ECC71]/20 shadow-2xl overflow-hidden">
+          <div className="relative rounded-2xl border border-[#2ECC71]/20 shadow-2xl overflow-hidden" style={{ backgroundColor: t.pageBgAlt }}>
             {/* Top Accent */}
             <motion.div
               className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
@@ -278,7 +281,8 @@ const NoticeDetailModal = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-3"
+                  className="text-2xl sm:text-3xl font-bold leading-tight mb-3"
+                  style={{ color: t.textPrimary }}
                 >
                   {notice.Title}
                 </motion.h2>
@@ -287,7 +291,8 @@ const NoticeDetailModal = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
-                  className="flex items-center gap-2 text-gray-400 text-sm"
+                  className="flex items-center gap-2 text-sm"
+                  style={{ color: t.textSecondary }}
                 >
                   <Calendar className="w-4 h-4" />
                   <span>{formatDate(notice.Date)}</span>
@@ -308,7 +313,7 @@ const NoticeDetailModal = ({
                 transition={{ delay: 0.5 }}
                 className="bg-white/[0.03] rounded-xl p-5 border border-[#2ECC71]/10"
               >
-                <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-sm sm:text-base leading-relaxed" style={{ color: t.textSecondary }}>
                   {notice.Short_Description}
                 </p>
               </motion.div>
@@ -322,10 +327,10 @@ const NoticeDetailModal = ({
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <FileText className="w-5 h-5 text-[#2ECC71]" />
-                    <h3 className="text-lg font-bold text-white">Details</h3>
+                    <h3 className="text-lg font-bold" style={{ color: t.textPrimary }}>Details</h3>
                   </div>
                   <div className="bg-white/[0.03] rounded-xl p-5 border border-[#2ECC71]/10">
-                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                       {notice.Long_Description}
                     </p>
                   </div>
@@ -356,6 +361,7 @@ const NoticeDetailModal = ({
 
 // Main Component
 export function NoticesBoardHomepageSection() {
+  const t = useTokens();
   const navigate = useNavigate();
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -409,7 +415,7 @@ export function NoticesBoardHomepageSection() {
 
   return (
     <>
-      <section className="relative py-16 sm:py-20 bg-black overflow-hidden pb-32 sm:pb-48">
+      <section className="relative py-16 sm:py-20 overflow-hidden pb-32 sm:pb-48" style={{ backgroundColor: t.pageBg }}>
         {/* Background Effects */}
         <FloatingParticles />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(46,204,113,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(46,204,113,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
@@ -436,12 +442,13 @@ export function NoticesBoardHomepageSection() {
 
             <motion.h2
               className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3"
+              style={{ color: t.textPrimary }}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <span className="text-white">Notice </span>
+              <span style={{ color: t.textPrimary }}>Notice </span>
               <span className="relative">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]">
                   Board
@@ -457,7 +464,8 @@ export function NoticesBoardHomepageSection() {
             </motion.h2>
 
             <motion.p
-              className="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto"
+              className="text-sm sm:text-base max-w-2xl mx-auto"
+              style={{ color: t.textSecondary }}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -473,7 +481,8 @@ export function NoticesBoardHomepageSection() {
               {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-32 bg-gray-900/50 rounded-xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                  className="h-32 rounded-xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                  style={{ backgroundColor: t.surfaceCard }}
                 />
               ))}
             </div>
@@ -486,7 +495,7 @@ export function NoticesBoardHomepageSection() {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[rgba(46,204,113,0.1)] flex items-center justify-center">
                 <Bell className="w-8 h-8 text-[#2ECC71]" />
               </div>
-              <p className="text-gray-400 text-base">No notices available</p>
+              <p className="text-base" style={{ color: t.textSecondary }}>No notices available</p>
             </motion.div>
           ) : (
             <div className="max-w-4xl mx-auto">

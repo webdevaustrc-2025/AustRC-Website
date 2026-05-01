@@ -6,6 +6,7 @@ import { db } from '@/config/firebase';
 import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { slugify } from '@/utils/slugify';
+import { useTokens } from '@/tokens/useTokens';
 
 interface ResearchProject {
   id: string;
@@ -24,56 +25,41 @@ interface ResearchProject {
   [key: string]: string | number | undefined;
 }
 
-// Floating Particles Component
-const FloatingParticles = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-[#2ECC71] rounded-full opacity-30"
-          initial={{
-            x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-            y: Math.random() * 600,
-          }}
-          animate={{
-            y: [null, -100],
-            opacity: [0.3, 0],
-          }}
-          transition={{
-            duration: Math.random() * 5 + 5,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Animated Grid Background
-const GridBackground = () => {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(46,204,113,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(46,204,113,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(46,204,113,0.15) 0%, transparent 70%)',
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.3, 0.5, 0.3],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+// Floating Particles — CSS-only, GPU-composited (no JS animation loop)
+const PARTICLES = [
+  { left: '5%',  top: '80%', dur: '9s',  delay: '0s'   },
+  { left: '12%', top: '60%', dur: '12s', delay: '1.5s' },
+  { left: '20%', top: '90%', dur: '8s',  delay: '3s'   },
+  { left: '30%', top: '70%', dur: '11s', delay: '0.5s' },
+  { left: '40%', top: '85%', dur: '10s', delay: '2s'   },
+  { left: '50%', top: '75%', dur: '13s', delay: '4s'   },
+  { left: '60%', top: '65%', dur: '9s',  delay: '1s'   },
+  { left: '70%', top: '88%', dur: '11s', delay: '2.5s' },
+  { left: '80%', top: '72%', dur: '10s', delay: '0.8s' },
+  { left: '90%', top: '82%', dur: '8s',  delay: '3.5s' },
+];
+const FloatingParticles = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none hidden lg:block" aria-hidden="true">
+    {PARTICLES.map((p, i) => (
+      <span
+        key={i}
+        className="particle-dot"
+        style={{ left: p.left, top: p.top, '--dur': p.dur, '--delay': p.delay } as React.CSSProperties}
       />
-    </div>
-  );
-};
+    ))}
+  </div>
+);
+
+// Grid Background — static grid + CSS-animated radial (no JS loop)
+const GridBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div className="absolute inset-0 bg-[linear-gradient(rgba(46,204,113,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(46,204,113,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+    <div
+      className="absolute inset-0 gpu-orb gpu-radial-breathe"
+      style={{ background: 'radial-gradient(ellipse at center, rgba(46,204,113,0.15) 0%, transparent 70%)', '--dur': '8s' } as React.CSSProperties}
+    />
+  </div>
+);
 
 // Simple Card Wrapper Component (removed 3D tilt effect)
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
@@ -89,13 +75,12 @@ const ProjectCard = ({
   project,
   index,
   onClick,
-  cachedImage,
 }: {
   project: ResearchProject;
   index: number;
   onClick: () => void;
-  cachedImage?: string;
 }) => {
+  const t = useTokens();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -127,7 +112,7 @@ const ProjectCard = ({
           />
 
           {/* Card Container */}
-          <div className="relative h-full flex flex-col bg-gradient-to-br from-gray-900/90 via-black to-gray-900/90 rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl">
+          <div className="relative h-full flex flex-col rounded-2xl border border-[rgba(46,204,113,0.2)] overflow-hidden backdrop-blur-xl" style={{ backgroundColor: t.surfaceCard }}>
             {/* Animated Border */}
             <div className="absolute inset-0 rounded-2xl overflow-hidden">
               <motion.div
@@ -150,7 +135,7 @@ const ProjectCard = ({
             <div className="relative h-48 sm:h-52 overflow-hidden">
               {project.Cover_Picture ? (
                 <motion.img
-                  src={cachedImage || project.Cover_Picture}
+                  src={project.Cover_Picture}
                   alt={project.Title}
                   className="w-full h-full object-cover"
                   animate={{
@@ -186,9 +171,9 @@ const ProjectCard = ({
             <div className="p-4 sm:p-6 flex flex-col flex-1">
               {/* Title */}
               <motion.h3
-                className="text-lg sm:text-xl font-bold text-white line-clamp-2 leading-tight mb-3 sm:mb-4"
+                className="text-lg sm:text-xl font-bold line-clamp-2 leading-tight mb-3 sm:mb-4"
                 animate={{
-                  color: isHovered ? '#2ECC71' : '#ffffff',
+                  color: isHovered ? '#2ECC71' : t.textPrimary,
                 }}
                 transition={{ duration: 0.3 }}
               >
@@ -196,7 +181,7 @@ const ProjectCard = ({
               </motion.h3>
 
               {/* Description */}
-              <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1">
+              <p className="text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1" style={{ color: t.textSecondary }}>
                 {project.Introduction}
               </p>
 
@@ -232,11 +217,11 @@ const ProjectCard = ({
 
 // Main Component
 export function ResearchProjectsHomepageSection() {
+  const t = useTokens();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<ResearchProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ResearchProject | null>(null);
-  const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [stats, setStats] = useState([
     { value: '0', label: 'Active Projects' },
     { value: '0', label: 'Researchers' },
@@ -337,32 +322,6 @@ export function ResearchProjectsHomepageSection() {
     };
   }, [selectedProject]);
 
-  useEffect(() => {
-    const cacheImages = async () => {
-      const cached: { [key: string]: string } = {};
-      for (const project of projects) {
-        if (project.Cover_Picture) {
-          try {
-            const response = await fetch(project.Cover_Picture);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onload = () => {
-              cached[project.id] = reader.result as string;
-              if (Object.keys(cached).length === projects.length) {
-                setCachedImages(cached);
-              }
-            };
-            reader.readAsDataURL(blob);
-          } catch (error) {
-            cached[project.id] = project.Cover_Picture;
-          }
-        }
-      }
-    };
-    if (projects.length > 0) {
-      cacheImages();
-    }
-  }, [projects]);
 
   const getOwners = (project: ResearchProject) => {
     const owners = [];
@@ -385,7 +344,8 @@ export function ResearchProjectsHomepageSection() {
     <>
       <section
         id="research-projects-home"
-        className="relative py-16 sm:py-20 lg:py-28 bg-black overflow-hidden"
+        className="relative py-16 sm:py-20 lg:py-28 overflow-hidden"
+        style={{ backgroundColor: t.pageBg }}
       >
         {/* Background Effects */}
         <GridBackground />
@@ -408,12 +368,13 @@ export function ResearchProjectsHomepageSection() {
             {/* Title */}
             <motion.h2
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+              style={{ color: t.textPrimary }}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.35, delay: 0.1 }}
             >
-              <span className="text-white">Research &</span>{' '}
+              <span style={{ color: t.textPrimary }}>Research &</span>{' '}
               <span className="relative">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]">
                   Projects
@@ -436,7 +397,8 @@ export function ResearchProjectsHomepageSection() {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-80 sm:h-96 bg-gray-900/50 rounded-2xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                  className="h-80 sm:h-96 rounded-2xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                  style={{ backgroundColor: t.surfaceCard }}
                 />
               ))}
             </div>
@@ -449,7 +411,7 @@ export function ResearchProjectsHomepageSection() {
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[rgba(46,204,113,0.1)] flex items-center justify-center">
                 <Sparkles className="w-10 h-10 text-[#2ECC71]" />
               </div>
-              <p className="text-gray-400 text-lg">No research projects found</p>
+              <p className="text-lg" style={{ color: t.textSecondary }}>No research projects found</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -459,7 +421,6 @@ export function ResearchProjectsHomepageSection() {
                   project={project}
                   index={index}
                   onClick={() => setSelectedProject(project)}
-                  cachedImage={cachedImages[project.id]}
                 />
               ))}
             </div>
@@ -559,7 +520,7 @@ export function ResearchProjectsHomepageSection() {
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black rounded-2xl lg:rounded-3xl border border-[#2ECC71]/20 shadow-2xl shadow-black/50 overflow-hidden">
+                <div className="relative rounded-2xl lg:rounded-3xl border border-[#2ECC71]/20 shadow-2xl shadow-black/50 overflow-hidden" style={{ backgroundColor: t.pageBgAlt }}>
                   {/* Animated Top Accent */}
                   <motion.div
                     className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
@@ -587,13 +548,13 @@ export function ResearchProjectsHomepageSection() {
                       initial={{ scale: 1.1, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.6 }}
-                      src={cachedImages[selectedProject.id] || selectedProject.Cover_Picture}
+                      src={selectedProject.Cover_Picture}
                       alt={selectedProject.Title}
                       className="w-full h-full object-cover"
                     />
 
                     {/* Gradient Overlays */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-[#2ECC71]/10 to-transparent" />
 
                     {/* Title Section */}
@@ -614,7 +575,8 @@ export function ResearchProjectsHomepageSection() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="text-xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight mb-3"
+                        className="text-xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-3"
+                        style={{ color: t.textPrimary }}
                       >
                         {selectedProject.Title}
                       </motion.h2>
@@ -638,12 +600,12 @@ export function ResearchProjectsHomepageSection() {
                     >
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: t.textPrimary }}>
                           About This Project
                         </h3>
                       </div>
                       <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-6 sm:p-7 lg:p-8 border border-[#2ECC71]/10 backdrop-blur-sm">
-                        <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-[1.8] whitespace-pre-wrap">
+                        <p className="text-sm sm:text-base lg:text-lg leading-[1.8] whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                           {selectedProject.Introduction}
                         </p>
                       </div>
@@ -658,7 +620,7 @@ export function ResearchProjectsHomepageSection() {
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-                          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: t.textPrimary }}>
                             Project Team
                           </h3>
                         </div>
@@ -676,10 +638,10 @@ export function ResearchProjectsHomepageSection() {
                                   <Users className="w-5 h-5 sm:w-6 sm:h-6 text-[#2ECC71]" />
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <h4 className="text-white font-semibold text-sm sm:text-base truncate">
+                                  <h4 className="font-semibold text-sm sm:text-base truncate" style={{ color: t.textPrimary }}>
                                     {owner.name}
                                   </h4>
-                                  <p className="text-gray-400 text-xs sm:text-sm truncate mt-0.5">
+                                  <p className="text-xs sm:text-sm truncate mt-0.5" style={{ color: t.textSecondary }}>
                                     {owner.designation}
                                   </p>
                                 </div>
@@ -705,7 +667,8 @@ export function ResearchProjectsHomepageSection() {
                       </Button>
                       <Button
                         onClick={() => setSelectedProject(null)}
-                        className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-bold h-12 sm:h-14 rounded-xl text-sm sm:text-base transition-all"
+                        className="flex-1 font-bold h-12 sm:h-14 rounded-xl text-sm sm:text-base transition-all"
+                        style={{ backgroundColor: t.surfaceCardHover, color: t.textPrimary }}
                       >
                         <span>Close</span>
                       </Button>

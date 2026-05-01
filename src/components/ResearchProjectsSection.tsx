@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { useTokens } from '@/tokens/useTokens';
 
 interface ProjectData {
   id: string;
@@ -25,10 +26,10 @@ interface ProjectData {
 
 
 export function ResearchProjectsSection() {
+  const t = useTokens();
   const [projects, setProjects] = useState<ProjectData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
-  const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -74,32 +75,6 @@ export function ResearchProjectsSection() {
     };
   }, [selectedProject]);
 
-  useEffect(() => {
-    const cacheImages = async () => {
-      const cached: { [key: string]: string } = {};
-      for (const project of projects) {
-        if (project.Cover_Picture) {
-          try {
-            const response = await fetch(project.Cover_Picture);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onload = () => {
-              cached[project.id] = reader.result as string;
-              if (Object.keys(cached).length === projects.length) {
-                setCachedImages(cached);
-              }
-            };
-            reader.readAsDataURL(blob);
-          } catch (error) {
-            cached[project.id] = project.Cover_Picture;
-          }
-        }
-      }
-    };
-    if (projects.length > 0) {
-      cacheImages();
-    }
-  }, [projects]);
 
   const getOwners = (project: ProjectData) => {
     const owners = [];
@@ -119,7 +94,7 @@ export function ResearchProjectsSection() {
   };
   return (
     <>
-      <section id="projects" className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
+      <section id="projects" className="py-20 relative overflow-hidden" style={{ background: `linear-gradient(to bottom, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }}>
         {/* Background gradient blobs */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#2ECC71] rounded-full blur-[150px]" />
@@ -137,8 +112,8 @@ export function ResearchProjectsSection() {
             <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
               <span className="text-[#2ECC71] text-sm">Research & Innovation</span>
             </div>
-            <h2 className="mb-4 tracking-tight text-white text-5xl">Built for Performance</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <h2 className="mb-4 tracking-tight text-5xl" style={{ color: t.textPrimary }}>Built for Performance</h2>
+            <p className="max-w-2xl mx-auto" style={{ color: t.textSecondary }}>
               We push the limits with state-of-the-art research. Fast, scalable, and innovative solutions.
             </p>
           </motion.div>
@@ -146,11 +121,11 @@ export function ResearchProjectsSection() {
           <div className="grid md:grid-cols-2 gap-8">
             {loading ? (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-400">Loading projects...</p>
+                <p style={{ color: t.textSecondary }}>Loading projects...</p>
               </div>
             ) : projects.length === 0 ? (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-400">No projects found</p>
+                <p style={{ color: t.textSecondary }}>No projects found</p>
               </div>
             ) : (
               projects.map((project, index) => (
@@ -166,7 +141,7 @@ export function ResearchProjectsSection() {
                   <Card className="group overflow-hidden bg-gradient-to-br from-[rgba(46,204,113,0.05)] to-transparent border-[rgba(46,204,113,0.2)] hover:border-[rgba(46,204,113,0.5)] transition-all duration-300 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.3)] h-full backdrop-blur-sm pointer-events-none">
                     <div className="relative overflow-hidden aspect-video max-h-48">
                       <img
-                        src={cachedImages[project.id] || project.Cover_Picture}
+                        src={project.Cover_Picture}
                         alt={project.Title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
@@ -182,11 +157,11 @@ export function ResearchProjectsSection() {
                     </div>
 
                     <CardContent className="p-4 space-y-3 bg-black/40 backdrop-blur-sm">
-                      <h3 className="tracking-tight group-hover:text-[#2ECC71] transition-colors text-white">
+                      <h3 className="tracking-tight group-hover:text-[#2ECC71] transition-colors" style={{ color: t.textPrimary }}>
                         {project.Title}
                       </h3>
 
-                      <p className="text-gray-400 text-sm line-clamp-2">
+                      <p className="text-sm line-clamp-2" style={{ color: t.textSecondary }}>
                         {project.Introduction}
                       </p>
                     </CardContent>
@@ -252,7 +227,7 @@ export function ResearchProjectsSection() {
 
                   {/* Title */}
                   <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                    <h2 className="text-2xl sm:text-3xl font-bold mb-2" style={{ color: t.textPrimary }}>
                       {selectedProject.Title}
                     </h2>
                     <div className="w-12 h-1 bg-[#2ECC71] rounded-full" />
@@ -263,7 +238,7 @@ export function ResearchProjectsSection() {
                     <h3 className="text-base sm:text-lg font-semibold text-[#2ECC71] mb-3">
                       About This Project
                     </h3>
-                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                       {selectedProject.Introduction}
                     </p>
                   </div>
@@ -277,10 +252,10 @@ export function ResearchProjectsSection() {
                       <div className="space-y-3 sm:space-y-4">
                         {getOwners(selectedProject).map((owner, index) => (
                           <div key={index} className="bg-[rgba(46,204,113,0.1)] border border-[rgba(46,204,113,0.3)] rounded-lg p-3 sm:p-4">
-                            <h4 className="text-white font-semibold mb-1 text-sm sm:text-base">
+                            <h4 className="font-semibold mb-1 text-sm sm:text-base" style={{ color: t.textPrimary }}>
                               {owner.name}
                             </h4>
-                            <p className="text-gray-300 text-xs sm:text-sm">
+                            <p className="text-xs sm:text-sm" style={{ color: t.textSecondary }}>
                               {owner.designation}
                             </p>
                           </div>

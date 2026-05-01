@@ -14,7 +14,7 @@ import {
   Zap,
   Star,
   ArrowUpRight,
-  GraduationCap  
+  GraduationCap
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useEffect, useState, useRef, useCallback } from 'react';
@@ -22,6 +22,7 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { slugify } from '@/utils/slugify';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Headline {
   heading: string;
@@ -38,149 +39,122 @@ interface Event {
   headlines: Headline[];
 }
 
-// Premium Animated Background
+// Premium Animated Background — CSS-only, GPU-composited
+const EVENTS_PARTICLES = [
+  { left: '3%',  top: '85%', dur: '10s', delay: '0s'   },
+  { left: '15%', top: '70%', dur: '13s', delay: '2s'   },
+  { left: '25%', top: '90%', dur: '9s',  delay: '1s'   },
+  { left: '38%', top: '78%', dur: '11s', delay: '3s'   },
+  { left: '52%', top: '88%', dur: '8s',  delay: '0.5s' },
+  { left: '65%', top: '68%', dur: '12s', delay: '2.5s' },
+  { left: '75%', top: '82%', dur: '10s', delay: '4s'   },
+  { left: '88%', top: '75%', dur: '9s',  delay: '1.5s' },
+];
 const PremiumBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
     {/* Base Grid Pattern */}
     <div
       className="absolute inset-0 opacity-[0.03]"
       style={{
-        backgroundImage: `
-          linear-gradient(rgba(46,204,113,0.5) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(46,204,113,0.5) 1px, transparent 1px)
-        `,
+        backgroundImage: `linear-gradient(rgba(46,204,113,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(46,204,113,0.5) 1px, transparent 1px)`,
         backgroundSize: '60px 60px',
       }}
     />
-
     {/* Radial Gradient Overlay */}
     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-
-    {/* Animated Gradient Orbs */}
-    <motion.div
-      className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full"
-      style={{
-        background: 'radial-gradient(circle, rgba(46,204,113,0.08) 0%, transparent 70%)',
-      }}
-      animate={{
-        scale: [1, 1.2, 1],
-        opacity: [0.5, 0.8, 0.5],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
+    {/* CSS-animated orbs — desktop only */}
+    <div
+      className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full hidden lg:block gpu-orb gpu-orb-pulse"
+      style={{ background: 'radial-gradient(circle, rgba(46,204,113,0.08) 0%, transparent 70%)', '--dur': '8s' } as React.CSSProperties}
     />
-    <motion.div
-      className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full"
-      style={{
-        background: 'radial-gradient(circle, rgba(39,174,96,0.06) 0%, transparent 70%)',
-      }}
-      animate={{
-        scale: [1.2, 1, 1.2],
-        opacity: [0.3, 0.6, 0.3],
-      }}
-      transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
+    <div
+      className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full hidden lg:block gpu-orb gpu-orb-pulse-reverse"
+      style={{ background: 'radial-gradient(circle, rgba(39,174,96,0.06) 0%, transparent 70%)', '--dur': '10s' } as React.CSSProperties}
     />
-
-    {/* Floating Particles */}
-    {[...Array(20)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute w-1 h-1 bg-[#2ECC71]/30 rounded-full"
-        style={{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-        }}
-        animate={{
-          y: [-20, 20, -20],
-          opacity: [0.2, 0.6, 0.2],
-        }}
-        transition={{
-          duration: 3 + Math.random() * 4,
-          repeat: Infinity,
-          delay: Math.random() * 2,
-          ease: 'easeInOut',
-        }}
-      />
-    ))}
+    {/* CSS particles — desktop only */}
+    <div className="hidden lg:block">
+      {EVENTS_PARTICLES.map((p, i) => (
+        <span
+          key={i}
+          className="particle-dot"
+          style={{ left: p.left, top: p.top, '--dur': p.dur, '--delay': p.delay } as React.CSSProperties}
+        />
+      ))}
+    </div>
   </div>
 );
 
 // Section Header Component
 // Section Header Component
-const SectionHeader = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 25 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-    className="text-center mb-10 sm:mb-14 lg:mb-20"
-  >
-    {/* Title */}
-    <motion.h2
-      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight"
-      initial={{ opacity: 0, y: 15 }}
+const SectionHeader = () => {
+  const t = useTokens();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.35, delay: 0.1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="text-center mb-10 sm:mb-14 lg:mb-20"
     >
-      <span className="text-white">Events</span>
-      <br className="sm:hidden" />
-      <span className="text-white"> of </span>
-      <span className="relative">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
-          AUSTRC
-        </span>
-        <motion.svg
-          className="absolute -bottom-2 sm:-bottom-3 left-0 w-full"
-          viewBox="0 0 200 12"
-          fill="none"
-          initial={{ pathLength: 0, opacity: 0 }}
-          whileInView={{ pathLength: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <motion.path
-            d="M2 8C50 2 150 2 198 8"
-            stroke="url(#underline-gradient)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
+      {/* Title */}
+      <motion.h2
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight"
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.35, delay: 0.1 }}
+      >
+        <span style={{ color: t.textPrimary }}>Events</span>
+        <br className="sm:hidden" />
+        <span style={{ color: t.textPrimary }}> of </span>
+        <span className="relative">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
+            AUSTRC
+          </span>
+          <motion.svg
+            className="absolute -bottom-2 sm:-bottom-3 left-0 w-full"
+            viewBox="0 0 200 12"
+            fill="none"
+            initial={{ pathLength: 0, opacity: 0 }}
+            whileInView={{ pathLength: 1, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-          />
-          <defs>
-            <linearGradient id="underline-gradient" x1="0" y1="0" x2="200" y2="0">
-              <stop stopColor="#2ECC71" />
-              <stop offset="0.5" stopColor="#3DED97" />
-              <stop offset="1" stopColor="#27AE60" />
-            </linearGradient>
-          </defs>
-        </motion.svg>
-      </span>
-    </motion.h2>
-  </motion.div>
-);
+          >
+            <motion.path
+              d="M2 8C50 2 150 2 198 8"
+              stroke="url(#underline-gradient)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            />
+            <defs>
+              <linearGradient id="underline-gradient" x1="0" y1="0" x2="200" y2="0">
+                <stop stopColor="#2ECC71" />
+                <stop offset="0.5" stopColor="#3DED97" />
+                <stop offset="1" stopColor="#27AE60" />
+              </linearGradient>
+            </defs>
+          </motion.svg>
+        </span>
+      </motion.h2>
+    </motion.div>
+  );
+};
 
 // Premium Event Card
 const EventCard = ({
   event,
   index,
   onClick,
-  cachedImage,
 }: {
   event: Event;
   index: number;
   onClick: () => void;
-  cachedImage?: string;
 }) => {
+  const t = useTokens();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -249,7 +223,7 @@ const EventCard = ({
           <div className="relative h-48 sm:h-56 lg:h-60 overflow-hidden">
             {event.Cover_Picture ? (
               <motion.img
-                src={cachedImage || event.Cover_Picture}
+                src={event.Cover_Picture}
                 alt={event.Event_Name}
                 className="w-full h-full object-cover"
                 animate={{ scale: isHovered ? 1.08 : 1 }}
@@ -284,9 +258,9 @@ const EventCard = ({
           <div className="p-4 sm:p-6 flex flex-col flex-1 bg-gradient-to-t from-[#2ECC71]/5 to-transparent">
             {/* Title */}
             <motion.h3
-              className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4 min-h-[3.5rem] sm:min-h-[4rem]"
+              className="text-lg sm:text-xl lg:text-2xl font-bold line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4 min-h-[3.5rem] sm:min-h-[4rem]"
               animate={{
-                color: isHovered ? '#2ECC71' : '#ffffff',
+                color: isHovered ? '#2ECC71' : t.textPrimary,
                 textShadow: isHovered ? '0 0 20px rgba(46,204,113,0.5)' : '0 0 0px rgba(46,204,113,0)',
               }}
             >
@@ -294,7 +268,7 @@ const EventCard = ({
             </motion.h3>
 
             {/* Description */}
-            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed line-clamp-3 flex-1">
+            <p className="text-xs sm:text-sm leading-relaxed line-clamp-3 flex-1" style={{ color: t.textSecondary }}>
               {event.Introduction}
             </p>
 
@@ -325,66 +299,72 @@ const EventCard = ({
 };
 
 // Loading Skeleton
-const LoadingSkeleton = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-    {[...Array(3)].map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: i * 0.1 }}
-        className="bg-gray-900/50 rounded-2xl sm:rounded-3xl overflow-hidden border border-white/5"
-      >
-        <div className="h-48 sm:h-56 lg:h-60 bg-gradient-to-br from-gray-800/50 to-gray-900/50 animate-pulse" />
-        <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-          <div className="flex gap-2">
-            <div className="h-3 w-16 bg-gray-800/50 rounded animate-pulse" />
-            <div className="h-3 w-20 bg-gray-800/50 rounded animate-pulse" />
-          </div>
-          <div className="h-6 sm:h-7 bg-gray-800/50 rounded animate-pulse" />
-          <div className="h-4 bg-gray-800/50 rounded animate-pulse" />
-          <div className="h-4 w-3/4 bg-gray-800/50 rounded animate-pulse" />
-          <div className="flex justify-between pt-3 border-t border-white/5">
-            <div className="flex -space-x-2">
-              {[...Array(3)].map((_, j) => (
-                <div key={j} className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gray-800/50 animate-pulse" />
-              ))}
+const LoadingSkeleton = () => {
+  const t = useTokens();
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+      {[...Array(3)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: i * 0.1 }}
+          className="rounded-2xl sm:rounded-3xl overflow-hidden"
+          style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
+        >
+          <div className="h-48 sm:h-56 lg:h-60 animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+          <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+            <div className="flex gap-2">
+              <div className="h-3 w-16 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+              <div className="h-3 w-20 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
             </div>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-800/50 animate-pulse" />
+            <div className="h-6 sm:h-7 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            <div className="h-4 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            <div className="h-4 w-3/4 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            <div className="flex justify-between pt-3" style={{ borderTop: `1px solid ${t.borderSubtle}` }}>
+              <div className="flex -space-x-2">
+                {[...Array(3)].map((_, j) => (
+                  <div key={j} className="w-6 h-6 sm:w-7 sm:h-7 rounded-full animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+                ))}
+              </div>
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            </div>
           </div>
-        </div>
-      </motion.div>
-    ))}
-  </div>
-);
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 // Empty State
-const EmptyState = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="text-center py-16 sm:py-24"
-  >
-    <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-3xl bg-[#2ECC71]/10 flex items-center justify-center">
-      <Calendar className="w-10 h-10 sm:w-12 sm:h-12 text-[#2ECC71]/40" />
-    </div>
-    <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">No Events Yet</h3>
-    <p className="text-gray-400 text-sm sm:text-base max-w-md mx-auto">
-      We're preparing amazing events for you. Check back soon!
-    </p>
-  </motion.div>
-);
+const EmptyState = () => {
+  const t = useTokens();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-center py-16 sm:py-24"
+    >
+      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-6 rounded-3xl bg-[#2ECC71]/10 flex items-center justify-center">
+        <Calendar className="w-10 h-10 sm:w-12 sm:h-12 text-[#2ECC71]/40" />
+      </div>
+      <h3 className="text-xl sm:text-2xl font-bold mb-2" style={{ color: t.textPrimary }}>No Events Yet</h3>
+      <p className="text-sm sm:text-base max-w-md mx-auto" style={{ color: t.textSecondary }}>
+        We're preparing amazing events for you. Check back soon!
+      </p>
+    </motion.div>
+  );
+};
 
 // Event Modal Component with Full Details
 const EventModal = ({
   event,
-  cachedImage,
   onClose,
 }: {
   event: Event;
-  cachedImage?: string;
   onClose: () => void;
 }) => {
+  const t = useTokens();
   const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -459,7 +439,7 @@ const EventModal = ({
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black rounded-2xl lg:rounded-3xl border border-[#2ECC71]/20 shadow-2xl overflow-hidden">
+          <div className="relative rounded-2xl lg:rounded-3xl border border-[#2ECC71]/20 shadow-2xl overflow-hidden" style={{ backgroundColor: t.pageBgAlt }}>
             {/* Animated Top Border */}
             <motion.div
               className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
@@ -487,7 +467,7 @@ const EventModal = ({
                 initial={{ scale: 1.1, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.6 }}
-                src={cachedImage || event.Cover_Picture}
+                src={event.Cover_Picture}
                 alt={event.Event_Name}
                 className="w-full h-full object-cover"
               />
@@ -502,7 +482,8 @@ const EventModal = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3 sm:mb-4"
+                  className="text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-3 sm:mb-4"
+                  style={{ color: t.textPrimary }}
                 >
                   {event.Event_Name}
                 </motion.h2>
@@ -526,12 +507,12 @@ const EventModal = ({
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: t.textPrimary }}>
                     Introduction
                   </h3>
                 </div>
                 <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 border border-[#2ECC71]/10 backdrop-blur-sm">
-                  <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
+                  <p className="text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
                     {event.Introduction}
                   </p>
                 </div>
@@ -556,7 +537,8 @@ const EventModal = ({
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 inline-flex items-center justify-center bg-white/5 border-2 border-[#2ECC71]/30 hover:bg-[#2ECC71]/10 text-white font-bold py-3.5 rounded-xl text-sm sm:text-base transition-all"
+                  className="flex-1 inline-flex items-center justify-center bg-white/5 border-2 border-[#2ECC71]/30 hover:bg-[#2ECC71]/10 font-bold py-3.5 rounded-xl text-sm sm:text-base transition-all"
+                  style={{ color: t.textPrimary }}
                 >
                   <span>Close</span>
                 </button>
@@ -571,10 +553,10 @@ const EventModal = ({
 
 // Main Component
 export function EventsSection() {
+  const t = useTokens();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
   // Helper function to extract all images from event data
@@ -776,31 +758,6 @@ export function EventsSection() {
     };
   }, [selectedEvent]);
 
-  // Cache images
-  useEffect(() => {
-    const cacheImages = async () => {
-      const cached: { [key: string]: string } = {};
-      for (const event of events) {
-        if (event.Cover_Picture) {
-          try {
-            const response = await fetch(event.Cover_Picture);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onload = () => {
-              cached[event.id] = reader.result as string;
-              setCachedImages((prev) => ({ ...prev, [event.id]: reader.result as string }));
-            };
-            reader.readAsDataURL(blob);
-          } catch {
-            cached[event.id] = event.Cover_Picture;
-          }
-        }
-      }
-    };
-    if (events.length > 0) {
-      cacheImages();
-    }
-  }, [events]);
 
   const handleCloseModal = useCallback(() => {
     setSelectedEvent(null);
@@ -810,7 +767,8 @@ export function EventsSection() {
     <>
       <section
         id="events"
-        className="relative py-16 sm:py-24 lg:py-32 bg-black overflow-hidden"
+        className="relative py-16 sm:py-24 lg:py-32 overflow-hidden"
+        style={{ backgroundColor: t.pageBg }}
       >
         {/* Background */}
         <PremiumBackground />
@@ -837,7 +795,6 @@ export function EventsSection() {
                     event={event}
                     index={index}
                     onClick={() => setSelectedEvent(event)}
-                    cachedImage={cachedImages[event.id]}
                   />
                 ))}
               </div>
@@ -888,7 +845,6 @@ export function EventsSection() {
           <EventModal
             key={selectedEvent.id}
             event={selectedEvent}
-            cachedImage={cachedImages[selectedEvent.id]}
             onClose={handleCloseModal}
           />
         )}

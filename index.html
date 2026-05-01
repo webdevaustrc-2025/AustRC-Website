@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <link rel="icon" type="image/png" href="/src/assets/Logo.png" />
     <meta charset="UTF-8" />
@@ -11,6 +11,16 @@
   </head>
 
   <body>
+    <script>
+      (function() {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'light') {
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

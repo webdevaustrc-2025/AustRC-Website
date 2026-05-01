@@ -4,6 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ChevronDown, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTokens } from '@/tokens/useTokens';
 
 interface Collab {
   id: string;
@@ -106,6 +107,7 @@ const CollabPopup = ({
   collab: Collab;
   onClose: () => void;
 }) => {
+  const t = useTokens();
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -200,7 +202,7 @@ const CollabPopup = ({
 
             {/* Description Card with Green Border */}
             <div className="bg-black/40 backdrop-blur-sm rounded-xl p-5 border border-[#2ECC71]/30 shadow-inner">
-              <p className="text-zinc-200 text-sm leading-relaxed text-center">
+              <p className="text-sm leading-relaxed text-center" style={{ color: t.textSecondary }}>
                 {collab.eventName}
               </p>
             </div>
@@ -239,6 +241,7 @@ const CollabCard = ({
   idx: number;
   onSeeMore: () => void;
 }) => {
+  const t = useTokens();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -246,7 +249,7 @@ const CollabCard = ({
       viewport={{ once: true }}
       transition={{ delay: idx * 0.05 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-gradient-to-b from-[#0a0a0a] to-[#111] border border-white/5 rounded-2xl p-4 pb-6 flex flex-col items-center text-center transition-all duration-500 hover:border-[#2ECC71]/40 hover:shadow-2xl hover:shadow-[#2ECC71]/10 h-full min-h-[280px] backdrop-blur-sm"
+      className="group relative rounded-2xl p-4 pb-6 flex flex-col items-center text-center transition-all duration-500 hover:border-[#2ECC71]/40 hover:shadow-2xl hover:shadow-[#2ECC71]/10 h-full min-h-[280px] backdrop-blur-sm" style={{ background: `linear-gradient(to bottom, ${t.surfaceCard}, ${t.surfaceCardHover})`, border: `1px solid ${t.borderSubtle}` }}
     >
       {/* Hover Effect Gradient */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#2ECC71]/0 to-[#2ECC71]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -264,7 +267,7 @@ const CollabCard = ({
       </div>
 
       <div className="relative z-10 w-full flex flex-col items-center flex-grow">
-        <h3 className="text-white font-bold text-sm leading-tight uppercase tracking-tight mb-2 group-hover:text-[#2ECC71] transition-colors duration-300">
+        <h3 className="font-bold text-sm leading-tight uppercase tracking-tight mb-2 group-hover:text-[#2ECC71] transition-colors duration-300" style={{ color: t.textPrimary }}>
           {collab.clubName}
         </h3>
 
@@ -290,6 +293,7 @@ const CollabCard = ({
 };
 
 export function CollaborationsPage() {
+  const t = useTokens();
   const [collabs, setCollabs] = useState<Collab[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCollab, setSelectedCollab] = useState<Collab | null>(null);
@@ -312,7 +316,7 @@ export function CollaborationsPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-black text-white selection:bg-[#2ECC71]/30 overflow-x-hidden">
+    <div className="relative min-h-screen selection:bg-[#2ECC71]/30 overflow-x-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       <ProfessionalBackground />
 
       <main className="relative z-10 max-w-7xl mx-auto pt-24 pb-20 px-6">

@@ -3,6 +3,7 @@ import { motion, useMotionValue, useAnimationFrame } from 'motion/react';
 import { Card, CardContent } from './ui/card';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Sponsor {
   name: string;
@@ -13,6 +14,7 @@ const SPONSORS_CACHE_KEY = 'austrc_sponsors_cache';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 export function SponsorsSection() {
+  const t = useTokens();
   const [isPaused, setIsPaused] = useState(false);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +96,7 @@ export function SponsorsSection() {
   });
 
   return (
-    <section className="w-full py-20 bg-black relative">
+    <section className="w-full py-20 relative" style={{ backgroundColor: t.pageBg }}>
       {/* Background gradient */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(46,204,113,0.05)] via-transparent to-transparent" />
@@ -111,8 +113,8 @@ export function SponsorsSection() {
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.1)] to-[rgba(46,204,113,0.05)] rounded-full border border-[rgba(46,204,113,0.3)] mb-4">
             <span className="text-[#2ECC71] text-sm">Our Partners</span>
           </div>
-          <h2 className="mb-4 tracking-tight text-white text-5xl break-words">Our Collaborated Sponsors</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto break-words">
+          <h2 className="mb-4 tracking-tight text-5xl break-words" style={{ color: t.textPrimary }}>Our Collaborated Sponsors</h2>
+          <p className="max-w-2xl mx-auto break-words" style={{ color: t.textSecondary }}>
             Grateful for the support of our valued sponsors who make our initiatives possible.
           </p>
         </motion.div>
@@ -123,11 +125,11 @@ export function SponsorsSection() {
           onMouseLeave={() => setIsPaused(false)}
         >
           {loading ? (
-            <div className="flex items-center justify-center h-48 text-gray-400">
+            <div className="flex items-center justify-center h-48" style={{ color: t.textSecondary }}>
               Loading sponsors...
             </div>
           ) : sponsors.length === 0 ? (
-            <div className="flex items-center justify-center h-48 text-gray-400">
+            <div className="flex items-center justify-center h-48" style={{ color: t.textSecondary }}>
               No sponsors found
             </div>
           ) : (

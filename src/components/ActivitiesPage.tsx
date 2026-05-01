@@ -1,8 +1,10 @@
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useTokens } from '@/tokens/useTokens';
 
 export function ActivitiesPage() {
+  const t = useTokens();
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
@@ -64,7 +66,7 @@ export function ActivitiesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-32">
+    <div className="min-h-screen pt-24 pb-32" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -76,7 +78,7 @@ export function ActivitiesPage() {
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             ACTIVITIES OF AUSTRC
           </h1>
-          <p className="text-gray-400 max-w-3xl mx-auto text-lg leading-relaxed">
+          <p className="max-w-3xl mx-auto text-lg leading-relaxed" style={{ color: t.textSecondary }}>
             From practical workshops and educational programs to research initiatives in robotics and national and international competitions, AUSTRC provides opportunities for students to develop their skills and showcase their talents. Explore the full range of AUSTRC's activities to see how students are advancing in robotics and technology.
           </p>
           <div className="w-20 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] mx-auto mt-8"></div>
@@ -93,7 +95,8 @@ export function ActivitiesPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="bg-gradient-to-br from-black via-black/95 to-black border border-[#2ECC71]/20 rounded-2xl p-8 md:p-12"
+              className="border border-[#2ECC71]/20 rounded-2xl p-8 md:p-12"
+              style={{ backgroundColor: t.surfaceCard }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
               
@@ -133,7 +136,7 @@ export function ActivitiesPage() {
                         {activity.title}
                       </h2>
                     </div>
-                    <p className="text-gray-300 leading-relaxed mb-8 text-justify">
+                    <p className="leading-relaxed mb-8 text-justify" style={{ color: t.textSecondary }}>
                       {activity.description}
                     </p>
 
@@ -167,7 +170,7 @@ export function ActivitiesPage() {
                         {activity.title}
                       </h2>
                     </div>
-                    <p className="text-gray-300 leading-relaxed mb-8 text-justify">
+                    <p className="leading-relaxed mb-8 text-justify" style={{ color: t.textSecondary }}>
                       {activity.description}
                     </p>
 
@@ -216,7 +219,8 @@ export function ActivitiesPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="bg-gradient-to-br from-black via-black/95 to-black border border-[#2ECC71]/20 rounded-2xl p-8 md:p-12 mt-8"
+            className="border border-[#2ECC71]/20 rounded-2xl p-8 md:p-12 mt-8"
+            style={{ backgroundColor: t.surfaceCard }}
           >
             <div className="flex justify-center lg:justify-start">
               <motion.div
@@ -234,7 +238,7 @@ export function ActivitiesPage() {
                   </h2>
                 </div>
                 
-                <p className="text-gray-300 leading-relaxed mb-8">
+                <p className="leading-relaxed mb-8" style={{ color: t.textSecondary }}>
                   {activities[4].description}
                 </p>
 

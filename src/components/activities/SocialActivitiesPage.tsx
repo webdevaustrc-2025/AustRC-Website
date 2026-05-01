@@ -1,8 +1,10 @@
 import { motion } from 'motion/react';
+import { useTokens } from '@/tokens/useTokens';
 
 export function SocialActivitiesPage() {
+  const t = useTokens();
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-12 px-6">
+    <div className="min-h-screen pt-24 pb-12 px-6" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -12,7 +14,7 @@ export function SocialActivitiesPage() {
         >
           <span className="text-[#2ECC71] text-sm font-medium tracking-wider uppercase mb-2 block">Community & Fun</span>
           <h1 className="text-5xl font-bold mb-6">Social Activities</h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto" style={{ color: t.textSecondary }}>
             Beyond robotics, we build bonds through networking, cultural nights, and team building.
           </p>
         </motion.div>
@@ -20,11 +22,11 @@ export function SocialActivitiesPage() {
         <div className="grid md:grid-cols-3 gap-6">
              <div className="bg-[#0a1810] border border-[#2ECC71]/20 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-[#2ECC71] mb-2">Monthly Club Meetup</h3>
-                <p className="text-gray-400 text-sm">Casual gathering for members to network and share ideas.</p>
+                <p className="text-sm" style={{ color: t.textSecondary }}>Casual gathering for members to network and share ideas.</p>
              </div>
              <div className="bg-[#0a1810] border border-[#2ECC71]/20 rounded-2xl p-6">
                 <h3 className="text-xl font-bold text-[#2ECC71] mb-2">Annual Picnic</h3>
-                <p className="text-gray-400 text-sm">A day out for relaxation and team bonding.</p>
+                <p className="text-sm" style={{ color: t.textSecondary }}>A day out for relaxation and team bonding.</p>
              </div>
         </div>
       </div>

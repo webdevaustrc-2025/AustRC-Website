@@ -3,6 +3,7 @@ import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { CheckCircle } from "lucide-react";
+import { useTokens } from '@/tokens/useTokens';
 
 const mentors = [
   {
@@ -56,8 +57,9 @@ const features = [
 ];
 
 export function MentorshipSection() {
+  const t = useTokens();
   return (
-    <section className="py-20 bg-black relative overflow-hidden">
+    <section className="py-20 relative overflow-hidden" style={{ backgroundColor: t.pageBg }}>
       {/* Background gradient */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(46,204,113,0.05)] via-transparent to-[rgba(46,204,113,0.05)]" />
@@ -76,10 +78,10 @@ export function MentorshipSection() {
               Expert Guidance
             </span>
           </div>
-          <h2 className="mb-4 tracking-tight text-white text-5xl">
+          <h2 className="mb-4 tracking-tight text-5xl" style={{ color: t.textPrimary }}>
             Built for Performance
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto" style={{ color: t.textSecondary }}>
             We've built a top-class mentoring platform, offering
             fast, reliable training with advanced tools like
             real-time tracking.
@@ -101,10 +103,10 @@ export function MentorshipSection() {
                   <div className="w-16 h-16 bg-gradient-to-br from-[#2ECC71] to-[#27AE60] rounded-2xl flex items-center justify-center mx-auto shadow-[0_0_30px_0_rgba(46,204,113,0.6)]">
                     <CheckCircle className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="tracking-tight text-white">
+                  <h3 className="tracking-tight" style={{ color: t.textPrimary }}>
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-sm" style={{ color: t.textSecondary }}>
                     {feature.description}
                   </p>
                 </CardContent>
@@ -120,7 +122,7 @@ export function MentorshipSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.35 }}
         >
-          <h3 className="text-center mb-8 tracking-tight text-white text-3xl">
+          <h3 className="text-center mb-8 tracking-tight text-3xl" style={{ color: t.textPrimary }}>
             Meet Our Expert Mentors
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -144,7 +146,7 @@ export function MentorshipSection() {
                   </Avatar>
                   <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#2ECC71] rounded-full border-2 border-black shadow-[0_0_15px_0_rgba(46,204,113,0.8)]" />
                 </div>
-                <div className="text-sm text-white mb-1">
+                <div className="text-sm mb-1" style={{ color: t.textPrimary }}>
                   {mentor.name}
                 </div>
                 <Badge className="text-xs bg-[#2ECC71]/10 text-[#2ECC71] border border-[rgba(46,204,113,0.3)]">

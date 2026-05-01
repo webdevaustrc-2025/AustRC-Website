@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Facebook, Linkedin, Github, Mail } from 'lucide-react';
 import { Card } from './ui/card';
 import { useState, useEffect } from 'react';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Person {
   id: number;
@@ -203,8 +204,9 @@ export function GoverningPanelSemester({ semester, year }: GoverningPanelSemeste
     );
   };
 
+  const t = useTokens();
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -213,10 +215,10 @@ export function GoverningPanelSemester({ semester, year }: GoverningPanelSemeste
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-black pt-32 pb-20">
+    <div className="min-h-screen relative overflow-hidden pt-32 pb-20" style={{ backgroundColor: t.pageBg }}>
       {/* Animated Gradient Background - Same as HeroSection */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }} />
         {!isMobile ? (
           <motion.div
             className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
@@ -286,7 +288,7 @@ export function GoverningPanelSemester({ semester, year }: GoverningPanelSemeste
           <h1 className="text-6xl mb-6 bg-gradient-to-r from-white via-[#2ECC71] to-white bg-clip-text text-transparent">
             Governing Panel
           </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl max-w-3xl mx-auto" style={{ color: t.textSecondary }}>
             Meet the leadership team driving innovation and excellence
           </p>
         </motion.div>
@@ -302,7 +304,7 @@ export function GoverningPanelSemester({ semester, year }: GoverningPanelSemeste
             >
               {/* Section Title */}
               <div className="mb-8">
-                <h2 className="text-4xl text-white mb-2 relative inline-block">
+                <h2 className="text-4xl mb-2 relative inline-block" style={{ color: t.textPrimary }}>
                   {title}
                   <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full shadow-[0_0_20px_0_rgba(46,204,113,0.6)]" />
                 </h2>
@@ -335,7 +337,7 @@ export function GoverningPanelSemester({ semester, year }: GoverningPanelSemeste
                       {/* Content */}
                       <div className="relative p-6 space-y-4">
                         <div>
-                          <h3 className="text-2xl text-white mb-2">{member.name}</h3>
+                          <h3 className="text-2xl mb-2" style={{ color: t.textPrimary }}>{member.name}</h3>
                           <p className="text-[#2ECC71]">{member.title}</p>
                         </div>
 

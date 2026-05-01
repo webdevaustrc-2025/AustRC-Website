@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import { useTokens } from '@/tokens/useTokens';
 import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
 import { ActivitiesPage } from './components/ActivitiesPage';
@@ -45,10 +47,11 @@ function ScrollToTop() {
 
 function AppContent() {
   const location = useLocation();
+  const t = useTokens();
   const isAboutPage = location.pathname === '/about';
 
   return (
-    <div className="relative min-h-screen bg-black overflow-x-hidden">
+    <div className="relative min-h-screen overflow-x-hidden" style={{ backgroundColor: t.pageBg }}>
       <ScrollToTop />
       <CursorGlow />
       <Navbar />
@@ -113,15 +116,17 @@ function AppContent() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </div>
-      {!isAboutPage && <Footer theme="dark" />}
+      {!isAboutPage && <Footer />}
     </div>
   );
 }
 
 export default function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </ThemeProvider>
   );
 }

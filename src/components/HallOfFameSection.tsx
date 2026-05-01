@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Quote, Award, Facebook, Linkedin, Mail } from "lucide-react";
+import { useTokens } from '@/tokens/useTokens';
 
 const allHallOfFameMembers = [
   {
@@ -165,8 +166,9 @@ const allHallOfFameMembers = [
 ];
 
 export function HallOfFameSection() {
+  const t = useTokens();
   return (
-    <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
+    <section className="py-20 relative overflow-hidden" style={{ background: `linear-gradient(to bottom, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }}>
       {/* Background Effects */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/3 right-1/3 w-96 h-96 bg-[#2ECC71] rounded-full blur-[150px]" />
@@ -184,10 +186,10 @@ export function HallOfFameSection() {
         >
           <div className="inline-flex items-center gap-3 mb-4">
             <Award className="w-8 h-8 text-[#2ECC71]" />
-            <h2 className="tracking-tight text-white text-5xl">Hall Of Fame</h2>
+            <h2 className="tracking-tight text-5xl" style={{ color: t.textPrimary }}>Hall Of Fame</h2>
             <Award className="w-8 h-8 text-[#2ECC71]" />
           </div>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: t.textSecondary }}>
             Celebrating the visionary leaders who shaped AUSRC's legacy
           </p>
         </motion.div>
@@ -215,7 +217,7 @@ export function HallOfFameSection() {
 
               {/* Info */}
               <div className="text-center mb-6">
-                <h3 className="text-white text-2xl mb-2">
+                <h3 className="text-2xl mb-2" style={{ color: t.textPrimary }}>
                   {member.name}
                 </h3>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[rgba(46,204,113,0.2)] to-transparent border border-[rgba(46,204,113,0.3)] rounded-full mb-1">
@@ -223,7 +225,7 @@ export function HallOfFameSection() {
                     {member.position}
                   </span>
                 </div>
-                <p className="text-gray-400 text-sm mt-2">
+                <p className="text-sm mt-2" style={{ color: t.textSecondary }}>
                   {member.year}
                 </p>
               </div>
@@ -231,7 +233,7 @@ export function HallOfFameSection() {
               {/* Quote */}
               <div className="relative mb-6 flex-1">
                 <Quote className="absolute -top-2 -left-2 w-8 h-8 text-[#2ECC71] opacity-30" />
-                <p className="text-gray-300 text-sm leading-relaxed pl-6 pr-2 italic line-clamp-6">
+                <p className="text-sm leading-relaxed pl-6 pr-2 italic line-clamp-6" style={{ color: t.textSecondary }}>
                   {member.quote}
                 </p>
               </div>

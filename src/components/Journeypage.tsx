@@ -1,6 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useInView, useSpring } from "motion/react";
 import { Link } from "react-router-dom";
+import { useTokens } from "@/tokens/useTokens";
+
+// ── THEME TOKENS ──────────────────────────────────────────────────────────────
+// Thin wrapper that adds Journey-specific aliases on top of the global tokens.
+function useJourneyTokens() {
+  const t = useTokens();
+  return {
+    ...t,
+    cardBg:          t.surfaceCard,
+    cardBorder:      t.borderDefault,
+    cardBorderHover: t.borderBrand,
+  };
+}
 
 // ── FONT LOADER ───────────────────────────────────────────────────────────────
 function useFonts() {
@@ -244,6 +257,7 @@ function ScrollProgress() {
 // ── AVATAR ────────────────────────────────────────────────────────────────────
 function Avatar({ person, delay = 0, isInView }: { person: { name: string; role: string; img: string }; delay?: number; isInView: boolean }) {
   const [hovered, setHovered] = useState(false);
+  const t = useJourneyTokens();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.6, y: 10 }}
@@ -258,7 +272,10 @@ function Avatar({ person, delay = 0, isInView }: { person: { name: string; role:
           animate={{ opacity: hovered ? 1 : 0.45 }}
           className="absolute -inset-[3px] rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60]"
         />
-        <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-black bg-[#0a0a0a]">
+        <div
+          className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2"
+          style={{ borderColor: t.avatarBorder, backgroundColor: t.avatarBg }}
+        >
           <img
             src={person.img}
             alt={person.name}
@@ -277,7 +294,7 @@ function Avatar({ person, delay = 0, isInView }: { person: { name: string; role:
         />
       </div>
       <div className="mt-2 text-center max-w-[80px]">
-        <p className="text-white text-[11px] font-semibold leading-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+        <p className="text-[11px] font-semibold leading-tight" style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}>
           {person.name}
         </p>
         <p className="text-[#2ECC71] text-[10px] mt-0.5 leading-tight" style={{ fontFamily: "'DM Sans',sans-serif" }}>
@@ -293,6 +310,7 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-90px" });
   const isLeft = item.side === "left";
+  const t = useJourneyTokens();
 
   return (
     <div ref={ref} className={`relative flex items-start w-full ${isLeft ? "flex-row-reverse" : "flex-row"}`}>
@@ -308,11 +326,14 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
           {/* hover glow */}
           <div
             className="absolute -inset-px rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-            style={{
-              background: `radial-gradient(ellipse at ${isLeft ? "100%" : "0%"} 50%, rgba(46,204,113,0.13), transparent 70%)`,
-            }}
+            style={{ background: `radial-gradient(ellipse at ${isLeft ? "100%" : "0%"} 50%, rgba(46,204,113,0.13), transparent 70%)` }}
           />
-          <div className="relative rounded-2xl overflow-hidden border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm group-hover:border-[#2ECC71]/22 transition-all duration-500">
+          <div
+            className="relative rounded-2xl overflow-hidden backdrop-blur-sm transition-all duration-500"
+            style={{ backgroundColor: t.cardBg, border: `1px solid ${t.cardBorder}` }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = t.cardBorderHover)}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = t.cardBorder)}
+          >
             {/* top bar */}
             <motion.div
               initial={{ scaleX: 0 }}
@@ -333,14 +354,18 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
                 <span className="text-2xl">{item.icon}</span>
               </div>
 
-              <h3 className="text-white font-bold text-xl leading-tight tracking-tight mb-3" style={{ fontFamily: "'Sora',sans-serif" }}>
+              <h3 className="font-bold text-xl leading-tight tracking-tight mb-3" style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}>
                 {item.title}
               </h3>
 
-              <p className="text-white/48 text-sm leading-relaxed mb-5 [&_strong]:text-white [&_strong]:font-bold" style={{ fontFamily: "'DM Sans',sans-serif" }} dangerouslySetInnerHTML={{ __html: item.description }} />
+              <p
+                className="text-sm leading-relaxed mb-5"
+                style={{ fontFamily: "'DM Sans',sans-serif", color: t.textSecondary }}
+                dangerouslySetInnerHTML={{ __html: item.description.replace(/<strong>/g, `<strong style="color:${t.textPrimary};font-weight:700">`) }}
+              />
 
               {/* achievement */}
-              <div className="flex items-start gap-2 p-3 rounded-xl bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-5">
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-[#2ECC71]/[0.06] border border-[#2ECC71]/20 mb-5">
                 <span className="text-[#2ECC71] mt-0.5 flex-shrink-0 text-sm">✦</span>
                 <p className="text-[#2ECC71]/80 text-xs leading-relaxed font-medium" style={{ fontFamily: "'DM Sans',sans-serif" }}>
                   {item.achievement}
@@ -368,7 +393,10 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
           transition={{ type: "spring", stiffness: 220, damping: 16 }}
           className="relative"
         >
-          <div className="w-14 h-14 rounded-full border border-[#2ECC71]/22 bg-black flex items-center justify-center">
+          <div
+            className="w-14 h-14 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: t.nodeBg, border: `1px solid ${t.nodeBorder}` }}
+          >
             <motion.div
               animate={isInView ? { scale: [1, 1.3, 1] } : {}}
               transition={{ duration: 0.55, delay: 0.25 }}
@@ -392,7 +420,8 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
           initial={{ opacity: 0, y: 6 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.18 }}
-          className="mt-2.5 px-3 py-1.5 rounded-full bg-black border border-[#2ECC71]/22 whitespace-nowrap"
+          className="mt-2.5 px-3 py-1.5 rounded-full whitespace-nowrap"
+          style={{ backgroundColor: t.periodBadgeBg, border: `1px solid ${t.nodeBorder}` }}
         >
           <span className="text-[#2ECC71] font-black text-xs tracking-widest" style={{ fontFamily: "'Sora',sans-serif" }}>
             {item.period}
@@ -410,6 +439,7 @@ function DesktopCard({ item, index }: { item: (typeof milestones)[number]; index
 function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]; index: number; isLast: boolean }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const t = useJourneyTokens();
 
   return (
     <div ref={ref} className="relative flex">
@@ -419,7 +449,8 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
           initial={{ scale: 0 }}
           animate={isInView ? { scale: 1 } : {}}
           transition={{ type: "spring", stiffness: 200, delay: 0.05 }}
-          className="relative w-9 h-9 rounded-full border border-[#2ECC71]/28 bg-black flex items-center justify-center flex-shrink-0 mt-1"
+          className="relative w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+          style={{ backgroundColor: t.nodeBg, border: `1px solid ${t.nodeBorder}` }}
         >
           <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-[#2ECC71] to-[#27AE60] shadow-[0_0_12px_3px_rgba(46,204,113,0.4)]" />
           <motion.div
@@ -444,23 +475,30 @@ function MobileCard({ item, index, isLast }: { item: (typeof milestones)[number]
           <span className="text-[10px] font-black tracking-[0.22em] uppercase text-[#2ECC71]" style={{ fontFamily: "'Sora',sans-serif" }}>
             {item.period}
           </span>
-          <span className="text-white/18">·</span>
-          <span className="text-white/35 text-[10px] uppercase tracking-wider" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+          <span style={{ color: t.textDot }}>·</span>
+          <span className="text-[10px] uppercase tracking-wider" style={{ fontFamily: "'DM Sans',sans-serif", color: t.textMutedHigh }}>
             {item.tag}
           </span>
         </div>
 
-        <div className="rounded-xl overflow-hidden border border-white/[0.07] bg-white/[0.025]">
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ backgroundColor: t.cardBg, border: `1px solid ${t.cardBorder}` }}
+        >
           <div className="h-[2px] bg-gradient-to-r from-[#2ECC71] to-transparent" />
           <div className="p-4">
             <div className="flex items-center gap-2 mb-2.5">
               <span className="text-lg">{item.icon}</span>
-              <h3 className="text-white font-bold text-[15px] leading-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+              <h3 className="font-bold text-[15px] leading-tight" style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}>
                 {item.title}
               </h3>
             </div>
-            <p className="text-white/45 text-xs leading-relaxed mb-4 [&_strong]:text-white [&_strong]:font-bold" style={{ fontFamily: "'DM Sans',sans-serif" }} dangerouslySetInnerHTML={{ __html: item.description }} />
-            <div className="flex items-start gap-1.5 p-2.5 rounded-lg bg-[#2ECC71]/[0.06] border border-[#2ECC71]/12 mb-4">
+            <p
+              className="text-xs leading-relaxed mb-4"
+              style={{ fontFamily: "'DM Sans',sans-serif", color: t.textSecondary }}
+              dangerouslySetInnerHTML={{ __html: item.description.replace(/<strong>/g, `<strong style="color:${t.textPrimary};font-weight:700">`) }}
+            />
+            <div className="flex items-start gap-1.5 p-2.5 rounded-lg bg-[#2ECC71]/[0.06] border border-[#2ECC71]/20 mb-4">
               <span className="text-[#2ECC71] text-xs mt-0.5 flex-shrink-0">✦</span>
               <p className="text-[#2ECC71]/75 text-[11px] leading-relaxed" style={{ fontFamily: "'DM Sans',sans-serif" }}>
                 {item.achievement}
@@ -485,9 +523,10 @@ function TimelineLine() {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scaleY = useSpring(scrollYProgress, { stiffness: 50, damping: 18 });
+  const t = useJourneyTokens();
   return (
     <div ref={ref} className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px hidden md:block overflow-hidden">
-      <div className="absolute inset-0 bg-white/[0.045]" />
+      <div className="absolute inset-0" style={{ backgroundColor: t.spineBg }} />
       <motion.div style={{ scaleY, originY: 0 }} className="absolute inset-0 bg-gradient-to-b from-[#2ECC71]/65 via-[#2ECC71]/30 to-transparent" />
     </div>
   );
@@ -495,12 +534,13 @@ function TimelineLine() {
 
 // ── HERO ──────────────────────────────────────────────────────────────────────
 function Hero() {
+  const t = useJourneyTokens();
   return (
     <div className="relative text-center py-28 md:py-36 px-6 overflow-hidden">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden>
         <span
           className="text-[clamp(55px,15vw,190px)] font-black leading-none tracking-tighter"
-          style={{ fontFamily: "'Sora',sans-serif", color: "rgba(255,255,255,0.018)" }}
+          style={{ fontFamily: "'Sora',sans-serif", color: t.textDot }}
         >
           LEGACY
         </span>
@@ -528,8 +568,8 @@ function Hero() {
 
         {/* headline */}
         <h1
-          className="text-[clamp(34px,7vw,78px)] font-black text-white mb-5 leading-[0.92] tracking-tight"
-          style={{ fontFamily: "'Sora',sans-serif" }}
+          className="text-[clamp(34px,7vw,78px)] font-black mb-5 leading-[0.92] tracking-tight"
+          style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}
         >
           Our Digital{" "}
           <span className="relative inline-block">
@@ -544,8 +584,8 @@ function Hero() {
         </h1>
 
         <p
-          className="text-white/42 text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-10"
-          style={{ fontFamily: "'DM Sans',sans-serif" }}
+          className="text-base md:text-lg max-w-lg mx-auto leading-relaxed mb-10"
+          style={{ fontFamily: "'DM Sans',sans-serif", color: t.textSecondary }}
         >
           From a single person's bold initiative to a full-stack website and mobile app — the story of how we built AUST Robotics Club's digital identity, one panel at a time.
         </p>
@@ -563,9 +603,9 @@ function Hero() {
             { v: "5", l: "Websites" },
             { v: "∞", l: "Ambition" },
           ].map((s) => (
-            <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl bg-white/[0.04] border border-white/[0.07]">
+            <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl" style={{ backgroundColor: t.statChipBg, border: `1px solid ${t.statChipBorder}` }}>
               <span className="text-xl font-black text-[#2ECC71]" style={{ fontFamily: "'Sora',sans-serif" }}>{s.v}</span>
-              <span className="text-white/32 text-[10px] uppercase tracking-widest mt-0.5" style={{ fontFamily: "'DM Sans',sans-serif" }}>{s.l}</span>
+              <span className="text-[10px] uppercase tracking-widest mt-0.5" style={{ fontFamily: "'DM Sans',sans-serif", color: t.textMutedMid }}>{s.l}</span>
             </div>
           ))}
         </motion.div>
@@ -574,7 +614,8 @@ function Hero() {
         <motion.div
           animate={{ y: [0, 9, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="mt-14 flex flex-col items-center gap-2 text-white/22"
+          className="mt-14 flex flex-col items-center gap-2"
+          style={{ color: t.textMuted }}
         >
           <span className="text-[10px] tracking-[0.3em] uppercase" style={{ fontFamily: "'DM Sans',sans-serif" }}>Scroll to explore</span>
           <div className="w-px h-8 bg-gradient-to-b from-[#2ECC71]/45 to-transparent" />
@@ -588,6 +629,7 @@ function Hero() {
 function Closing() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const t = useJourneyTokens();
   return (
     <motion.div
       ref={ref}
@@ -601,13 +643,13 @@ function Closing() {
         <div className="w-2 h-2 rounded-full bg-[#2ECC71] shadow-[0_0_12px_4px_rgba(46,204,113,0.5)]" />
         <div className="h-px flex-1 max-w-[100px] bg-gradient-to-l from-transparent to-[#2ECC71]/38" />
       </div>
-      <p className="text-white/22 text-[10px] tracking-[0.35em] uppercase mb-3" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+      <p className="text-[10px] tracking-[0.35em] uppercase mb-3" style={{ fontFamily: "'DM Sans',sans-serif", color: t.textMuted }}>
         The story continues
       </p>
-      <h2 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight" style={{ fontFamily: "'Sora',sans-serif" }}>
+      <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight" style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}>
         The best chapter is the next one.
       </h2>
-      <p className="text-white/32 text-sm max-w-sm mx-auto mb-10" style={{ fontFamily: "'DM Sans',sans-serif" }}>
+      <p className="text-sm max-w-sm mx-auto mb-10" style={{ fontFamily: "'DM Sans',sans-serif", color: t.textMutedMid }}>
         See our developers who are dedicatedly building the Full Stack Website.
       </p>
       <Link to="/developers">
@@ -630,6 +672,7 @@ function Closing() {
 // ── PAGE ──────────────────────────────────────────────────────────────────────
 export default function JourneyPage() {
   useFonts();
+  const t = useJourneyTokens();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -640,7 +683,10 @@ export default function JourneyPage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen w-full overflow-clip bg-gradient-to-br from-black via-gray-900 to-black">
+    <main
+      className="relative min-h-screen w-full overflow-clip"
+      style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }}
+    >
       <ScrollProgress />
       <Hero />
 

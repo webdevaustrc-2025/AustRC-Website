@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { ExternalLink, ChevronRight } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTokens } from '@/tokens/useTokens';
 
 /* ───── CSS keyframes for all infinite animations (GPU-composited, zero React re-renders) ───── */
 const infiniteAnimStyles = `
@@ -106,6 +107,7 @@ const GridLines = () => (
 );
 
 export function EventWebsitePage() {
+  const t = useTokens();
   const projects = [
     {
       id: 1,
@@ -145,13 +147,13 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       {/* Injected CSS keyframes */}
       <style>{infiniteAnimStyles}</style>
 
       {/* Animated Background – CSS-driven infinite loops */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        <div className="absolute inset-0" style={{ backgroundColor: t.pageBg }} />
         <div
           className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] blur-3xl will-change-[opacity]"
           style={{ animation: 'pulseOpacity 4s ease-in-out infinite' }}
@@ -192,10 +194,10 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
               style={{ animation: 'glowPulse 3s ease-in-out infinite' }}
             />
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white relative z-10">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 relative z-10" style={{ color: t.textPrimary }}>
               Our <span className="text-[#2ECC71]">Websites</span>
             </h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto relative z-10">
+            <p className="text-lg max-w-2xl mx-auto relative z-10" style={{ color: t.textSecondary }}>
               Explore the official websites developed for AUST Robotics Club’s flagship competitions. These platforms highlight our team’s work in building modern, user-friendly interfaces to support large-scale events and participant engagement.
             </p>
             
@@ -286,7 +288,7 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
                         </div>
                       </div>
                       <div className="flex-1">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-white group-hover/title:text-[#2ECC71] transition-colors duration-300">
+                        <h2 className="text-2xl sm:text-3xl font-bold group-hover/title:text-[#2ECC71] transition-colors duration-300" style={{ color: t.textPrimary }}>
                           {project.title}
                           <ChevronRight className="inline-block ml-3 w-6 h-6 opacity-0 group-hover/title:opacity-100 transform group-hover/title:translate-x-1 transition-all duration-300" />
                         </h2>
@@ -310,7 +312,7 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
                       >
                         <h3 className="text-lg font-bold text-[#2ECC71] mb-4">About the Project</h3>
                         <div className="flex-1 overflow-y-auto pr-2">
-                          <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                          <p className="leading-relaxed whitespace-pre-line" style={{ color: t.textSecondary }}>
                             {project.description}
                           </p>
                         </div>
@@ -334,7 +336,7 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
                             <div className="w-3 h-3 rounded-full bg-yellow-500/50 hover:scale-130 transition-transform" />
                             <div className="w-3 h-3 rounded-full bg-[#2ECC71]/50 hover:scale-130 transition-transform" />
                             <div className="flex-1 bg-[#0f1f15] h-6 rounded ml-4 border border-[#2ECC71]/10 px-3 flex items-center">
-                              <span className="text-xs text-gray-400 truncate">{project.link}</span>
+                              <span className="text-xs truncate" style={{ color: t.textMuted }}>{project.link}</span>
                             </div>
                           </div>
                           
@@ -394,10 +396,10 @@ The website was led and significantly developed by Khorshed Alam Khairul, whose 
             transition={{ duration: 0.6, delay: 0.8 }}
             className="text-center mt-16 pt-8 border-t border-[#2ECC71]/10"
           >
-            <p className="text-gray-500">
+            <p style={{ color: t.textSecondary }}>
               All websites built with modern web technologies including the MERN stack, Next.js, and Tailwind CSS
             </p>
-            <p className="text-gray-600 text-sm mt-2">
+            <p className="text-sm mt-2" style={{ color: t.textMuted }}>
               Organized by <span className="text-[#2ECC71]">AUST Robotics Club</span>
             </p>
           </motion.div>

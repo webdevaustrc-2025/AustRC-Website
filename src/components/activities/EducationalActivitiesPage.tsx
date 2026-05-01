@@ -4,12 +4,15 @@ import { collection, getDocs, query, doc, getDoc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { ArrowRight, Sparkles, Eye } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTokens } from '@/tokens/useTokens';
 
 // Hero Section Background - matching EventsPage
-const HeroBackground = () => (
+const HeroBackground = () => {
+  const t = useTokens();
+  return (
   <>
     {/* Base Gradient */}
-    <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+    <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }} />
 
     {/* Neon Gradient Orbs */}
     <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden">
@@ -48,10 +51,13 @@ const HeroBackground = () => (
       }}
     />
   </>
-);
+  );
+};
 
 // Page Header - matching EventsPage style
-const PageHeader = () => (
+const PageHeader = () => {
+  const t = useTokens();
+  return (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     animate={{ opacity: 1, y: 0 }}
@@ -64,7 +70,7 @@ const PageHeader = () => (
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
     >
-      <span className="text-white">Educational </span>
+      <span style={{ color: t.textPrimary }}>Educational </span>
       <span className="relative">
         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
           Programs
@@ -95,7 +101,8 @@ const PageHeader = () => (
     </motion.h1>
 
     <motion.p
-      className="mt-6 text-gray-400 text-base sm:text-lg max-w-3xl mx-auto px-4 leading-relaxed"
+      className="mt-6 text-base sm:text-lg max-w-3xl mx-auto px-4 leading-relaxed"
+      style={{ color: t.textSecondary }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.5 }}
@@ -103,7 +110,8 @@ const PageHeader = () => (
       Simple steps to mastery. No technical background required. Explore mentorship programs, training sessions, and research opportunities.
     </motion.p>
   </motion.div>
-);
+  );
+};
 
 // --- Types ---
 interface ActivityItem {
@@ -124,6 +132,7 @@ const ActivityCard = ({
   index: number;
   categorySlug: string;
 }) => {
+  const t = useTokens();
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -229,9 +238,9 @@ const ActivityCard = ({
           <div className="p-4 sm:p-6 flex flex-col flex-1 bg-gradient-to-t from-[#2ECC71]/5 to-transparent">
             {/* Title */}
             <motion.h3
-              className="text-lg sm:text-xl lg:text-2xl font-bold text-white line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4"
+              className="text-lg sm:text-xl lg:text-2xl font-bold line-clamp-2 leading-snug transition-all duration-300 mb-3 sm:mb-4"
               animate={{
-                color: isHovered ? '#2ECC71' : '#ffffff',
+                color: isHovered ? '#2ECC71' : t.textPrimary,
                 textShadow: isHovered ? '0 0 20px rgba(46,204,113,0.5)' : '0 0 0px rgba(46,204,113,0)',
               }}
             >
@@ -239,7 +248,7 @@ const ActivityCard = ({
             </motion.h3>
 
             {/* Description */}
-            <p className="text-gray-400 text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1">
+            <p className="text-xs sm:text-sm line-clamp-3 leading-relaxed flex-1" style={{ color: t.textSecondary }}>
               {item.Description}
             </p>
 
@@ -289,29 +298,35 @@ const ActivityCard = ({
 };
 
 // Loading Skeleton - matching EventsPage
-const LoadingSkeleton = () => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {[...Array(6)].map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: i * 0.1 }}
-        className="bg-gray-900/50 rounded-3xl overflow-hidden border border-white/5"
-      >
-        <div className="h-56 bg-gradient-to-br from-gray-800/50 to-gray-900/50 animate-pulse" />
-        <div className="p-6 space-y-4">
-          <div className="h-6 bg-gray-800/50 rounded animate-pulse" />
-          <div className="h-4 bg-gray-800/50 rounded animate-pulse" />
-          <div className="h-4 w-3/4 bg-gray-800/50 rounded animate-pulse" />
-        </div>
-      </motion.div>
-    ))}
-  </div>
-);
+const LoadingSkeleton = () => {
+  const t = useTokens();
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: i * 0.1 }}
+          className="rounded-3xl overflow-hidden"
+          style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
+        >
+          <div className="h-56 animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+          <div className="p-6 space-y-4">
+            <div className="h-6 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            <div className="h-4 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+            <div className="h-4 w-3/4 rounded animate-pulse" style={{ backgroundColor: t.surfaceCardHover }} />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
 
 // Empty State
-const EmptyState = () => (
+const EmptyState = () => {
+  const t = useTokens();
+  return (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -320,12 +335,13 @@ const EmptyState = () => (
     <div className="w-24 h-24 mx-auto mb-6 rounded-3xl bg-[#2ECC71]/10 flex items-center justify-center">
       <Sparkles className="w-12 h-12 text-[#2ECC71]/40" />
     </div>
-    <h3 className="text-2xl font-bold text-white mb-2">No Programs Found</h3>
-    <p className="text-gray-400 max-w-md mx-auto">
+    <h3 className="text-2xl font-bold mb-2" style={{ color: t.textPrimary }}>No Programs Found</h3>
+    <p className="max-w-md mx-auto" style={{ color: t.textSecondary }}>
       We're preparing amazing programs for you. Check back soon!
     </p>
   </motion.div>
-);
+  );
+};
 
 // --- 1. ACTIVITY SECTION (Grid View - EventsPage style) ---
 const ActivitySection = ({
@@ -409,8 +425,9 @@ const ActivitySection = ({
 
 // --- 2. RESEARCH SLIDER COMPONENT ---
 const ResearchSlider = () => {
+  const t = useTokens();
   const [slides, setSlides] = useState<ActivityItem[]>([]);
-  const [sectionDescription, setSectionDescription] = useState(""); 
+  const [sectionDescription, setSectionDescription] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -507,7 +524,7 @@ const ResearchSlider = () => {
              Innovation
            </span>
         </div> */}
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Research & Projects Highlights</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: t.textPrimary }}>Research & Projects Highlights</h2>
         <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#2ECC71]/50 to-transparent mx-auto rounded-full" />
       </motion.div>
 
@@ -518,8 +535,8 @@ const ResearchSlider = () => {
             <div className="w-8 h-8 border-2 border-[#2ECC71] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : slides.length === 0 ? (
-          <div className="text-center py-12 border border-dashed border-[#2ECC71]/20 rounded-2xl bg-[#0a1810]/50">
-            <p className="text-gray-400">No research images found.</p>
+          <div className="text-center py-12 border border-dashed border-[#2ECC71]/20 rounded-2xl" style={{ backgroundColor: t.surfaceCard }}>
+            <p style={{ color: t.textSecondary }}>No research images found.</p>
           </div>
         ) : (
           <div className="flex flex-col items-center">
@@ -613,8 +630,9 @@ const ResearchSlider = () => {
 
 // --- MAIN PAGE COMPONENT ---
 export function EducationalActivitiesPage() {
+  const t = useTokens();
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-32 relative overflow-hidden">
+    <div className="min-h-screen pt-24 pb-32 relative overflow-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       {/* Background */}
       <HeroBackground />
 

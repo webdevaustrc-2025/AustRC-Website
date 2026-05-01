@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { useNavigate } from 'react-router-dom';
+import { useTokens } from '@/tokens/useTokens';
 
 interface EducationalProgram {
   id: string;
@@ -15,10 +16,10 @@ interface EducationalProgram {
 }
 
 export function EducationalProgramsSection() {
+  const t = useTokens();
   const navigate = useNavigate();
   const [programs, setPrograms] = useState<EducationalProgram[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [stats, setStats] = useState([
     { icon: Users, value: '0', label: 'Students Enrolled' },
@@ -86,37 +87,11 @@ export function EducationalProgramsSection() {
     fetchPrograms();
   }, []);
 
-  useEffect(() => {
-    const cacheImages = async () => {
-      const cached: { [key: string]: string } = {};
-      for (const program of programs) {
-        if (program.Image_1) {
-          try {
-            const response = await fetch(program.Image_1);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onload = () => {
-              cached[program.id] = reader.result as string;
-              if (Object.keys(cached).length === programs.length) {
-                setCachedImages(cached);
-              }
-            };
-            reader.readAsDataURL(blob);
-          } catch (error) {
-            cached[program.id] = program.Image_1;
-          }
-        }
-      }
-    };
-    if (programs.length > 0) {
-      cacheImages();
-    }
-  }, [programs]);
 
 
 
   return (
-    <section id="programs" className="py-24 bg-black relative overflow-hidden">
+    <section id="programs" className="py-24 relative overflow-hidden" style={{ backgroundColor: t.pageBg }}>
       {/* Background gradient */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] blur-3xl" />
@@ -162,7 +137,8 @@ export function EducationalProgramsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.35, delay: 0.05 }}
-            className="mb-6 tracking-tight text-white text-4xl md:text-5xl lg:text-6xl font-bold"
+            className="mb-6 tracking-tight text-4xl md:text-5xl lg:text-6xl font-bold"
+            style={{ color: t.textPrimary }}
           >
             Educational{' '}
             <span className="relative">
@@ -194,7 +170,7 @@ export function EducationalProgramsSection() {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
-              <p className="text-gray-400 text-sm">Loading programs...</p>
+              <p className="text-sm" style={{ color: t.textSecondary }}>Loading programs...</p>
             </motion.div>
           </div>
         ) : programs.length === 0 ? (
@@ -204,7 +180,7 @@ export function EducationalProgramsSection() {
             className="text-center py-16"
           >
             <BookOpen className="w-16 h-16 text-[rgba(46,204,113,0.3)] mx-auto mb-4" />
-            <p className="text-gray-400 text-lg">No educational programs found</p>
+            <p className="text-lg" style={{ color: t.textSecondary }}>No educational programs found</p>
           </motion.div>
         ) : (
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -237,7 +213,7 @@ export function EducationalProgramsSection() {
                     {program.Image_1 ? (
                       <>
                         <motion.img
-                          src={cachedImages[program.id] || program.Image_1}
+                          src={program.Image_1}
                           alt={program.Name}
                           className="w-full h-full object-cover"
                           whileHover={{ scale: 1.1 }}
@@ -255,10 +231,11 @@ export function EducationalProgramsSection() {
                   </div>
 
                   {/* Content Section */}
-                  <CardContent className="p-6 space-y-5 bg-gradient-to-b from-black/60 to-black/80 backdrop-blur-sm flex-1 flex flex-col relative">
+                  <CardContent className="p-6 space-y-5 backdrop-blur-sm flex-1 flex flex-col relative" style={{ backgroundColor: t.surfaceCard }}>
                     <div className="space-y-3">
                       <motion.h3
-                        className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-[#2ECC71] transition-colors duration-300"
+                        className="text-xl md:text-2xl font-bold tracking-tight group-hover:text-[#2ECC71] transition-colors duration-300"
+                        style={{ color: t.textPrimary }}
                         layout
                       >
                         {program.Name}
@@ -268,8 +245,9 @@ export function EducationalProgramsSection() {
                     </div>
 
                     <p
-                      className="text-gray-400 text-sm leading-relaxed flex-1"
+                      className="text-sm leading-relaxed flex-1"
                       style={{
+                        color: t.textSecondary,
                         display: '-webkit-box',
                         WebkitLineClamp: 3,
                         WebkitBoxOrient: 'vertical',

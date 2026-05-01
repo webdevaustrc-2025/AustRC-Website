@@ -1,13 +1,12 @@
 import { motion } from 'motion/react';
-import { Facebook, Instagram, Linkedin, Youtube, Github, Mail, MapPin, Phone, Code2 } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Github, Mail, MapPin, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '@/assets/logo.png';
+import { useTokens } from '@/tokens/useTokens';
 
-interface FooterProps {
-  theme?: 'dark' | 'light';
-}
+export function Footer() {
+  const t = useTokens();
 
-export function Footer({ theme = 'dark' }: FooterProps) {
   const links = {
     quickLinks: [
       { name: 'About', href: '/about' },
@@ -28,11 +27,9 @@ export function Footer({ theme = 'dark' }: FooterProps) {
     { icon: Github, href: 'https://github.com/webdevaustrc-2025/AustRC-Website', label: 'GitHub' },
   ];
 
-  const isDark = theme === 'dark';
-
   return (
-    <footer className={`${isDark ? 'bg-gradient-to-t from-[rgba(46,204,113,0.05)] to-transparent' : 'bg-gradient-to-t from-gray-50 to-white'} relative`}>
-      <div className="border-t border-[rgba(46,204,113,0.2)]">
+    <footer style={{ backgroundColor: t.pageBg, background: `linear-gradient(to top, rgba(46,204,113,0.05), ${t.pageBg})`, position: 'relative' }}>
+      <div style={{ borderTop: `1px solid ${t.borderBrand}` }}>
         <div className="container mx-auto px-4 py-16">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             {/* About Section */}
@@ -48,9 +45,9 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                   alt="AUSTRC Logo"
                   className="w-10 h-10 object-contain"
                 />
-                <span className={`tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Aust Robotics Club</span>
+                <span className="tracking-tight" style={{ color: t.textPrimary }}>Aust Robotics Club</span>
               </div>
-              <p className={`text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <p className="text-sm mb-4" style={{ color: t.textSecondary }}>
                 Making robotics accessible through innovation. Built with passion on cutting-edge technology.
               </p>
               <div className="flex gap-3">
@@ -59,7 +56,12 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                     key={label}
                     href={href}
                     aria-label={label}
-                    className={`w-10 h-10 ${isDark ? 'bg-[rgba(46,204,113,0.1)] text-gray-400' : 'bg-white text-gray-600'} hover:bg-[#2ECC71] border border-[rgba(46,204,113,0.3)] rounded-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-[0_0_20px_0_rgba(46,204,113,0.6)] hover:text-white`}
+                    className="w-10 h-10 hover:bg-[#2ECC71] rounded-lg flex items-center justify-center transition-all hover:scale-110 hover:shadow-[0_0_20px_0_rgba(46,204,113,0.6)] hover:text-white"
+                    style={{
+                      backgroundColor: t.surfaceCard,
+                      color: t.textSecondary,
+                      border: `1px solid ${t.borderBrand}`,
+                    }}
                   >
                     <Icon className="w-5 h-5" />
                   </a>
@@ -74,13 +76,14 @@ export function Footer({ theme = 'dark' }: FooterProps) {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h3 className={`mb-4 tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Quick Links</h3>
+              <h3 className="mb-4 tracking-tight" style={{ color: t.textPrimary }}>Quick Links</h3>
               <ul className="space-y-2">
                 {links.quickLinks.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className={`${isDark ? 'text-gray-400' : 'text-gray-600'} hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group`}
+                      className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                      style={{ color: t.textSecondary }}
                     >
                       <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all" />
                       {link.name}
@@ -97,14 +100,15 @@ export function Footer({ theme = 'dark' }: FooterProps) {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h3 className={`mb-4 tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Resources</h3>
+              <h3 className="mb-4 tracking-tight" style={{ color: t.textPrimary }}>Resources</h3>
               <ul className="space-y-2">
                 {links.resources.map((link) => (
                   <li key={link.name}>
                     {link.href.startsWith('/') ? (
                       <Link
                         to={link.href}
-                        className={`${isDark ? 'text-gray-400' : 'text-gray-600'} hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group`}
+                        className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        style={{ color: t.textSecondary }}
                       >
                         <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all" />
                         {link.name}
@@ -112,7 +116,8 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                     ) : (
                       <a
                         href={link.href}
-                        className={`${isDark ? 'text-gray-400' : 'text-gray-600'} hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group`}
+                        className="hover:text-[#2ECC71] transition-colors text-sm flex items-center gap-2 group"
+                        style={{ color: t.textSecondary }}
                       >
                         <span className="w-0 h-0.5 bg-[#2ECC71] group-hover:w-4 transition-all" />
                         {link.name}
@@ -130,17 +135,16 @@ export function Footer({ theme = 'dark' }: FooterProps) {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h3 className={`mb-4 tracking-tight ${isDark ? 'text-white' : 'text-gray-900'}`}>Contact Us</h3>
+              <h3 className="mb-4 tracking-tight" style={{ color: t.textPrimary }}>Contact Us</h3>
               <ul className="space-y-3">
-                <li className={`flex items-start gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <li className="flex items-start gap-3 text-sm" style={{ color: t.textSecondary }}>
                   <MapPin className="w-5 h-5 text-[#2ECC71] shrink-0 mt-0.5" />
                   <span>AUST Campus, Dhaka, Bangladesh</span>
                 </li>
-                <li className={`flex items-center gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                <li className="flex items-center gap-3 text-sm" style={{ color: t.textSecondary }}>
                   <Mail className="w-5 h-5 text-[#2ECC71] shrink-0" />
                   <span>austrc@aust.edu</span>
                 </li>
-                
               </ul>
             </motion.div>
           </div>
@@ -151,11 +155,12 @@ export function Footer({ theme = 'dark' }: FooterProps) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="pt-8 border-t border-[rgba(46,204,113,0.2)]"
+            className="pt-8"
+            style={{ borderTop: `1px solid ${t.borderBrand}` }}
           >
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                Â©2026 Aust Robotics Club. All rights reserved.
+              <p className="text-sm" style={{ color: t.textSecondary }}>
+                ©2026 Aust Robotics Club. All rights reserved.
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <p className="text-[#2ECC71] text-sm">
@@ -171,7 +176,6 @@ export function Footer({ theme = 'dark' }: FooterProps) {
                     Meet our Developers
                   </motion.button>
                 </Link>
-
               </div>
             </div>
           </motion.div>

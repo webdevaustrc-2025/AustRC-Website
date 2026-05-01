@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform, useSpring, useInView } from 'motion/re
 import { Code2, Users, Sparkles, ChevronLeft, Zap, Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useRef, useState, useEffect } from 'react';
+import { useTokens } from '@/tokens/useTokens';
 
 // Mobile detection hook
 const useIsMobile = () => {
@@ -301,6 +302,7 @@ const SocialLink = ({ href, icon, label, isMobile = false }: { href?: string; ic
 
 // Enhanced Developer Card - Optimized for mobile
 const DeveloperCard = ({ developer, index, isMobile }: { developer: Developer; index: number; isMobile: boolean }) => {
+  const t = useTokens();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -410,8 +412,9 @@ const DeveloperCard = ({ developer, index, isMobile }: { developer: Developer; i
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <motion.h3 
-              className="text-lg font-semibold text-white mb-1 group-hover:text-[#2ECC71] transition-colors duration-300"
+            <motion.h3
+              className="text-lg font-semibold mb-1 group-hover:text-[#2ECC71] transition-colors duration-300"
+              style={{ color: t.textPrimary }}
               whileHover={{ scale: 1.05 }}
             >
               {developer.name}
@@ -425,8 +428,9 @@ const DeveloperCard = ({ developer, index, isMobile }: { developer: Developer; i
               <Star className="w-3 h-3 text-[#2ECC71]" />
               <p className="text-[#2ECC71] text-sm font-medium">{developer.role}</p>
             </motion.div>
-            <motion.p 
-              className="text-gray-500 text-xs"
+            <motion.p
+              className="text-xs"
+              style={{ color: t.textMuted }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -456,6 +460,7 @@ const DeveloperCard = ({ developer, index, isMobile }: { developer: Developer; i
 
 // Enhanced Moderator Card - Optimized for mobile
 const ModeratorCard = ({ developer, isMobile }: { developer: Developer; isMobile: boolean }) => {
+  const t = useTokens();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -541,14 +546,14 @@ const ModeratorCard = ({ developer, isMobile }: { developer: Developer; isMobile
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-[#2ECC71] transition-colors duration-300">
+            <h3 className="text-2xl md:text-3xl font-bold group-hover:text-[#2ECC71] transition-colors duration-300" style={{ color: t.textPrimary }}>
               {developer.name}
             </h3>
             <div className="flex items-center justify-center gap-2">
               <Code2 className="w-5 h-5 text-[#2ECC71]" />
               <p className="text-[#2ECC71] font-semibold text-lg">{developer.role}</p>
             </div>
-            <p className="text-gray-400">{developer.designation}</p>
+            <p style={{ color: t.textSecondary }}>{developer.designation}</p>
           </div>
 
           <div className="flex justify-center gap-3 mt-6">
@@ -567,6 +572,7 @@ const ModeratorCard = ({ developer, isMobile }: { developer: Developer; isMobile
 
 // Section Divider Component
 const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.ElementType }) => {
+  const t = useTokens();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -598,7 +604,7 @@ const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.Elem
         >
           <Icon className="w-5 h-5 text-[#2ECC71]" />
         </motion.div>
-        <span className="text-white font-semibold text-lg">{title}</span>
+        <span className="font-semibold text-lg" style={{ color: t.textPrimary }}>{title}</span>
       </motion.div>
       <motion.div
         className="h-px bg-gradient-to-l from-transparent to-[#2ECC71] flex-1 max-w-[100px]"
@@ -612,6 +618,7 @@ const SectionDivider = ({ title, icon: Icon }: { title: string; icon: React.Elem
 };
 
 export function DevelopersPage() {
+  const t = useTokens();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -621,7 +628,7 @@ export function DevelopersPage() {
   const headerOpacity = useTransform(smoothProgress, [0, 0.2], [1, 0.8]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-black relative overflow-hidden" style={{ position: 'relative' }}>
+    <div ref={containerRef} className="min-h-screen relative overflow-hidden" style={{ position: 'relative', backgroundColor: t.pageBg }}>
       {/* Scroll Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] z-50 origin-left"
@@ -630,7 +637,7 @@ export function DevelopersPage() {
       
       {/* Animated Background - Optimized for mobile */}
       <div className="absolute inset-0" style={{ transform: 'translateZ(0)' }}>
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }} />
         
         {/* Large gradient orbs - None on mobile, animated on desktop */}
         {!isMobile && (
@@ -672,7 +679,8 @@ export function DevelopersPage() {
         >
           <Link
             to="/"
-            className="group inline-flex items-center gap-2 text-gray-400 hover:text-[#2ECC71] transition-colors duration-300 relative"
+            className="group inline-flex items-center gap-2 hover:text-[#2ECC71] transition-colors duration-300 relative"
+            style={{ color: t.textSecondary }}
           >
             <motion.div
               className="absolute -inset-2 bg-[rgba(46,204,113,0.1)] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
@@ -720,8 +728,9 @@ export function DevelopersPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <motion.span 
-              className="text-white inline-block"
+            <motion.span
+              className="inline-block"
+              style={{ color: t.textPrimary }}
               whileHover={{ scale: 1.02 }}
             >
               Meet Our{" "}
@@ -742,7 +751,8 @@ export function DevelopersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed"
+            className="max-w-2xl mx-auto text-lg leading-relaxed"
+            style={{ color: t.textSecondary }}
           >
             The talented individuals who brought this website to life with passion, creativity, and countless lines of code.
           </motion.p>

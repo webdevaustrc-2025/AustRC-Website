@@ -1,90 +1,35 @@
-import { motion } from 'motion/react';
+import { motion, useScroll } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { Trophy, ChevronLeft, ChevronRight } from 'lucide-react';
 import { slugify } from '@/utils/slugify';
+import { useTokens } from '@/tokens/useTokens';
 
 // Hero Section Background - exact copy from landing page
 function HeroBackground() {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 1024);
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  const t = useTokens();
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        {/* Only animate on desktop */}
-        {!isMobile ? (
-          <motion.div
-            className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
-            style={{ filter: 'blur(64px)' }}
-            animate={{
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ) : (
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] opacity-30" style={{ filter: 'blur(40px)' }} />
-        )}
-      </div>
-
-      {/* Neon Gradient Orbs - Hidden on mobile for performance */}
+    <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-0" style={{ backgroundColor: t.pageBg }} />
+      {/* Soft gradient wash — static, no JS */}
+      <div
+        className="absolute top-0 left-0 w-full h-full opacity-30"
+        style={{ background: 'linear-gradient(to right, rgba(46,204,113,0.1), transparent, rgba(46,204,113,0.1))', filter: 'blur(40px)' }}
+      />
+      {/* CSS-animated orbs — desktop only */}
       <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden">
-        <motion.div
-          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+        <div
+          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full gpu-orb gpu-orb-pulse"
+          style={{ filter: 'blur(100px)', '--dur': '5s' } as React.CSSProperties}
         />
-        <motion.div
-          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.5, 0.3, 0.5],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full"
-          style={{ filter: 'blur(80px)', transform: 'translateZ(0)' }}
-          animate={{
-            rotate: [0, 360],
-            opacity: [0.2, 0.4, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "linear",
-          }}
+        <div
+          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full gpu-orb gpu-orb-pulse-reverse"
+          style={{ filter: 'blur(100px)', '--dur': '6s' } as React.CSSProperties}
         />
       </div>
-      
-      {/* Static gradient for mobile */}
+      {/* Static fallback for mobile */}
       <div className="lg:hidden absolute inset-0 opacity-20 overflow-hidden">
         <div className="absolute top-20 -left-20 w-64 h-64 bg-[#2ECC71] rounded-full" style={{ filter: 'blur(60px)' }} />
         <div className="absolute bottom-20 -right-20 w-72 h-72 bg-[#27AE60] rounded-full" style={{ filter: 'blur(60px)' }} />
@@ -93,25 +38,13 @@ function HeroBackground() {
   );
 }
 
-// Scroll progress indicator
+// Scroll progress — useScroll is passive and doesn't trigger re-renders
 function ScrollProgress() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrolled = window.scrollY;
-      setScrollProgress((scrolled / scrollHeight) * 100);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
+  const { scrollYProgress } = useScroll();
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] origin-left z-50"
-      style={{ scaleX: scrollProgress / 100 }}
+      style={{ scaleX: scrollYProgress }}
     />
   );
 }
@@ -128,6 +61,7 @@ interface Achievement {
 
 // Achievement Card Component with Carousel
 function AchievementCard({ achievement, index, onClick }: { achievement: Achievement; index: number; onClick: () => void }) {
+  const t = useTokens();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Get all image URLs from the achievement
@@ -174,11 +108,12 @@ function AchievementCard({ achievement, index, onClick }: { achievement: Achieve
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       onClick={onClick}
-      className="group bg-gradient-to-br from-[#0a1810] to-black border border-[#2ECC71]/20 rounded-2xl overflow-hidden hover:border-[#2ECC71]/50 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.2)] transition-all duration-300 cursor-pointer"
+      className="group border border-[#2ECC71]/20 rounded-2xl overflow-hidden hover:border-[#2ECC71]/50 hover:shadow-[0_0_40px_0_rgba(46,204,113,0.2)] transition-all duration-300 cursor-pointer"
+      style={{ backgroundColor: t.surfaceCardHover }}
     >
       {/* Image Carousel Section */}
       {images.length > 0 && (
-        <div className="relative h-64 bg-black overflow-hidden">
+        <div className="relative h-64 overflow-hidden" style={{ backgroundColor: t.pageBg }}>
           <img
             src={images[currentImageIndex]}
             alt={`${getTitle()} - Image ${currentImageIndex + 1}`}
@@ -235,12 +170,12 @@ function AchievementCard({ achievement, index, onClick }: { achievement: Achieve
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#2ECC71] transition-colors">
+        <h3 className="text-xl font-bold mb-3 group-hover:text-[#2ECC71] transition-colors" style={{ color: t.textPrimary }}>
           {getTitle()}
         </h3>
 
         {/* Description */}
-        <p className="text-gray-400 text-sm line-clamp-3">
+        <p className="text-sm line-clamp-3" style={{ color: t.textSecondary }}>
           {getDescription()}
         </p>
       </div>
@@ -249,6 +184,7 @@ function AchievementCard({ achievement, index, onClick }: { achievement: Achieve
 }
 
 export function AchievementsPage() {
+  const t = useTokens();
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -299,11 +235,11 @@ export function AchievementsPage() {
   }, []);
 
   return (
-    <main className="relative min-h-screen bg-black overflow-x-hidden w-full max-w-[100vw]">
+    <main className="relative min-h-screen overflow-x-hidden w-full max-w-[100vw]" style={{ backgroundColor: t.pageBg }}>
       <HeroBackground />
       <ScrollProgress />
-      
-      <div className="text-white pt-24 pb-24 px-6">
+
+      <div className="pt-24 pb-24 px-6" style={{ color: t.textPrimary }}>
         <div className="container mx-auto relative z-10">
           {/* Header Section */}
           <motion.div
@@ -314,7 +250,7 @@ export function AchievementsPage() {
           >
             
             <h1 className="text-5xl font-bold mb-6">Our Achievements</h1>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="max-w-2xl mx-auto" style={{ color: t.textSecondary }}>
               Celebrating the milestones, awards, and recognition our members have brought to the club.
             </p>
           </motion.div>
@@ -341,11 +277,12 @@ export function AchievementsPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-[#0a1810] border border-[#2ECC71]/20 rounded-2xl p-12 text-center"
+              className="border border-[#2ECC71]/20 rounded-2xl p-12 text-center"
+              style={{ backgroundColor: t.surfaceCard }}
             >
               <Trophy className="w-16 h-16 text-[#2ECC71]/50 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">No Achievements Yet</h3>
-              <p className="text-gray-400">Check back soon for our latest accomplishments!</p>
+              <h3 className="text-2xl font-bold mb-2" style={{ color: t.textPrimary }}>No Achievements Yet</h3>
+              <p style={{ color: t.textSecondary }}>Check back soon for our latest accomplishments!</p>
             </motion.div>
           )}
 

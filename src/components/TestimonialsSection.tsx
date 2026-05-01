@@ -2,10 +2,11 @@ import { motion, AnimatePresence } from "motion/react";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
+import { useTokens } from '@/tokens/useTokens';
 
 export function TestimonialsSection() {
+  const t = useTokens();
   const [carouselImages, setCarouselImages] = useState<string[]>([]);
-  const [cachedImages, setCachedImages] = useState<{ [key: string]: string }>({});
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -41,40 +42,6 @@ export function TestimonialsSection() {
     fetchVoiceImages();
   }, []);
 
-  // Cache images
-  useEffect(() => {
-    const cacheImages = async () => {
-      const cached: { [key: string]: string } = {};
-
-      for (let i = 0; i < carouselImages.length; i++) {
-        const imageUrl = carouselImages[i];
-        if (imageUrl) {
-          try {
-            const response = await fetch(imageUrl);
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onload = () => {
-              cached[`voice_${i}`] = reader.result as string;
-              if (Object.keys(cached).length === carouselImages.length) {
-                setCachedImages(cached);
-              }
-            };
-            reader.readAsDataURL(blob);
-          } catch (error) {
-            cached[`voice_${i}`] = imageUrl; // fallback to original URL
-          }
-        }
-      }
-
-      if (carouselImages.length === 0) {
-        setCachedImages({});
-      }
-    };
-
-    if (carouselImages.length > 0) {
-      cacheImages();
-    }
-  }, [carouselImages]);
 
   // Carousel interval
   useEffect(() => {
@@ -107,7 +74,7 @@ export function TestimonialsSection() {
   }, []);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
+    <section className="py-20 relative overflow-hidden" style={{ background: `linear-gradient(to bottom, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }}>
       {/* Background Effects */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-[#2ECC71] rounded-full blur-[150px]" />
@@ -122,7 +89,7 @@ export function TestimonialsSection() {
           transition={{ duration: 0.35 }}
           className="text-center mb-8 sm:mb-12 px-4"
         >
-          <h2 className="tracking-tight text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+          <h2 className="tracking-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl" style={{ color: t.textPrimary }}>
             VOICE OF AUSTRC
           </h2>
         </motion.div>
@@ -151,7 +118,7 @@ export function TestimonialsSection() {
                 {carouselImages.length > 0 && (
                   <motion.img
                     key={carouselIndex}
-                    src={cachedImages[`voice_${carouselIndex}`] || carouselImages[carouselIndex]}
+                    src={carouselImages[carouselIndex]}
                     alt={`Voice of AUSTRC - Image ${carouselIndex + 1}`}
                     className="w-full h-full object-cover"
                     initial={{
@@ -175,10 +142,10 @@ export function TestimonialsSection() {
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6">
-                <h3 className="text-white mb-1 sm:mb-2 text-sm sm:text-base">
+                <h3 className="mb-1 sm:mb-2 text-sm sm:text-base" style={{ color: t.textPrimary }}>
                   Community Voice
                 </h3>
-                <p className="text-gray-300 text-xs sm:text-sm">
+                <p className="text-xs sm:text-sm" style={{ color: t.textSecondary }}>
                   Stories and experiences from AUSTRC members
                 </p>
               </div>

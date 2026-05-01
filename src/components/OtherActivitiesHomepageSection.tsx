@@ -6,6 +6,7 @@ import { db } from '@/config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { slugify } from '@/utils/slugify';
 import { Card, CardContent } from './ui/card';
+import { useTokens } from '@/tokens/useTokens';
 
 interface OtherActivity {
   id: string;
@@ -24,6 +25,7 @@ const ActivityCard = ({
   index: number;
   onClick: () => void;
 }) => {
+  const t = useTokens();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -49,7 +51,7 @@ const ActivityCard = ({
         />
 
         {/* Image */}
-        <div className="relative overflow-hidden h-64 bg-black">
+        <div className="relative overflow-hidden h-64" style={{ backgroundColor: t.pageBg }}>
           {item.Image ? (
             <>
               <img
@@ -67,18 +69,19 @@ const ActivityCard = ({
         </div>
 
         {/* Content */}
-        <CardContent className="p-6 space-y-5 bg-gradient-to-b from-black/60 to-black/80 backdrop-blur-sm flex-1 flex flex-col relative">
+        <CardContent className="p-6 space-y-5 backdrop-blur-sm flex-1 flex flex-col relative" style={{ backgroundColor: t.surfaceCard }}>
           <div className="space-y-3">
             <motion.h3
-              className="text-xl md:text-2xl font-bold tracking-tight text-white group-hover:text-[#2ECC71] transition-colors duration-300"
+              className="text-xl md:text-2xl font-bold tracking-tight group-hover:text-[#2ECC71] transition-colors duration-300"
+              style={{ color: t.textPrimary }}
             >
               {item.Name}
             </motion.h3>
           </div>
 
           <p
-            className="text-gray-400 text-sm leading-relaxed flex-1"
-            style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+            className="text-sm leading-relaxed flex-1"
+            style={{ color: t.textSecondary, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
           >
             {item.Description}
           </p>
@@ -104,6 +107,7 @@ const ActivityCard = ({
 };
 
 export function OtherActivitiesHomepageSection() {
+  const t = useTokens();
   const navigate = useNavigate();
   const [items, setItems] = useState<OtherActivity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -138,7 +142,7 @@ export function OtherActivitiesHomepageSection() {
   }, []);
 
   return (
-    <section className="relative py-16 sm:py-20 lg:py-28 bg-black overflow-hidden">
+    <section className="relative py-16 sm:py-20 lg:py-28 overflow-hidden" style={{ backgroundColor: t.pageBg }}>
       {/* Background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(46,204,113,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(46,204,113,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
       <motion.div
@@ -161,12 +165,13 @@ export function OtherActivitiesHomepageSection() {
         >
           <motion.h2
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6"
+            style={{ color: t.textPrimary }}
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.35, delay: 0.1 }}
           >
-            <span className="text-white">Other </span>
+            <span style={{ color: t.textPrimary }}>Other </span>
             <span className="relative">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]">
                 Activities
@@ -188,7 +193,8 @@ export function OtherActivitiesHomepageSection() {
             {[...Array(2)].map((_, i) => (
               <div
                 key={i}
-                className="h-96 bg-gray-900/50 rounded-2xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                className="h-96 rounded-2xl animate-pulse border border-[rgba(46,204,113,0.1)]"
+                style={{ backgroundColor: t.surfaceCard }}
               />
             ))}
           </div>
@@ -197,7 +203,7 @@ export function OtherActivitiesHomepageSection() {
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[rgba(46,204,113,0.1)] flex items-center justify-center">
               <Sparkles className="w-10 h-10 text-[#2ECC71]" />
             </div>
-            <p className="text-gray-400 text-lg">No activities found</p>
+            <p className="text-lg" style={{ color: t.textSecondary }}>No activities found</p>
           </motion.div>
         ) : (
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">

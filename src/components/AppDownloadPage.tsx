@@ -28,6 +28,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { Button } from './ui/button';
+import { useTokens } from '@/tokens/useTokens';
 
 // Check if mobile device
 const useIsMobile = () => {
@@ -121,71 +122,77 @@ const AnimatedCounter = ({ value, suffix = '' }: { value: number; suffix?: strin
 };
 
 // Notification Popup Component
-const NotificationPopup = ({ 
-  icon: Icon, 
-  title, 
-  message, 
-  delay, 
-  position 
-}: { 
-  icon: any; 
-  title: string; 
-  message: string; 
+const NotificationPopup = ({
+  icon: Icon,
+  title,
+  message,
+  delay,
+  position
+}: {
+  icon: any;
+  title: string;
+  message: string;
   delay: number;
   position: { top?: string; bottom?: string; left?: string; right?: string };
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.8, x: position.right ? 50 : -50 }}
-    animate={{ opacity: 1, scale: 1, x: 0 }}
-    transition={{ delay, duration: 0.5, type: "spring" }}
-    className="absolute bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-4 shadow-2xl w-56 z-30"
-    style={position}
-  >
+}) => {
+  const t = useTokens();
+  return (
     <motion.div
-      animate={{ scale: [1, 1.02, 1] }}
-      transition={{ duration: 2, repeat: Infinity }}
-      className="flex items-start gap-3"
+      initial={{ opacity: 0, scale: 0.8, x: position.right ? 50 : -50 }}
+      animate={{ opacity: 1, scale: 1, x: 0 }}
+      transition={{ delay, duration: 0.5, type: "spring" }}
+      className="absolute backdrop-blur-xl border rounded-2xl p-4 shadow-2xl w-56 z-30"
+      style={{ ...position, backgroundColor: t.surfaceCard, borderColor: t.borderDefault }}
     >
-      <div className="w-10 h-10 bg-[#2ECC71]/20 rounded-xl flex items-center justify-center flex-shrink-0">
-        <Icon className="w-5 h-5 text-[#2ECC71]" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <h4 className="text-white text-sm font-semibold truncate">{title}</h4>
-        <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{message}</p>
-      </div>
+      <motion.div
+        animate={{ scale: [1, 1.02, 1] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        className="flex items-start gap-3"
+      >
+        <div className="w-10 h-10 bg-[#2ECC71]/20 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Icon className="w-5 h-5 text-[#2ECC71]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-sm font-semibold truncate" style={{ color: t.textPrimary }}>{title}</h4>
+          <p className="text-xs mt-0.5 line-clamp-2" style={{ color: t.textSecondary }}>{message}</p>
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
+};
 
 // Feature Pill Component
-const FeaturePill = ({ 
-  icon: Icon, 
-  text, 
-  delay, 
-  position 
-}: { 
-  icon: any; 
-  text: string; 
+const FeaturePill = ({
+  icon: Icon,
+  text,
+  delay,
+  position
+}: {
+  icon: any;
+  text: string;
   delay: number;
   position: { top?: string; bottom?: string; left?: string; right?: string };
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.5 }}
-    className="absolute z-30"
-    style={position}
-  >
+}) => {
+  const t = useTokens();
+  return (
     <motion.div
-      animate={{ y: [-5, 5, -5] }}
-      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-      className="bg-black/80 backdrop-blur-xl border border-[#2ECC71]/30 rounded-full px-4 py-2 flex items-center gap-2 shadow-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5 }}
+      className="absolute z-30"
+      style={position}
     >
-      <Icon className="w-4 h-4 text-[#2ECC71]" />
-      <span className="text-white text-sm font-medium">{text}</span>
+      <motion.div
+        animate={{ y: [-5, 5, -5] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className="bg-black/80 backdrop-blur-xl border border-[#2ECC71]/30 rounded-full px-4 py-2 flex items-center gap-2 shadow-lg"
+      >
+        <Icon className="w-4 h-4 text-[#2ECC71]" />
+        <span className="text-sm font-medium" style={{ color: t.textPrimary }}>{text}</span>
+      </motion.div>
     </motion.div>
-  </motion.div>
-);
+  );
+};
 
 export function AppDownloadPage() {
   const [isAndroid, setIsAndroid] = useState(false);
@@ -328,9 +335,10 @@ export function AppDownloadPage() {
   ];
 
   const isMobile = useIsMobile();
-  
+  const t = useTokens();
+
   return (
-    <main className="relative min-h-screen bg-black overflow-x-hidden">
+    <main className="relative min-h-screen overflow-x-hidden" style={{ backgroundColor: t.pageBg }}>
       {/* Animated Background - Fixed */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ transform: 'translateZ(0)' }}>
         <GlowingOrb className="w-[800px] h-[800px] bg-[#2ECC71]/20 top-[-200px] left-[-200px]" isMobile={isMobile} />
@@ -393,7 +401,8 @@ export function AppDownloadPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.1 }}
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]"
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1]"
+                  style={{ color: t.textPrimary }}
                 >
                   Your Club,
                   <br />
@@ -418,7 +427,8 @@ export function AppDownloadPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="text-gray-400 text-lg sm:text-xl mb-8 leading-relaxed"
+                  className="text-lg sm:text-xl mb-8 leading-relaxed"
+                  style={{ color: t.textSecondary }}
                 >
                   Experience AUST Robotics Club like never before. Get instant updates, 
                   connect with members, and access exclusive content — all in one powerful app.
@@ -494,13 +504,14 @@ export function AppDownloadPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
                       whileHover={{ scale: 1.05, y: -5 }}
-                      className="bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-4 text-center hover:border-[#2ECC71]/30 transition-all duration-300"
+                      className="backdrop-blur-sm rounded-2xl p-4 text-center hover:border-[#2ECC71]/30 transition-all duration-300"
+                      style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderDefault}` }}
                     >
                       <stat.icon className="w-5 h-5 text-[#2ECC71] mx-auto mb-2" />
-                      <div className="text-2xl font-bold text-white">
+                      <div className="text-2xl font-bold" style={{ color: t.textPrimary }}>
                         <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                       </div>
-                      <div className="text-gray-500 text-sm">{stat.label}</div>
+                      <div className="text-sm" style={{ color: t.textMuted }}>{stat.label}</div>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -672,7 +683,8 @@ export function AppDownloadPage() {
           <motion.div
             animate={{ y: [0, 15, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="flex flex-col items-center gap-2 text-gray-500 cursor-pointer hover:text-[#2ECC71] transition-colors"
+            className="flex flex-col items-center gap-2 cursor-pointer hover:text-[#2ECC71] transition-colors"
+            style={{ color: t.textMuted }}
           >
             <span className="text-sm font-medium">Scroll to Explore</span>
             <ChevronDown className="w-5 h-5" />
@@ -695,14 +707,14 @@ export function AppDownloadPage() {
             >
               ✨ Features
             </motion.span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4" style={{ color: t.textPrimary }}>
               Everything You Need,
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]">
                 Nothing You Don't
               </span>
             </h2>
-            <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-lg">
+            <p className="mt-4 max-w-2xl mx-auto text-lg" style={{ color: t.textSecondary }}>
               Packed with powerful features designed to enhance your club experience
             </p>
           </motion.div>
@@ -740,8 +752,8 @@ export function AppDownloadPage() {
                   >
                     {feature.icon}
                   </motion.div>
-                  <h3 className="text-white font-bold text-xl mb-3">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+                  <h3 className="font-bold text-xl mb-3" style={{ color: t.textPrimary }}>{feature.title}</h3>
+                  <p className="leading-relaxed" style={{ color: t.textSecondary }}>{feature.description}</p>
                   
                   <motion.div
                     initial={{ opacity: 0, x: -10 }}
@@ -842,11 +854,11 @@ export function AppDownloadPage() {
                   className="mb-10"
                 >
                   <span className="text-[#2ECC71] text-sm font-semibold tracking-wider uppercase">App Features</span>
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-3">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style={{ color: t.textPrimary }}>
                     Designed for
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]"> Members</span>
                   </h2>
-                  <p className="text-gray-400 mt-4 text-lg leading-relaxed">
+                  <p className="mt-4 text-lg leading-relaxed" style={{ color: t.textSecondary }}>
                     Every feature is crafted with our community in mind, making it easier than ever to stay connected.
                   </p>
                 </motion.div>
@@ -860,7 +872,8 @@ export function AppDownloadPage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                       whileHover={{ scale: 1.02, x: 5 }}
-                      className="group flex items-start gap-4 p-4 rounded-2xl bg-gray-900/30 border border-gray-800/50 hover:border-[#2ECC71]/30 hover:bg-gray-900/50 transition-all duration-300"
+                      className="group flex items-start gap-4 p-4 rounded-2xl hover:border-[#2ECC71]/30 transition-all duration-300"
+                      style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
                     >
                       <motion.div
                         whileHover={{ rotate: 360 }}
@@ -870,8 +883,8 @@ export function AppDownloadPage() {
                         <feature.icon className="w-5 h-5" />
                       </motion.div>
                       <div>
-                        <h3 className="text-white font-semibold mb-1">{feature.title}</h3>
-                        <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                        <h3 className="font-semibold mb-1" style={{ color: t.textPrimary }}>{feature.title}</h3>
+                        <p className="text-sm leading-relaxed" style={{ color: t.textMuted }}>{feature.description}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -893,7 +906,7 @@ export function AppDownloadPage() {
               className="text-center mb-16"
             >
               <span className="text-[#2ECC71] text-sm font-semibold tracking-wider uppercase">Installation</span>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-3">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-3" style={{ color: t.textPrimary }}>
                 Get Started in
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] to-[#27AE60]"> 4 Easy Steps</span>
               </h2>
@@ -946,9 +959,9 @@ export function AppDownloadPage() {
                         <div className="w-10 h-10 bg-[#2ECC71]/20 rounded-xl flex items-center justify-center">
                           <item.icon className="w-5 h-5 text-[#2ECC71]" />
                         </div>
-                        <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                        <h3 className="font-bold text-lg" style={{ color: t.textPrimary }}>{item.title}</h3>
                       </div>
-                      <p className="text-gray-400 leading-relaxed">{item.description}</p>
+                      <p className="leading-relaxed" style={{ color: t.textSecondary }}>{item.description}</p>
                     </motion.div>
                   </motion.div>
                 ))}
@@ -972,8 +985,8 @@ export function AppDownloadPage() {
                   <Shield className="w-7 h-7 text-[#2ECC71]" />
                 </motion.div>
                 <div>
-                  <h3 className="text-white font-bold text-lg mb-2">🔒 100% Safe & Verified</h3>
-                  <p className="text-gray-400 leading-relaxed">
+                  <h3 className="font-bold text-lg mb-2" style={{ color: t.textPrimary }}>🔒 100% Safe & Verified</h3>
+                  <p className="leading-relaxed" style={{ color: t.textSecondary }}>
                     This app is developed by the official AUST Robotics Club team. 
                     It's completely safe and doesn't contain any malware.
                   </p>
@@ -1026,7 +1039,8 @@ export function AppDownloadPage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
+                className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
+                style={{ color: t.textPrimary }}
               >
                 Ready to Experience
                 <br />
@@ -1040,7 +1054,8 @@ export function AppDownloadPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="text-gray-400 text-lg max-w-2xl mx-auto mb-10"
+                className="text-lg max-w-2xl mx-auto mb-10"
+                style={{ color: t.textSecondary }}
               >
                 Join hundreds of club members who are already enjoying our app. 
                 Download now and never miss an update!
@@ -1129,13 +1144,14 @@ export function AppDownloadPage() {
               exit={{ scale: 0.5, opacity: 0, rotateX: 30 }}
               transition={{ type: "spring", damping: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative bg-gradient-to-b from-gray-900 to-black p-8 sm:p-10 rounded-3xl border border-gray-800 max-w-md w-full shadow-[0_0_100px_0_rgba(46,204,113,0.2)]"
+              className="relative p-8 sm:p-10 rounded-3xl max-w-md w-full shadow-[0_0_100px_0_rgba(46,204,113,0.2)]"
+              style={{ background: `linear-gradient(to bottom, ${t.pageBgAlt}, ${t.pageBg})`, border: `1px solid ${t.borderDefault}` }}
             >
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-800/80 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 transition-all duration-300"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center hover:text-white transition-all duration-300" style={{ backgroundColor: t.surfaceCard, color: t.textMuted }}
               >
                 <X className="w-5 h-5" />
               </motion.button>
@@ -1161,7 +1177,8 @@ export function AppDownloadPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-2xl sm:text-3xl font-bold text-white mb-3"
+                  className="text-2xl sm:text-3xl font-bold mb-3"
+                  style={{ color: t.textPrimary }}
                 >
                   Android Only
                 </motion.h3>
@@ -1170,7 +1187,8 @@ export function AppDownloadPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="text-gray-400 mb-8 leading-relaxed"
+                  className="mb-8 leading-relaxed"
+                  style={{ color: t.textSecondary }}
                 >
                   This app is currently available only for{' '}
                   <span className="text-[#2ECC71] font-semibold">Android devices</span>. 
@@ -1220,7 +1238,7 @@ export function AppDownloadPage() {
                   <Button
                     onClick={() => setShowModal(false)}
                     variant="outline"
-                    className="w-full py-6 border-gray-700 hover:border-gray-600 text-gray-300 hover:text-white rounded-xl transition-all duration-300"
+                    className="w-full py-6 rounded-xl transition-all duration-300 hover:text-white" style={{ borderColor: t.borderDefault, color: t.textSecondary }}
                   >
                     I Understand
                   </Button>
@@ -1230,7 +1248,8 @@ export function AppDownloadPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="text-gray-600 text-sm mt-6 flex items-center justify-center gap-2"
+                  className="text-sm mt-6 flex items-center justify-center gap-2"
+                  style={{ color: t.textMuted }}
                 >
                   <Smartphone className="w-4 h-4" />
                   Send the link to your Android device

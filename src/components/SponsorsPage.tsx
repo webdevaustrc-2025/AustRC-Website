@@ -3,6 +3,7 @@ import { db } from "../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { motion } from "motion/react";
 import { ArrowLeft, User, Phone } from "lucide-react";
+import { useTokens } from '@/tokens/useTokens';
 
 interface Sponsor {
   id: string;
@@ -44,13 +45,14 @@ const BubbleBackground = () => (
 
 // --- SUB-COMPONENT: Sponsor Card ---
 const SponsorCard = ({ sponsor, idx }: { sponsor: Sponsor; idx: number }) => {
+  const t = useTokens();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: idx * 0.05 }}
-      className="group relative bg-[#0a0a0a] border border-white/5 rounded-2xl p-4 pb-6 flex flex-col items-center text-center transition-all duration-500 hover:border-[#2ECC71]/40 hover:bg-[#111] shadow-2xl h-full min-h-[280px]"
+      className="group relative rounded-2xl p-4 pb-6 flex flex-col items-center text-center transition-all duration-500 hover:border-[#2ECC71]/40 shadow-2xl h-full min-h-[280px]" style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
     >
       {/* Logo Container */}
       <div className="w-full aspect-square bg-white rounded-xl flex items-center justify-center p-4 mb-4 overflow-hidden shadow-inner">
@@ -62,7 +64,7 @@ const SponsorCard = ({ sponsor, idx }: { sponsor: Sponsor; idx: number }) => {
       </div>
 
       <div className="w-full flex flex-col items-center flex-grow">
-        <h3 className="text-white font-bold text-sm leading-tight uppercase tracking-tight mb-1">
+        <h3 className="font-bold text-sm leading-tight uppercase tracking-tight mb-1" style={{ color: t.textPrimary }}>
           {sponsor.name}
         </h3>
 
@@ -74,12 +76,12 @@ const SponsorCard = ({ sponsor, idx }: { sponsor: Sponsor; idx: number }) => {
         {(sponsor.contactPerson || sponsor.contactNumber) && (
           <div className="mt-auto pt-2 flex flex-col items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             {sponsor.contactPerson && (
-              <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+              <span className="text-[10px] flex items-center gap-1" style={{ color: t.textMuted }}>
                 <User size={10} /> {sponsor.contactPerson}
               </span>
             )}
             {sponsor.contactNumber && (
-              <span className="text-[10px] text-zinc-500 flex items-center gap-1">
+              <span className="text-[10px] flex items-center gap-1" style={{ color: t.textMuted }}>
                 <Phone size={10} /> {sponsor.contactNumber}
               </span>
             )}
@@ -91,6 +93,7 @@ const SponsorCard = ({ sponsor, idx }: { sponsor: Sponsor; idx: number }) => {
 };
 
 export function SponsorsPage() {
+  const t = useTokens();
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -115,7 +118,7 @@ export function SponsorsPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-black text-white selection:bg-[#2ECC71]/30 overflow-x-hidden">
+    <div className="relative min-h-screen selection:bg-[#2ECC71]/30 overflow-x-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       <BubbleBackground />
 
       <main className="relative z-10 max-w-7xl mx-auto pt-24 pb-20 px-6">

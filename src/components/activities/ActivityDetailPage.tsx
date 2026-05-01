@@ -4,6 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { motion } from 'motion/react';
 import { ArrowLeft, Calendar, Sparkles, User, CheckCircle } from 'lucide-react';
+import { useTokens } from '@/tokens/useTokens';
 
 // --- Configuration ---
 const COLLECTION_PATHS: Record<string, string[]> = {
@@ -25,16 +26,17 @@ interface ActivityDetail {
 
 // --- Typing Effect Component ---
 const TypewriterText = ({ text }: { text: string }) => {
+  const t = useTokens();
   const [displayedText, setDisplayedText] = useState("");
 
   useEffect(() => {
-    setDisplayedText(""); 
+    setDisplayedText("");
     let i = 0;
-    
+
     if (!text) return;
 
     const intervalId = setInterval(() => {
-      setDisplayedText((prev) => prev + text.slice(i, i + 2)); 
+      setDisplayedText((prev) => prev + text.slice(i, i + 2));
       i += 2;
       if (i >= text.length) {
         clearInterval(intervalId);
@@ -46,7 +48,7 @@ const TypewriterText = ({ text }: { text: string }) => {
   }, [text]);
 
   return (
-    <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-line font-light">
+    <p className="text-lg leading-relaxed whitespace-pre-line font-light" style={{ color: t.textSecondary }}>
       {displayedText}
       <span className="inline-block w-1.5 h-5 ml-1 bg-[#2ECC71] animate-pulse align-middle" />
     </p>
@@ -55,8 +57,9 @@ const TypewriterText = ({ text }: { text: string }) => {
 
 // --- Main Page Component ---
 export function ActivityDetailPage() {
+  const t = useTokens();
   const { category, id } = useParams();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [data, setData] = useState<ActivityDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -110,7 +113,7 @@ export function ActivityDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.pageBg }}>
         <div className="w-10 h-10 border-2 border-[#2ECC71] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -118,7 +121,7 @@ export function ActivityDetailPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white pt-32">
+      <div className="min-h-screen flex flex-col items-center justify-center pt-32" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
         <h2 className="text-2xl font-bold mb-4 text-[#2ECC71]">Content Not Found</h2>
         <button 
           onClick={() => navigate(-1)}
@@ -131,7 +134,7 @@ export function ActivityDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       
       {/* Background Ambience */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-[#2ECC71]/10 rounded-full blur-[120px] pointer-events-none" />
@@ -170,7 +173,7 @@ export function ActivityDetailPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-4xl md:text-6xl font-bold text-center text-white mb-8 leading-tight drop-shadow-[0_0_15px_rgba(46,204,113,0.3)]"
+            className="text-4xl md:text-6xl font-bold text-center mb-8 leading-tight drop-shadow-[0_0_15px_rgba(46,204,113,0.3)]" style={{ color: t.textPrimary }}
           >
             {data.Name}
           </motion.h1>
@@ -187,13 +190,13 @@ export function ActivityDetailPage() {
             </span>
             
             {data.Date && (
-              <span className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 text-sm">
+              <span className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm" style={{ border: `1px solid ${t.borderDefault}`, backgroundColor: t.surfaceCard, color: t.textSecondary }}>
                 <Calendar className="w-4 h-4 text-[#2ECC71]" /> {data.Date}
               </span>
             )}
-            
+
             {data.Facilitator && (
-              <span className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-gray-300 text-sm">
+              <span className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm" style={{ border: `1px solid ${t.borderDefault}`, backgroundColor: t.surfaceCard, color: t.textSecondary }}>
                 <User className="w-4 h-4 text-[#2ECC71]" /> {data.Facilitator}
               </span>
             )}
@@ -221,11 +224,11 @@ export function ActivityDetailPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="w-full max-w-4xl bg-[#0a1810]/50 border border-white/5 p-8 md:p-10 rounded-2xl backdrop-blur-sm mb-12"
+            className="w-full max-w-4xl p-8 md:p-10 rounded-2xl backdrop-blur-sm mb-12" style={{ backgroundColor: t.surfaceCard, border: `1px solid ${t.borderSubtle}` }}
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="h-8 w-1 bg-[#2ECC71] rounded-full" />
-              <h3 className="text-xl font-bold text-white uppercase tracking-wider">About This Program</h3>
+              <h3 className="text-xl font-bold uppercase tracking-wider" style={{ color: t.textPrimary }}>About This Program</h3>
             </div>
             
             <TypewriterText text={data.Description} />

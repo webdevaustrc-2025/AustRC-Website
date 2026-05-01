@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 import { slugify } from '@/utils/slugify';
+import { useTokens } from '@/tokens/useTokens';
 
 interface Achievement {
   id: string;
@@ -16,57 +17,26 @@ interface Achievement {
   [key: string]: any;
 }
 
-// Hero Background (same as HomePage HeroSection)
+// Hero Background
 function HeroBackground() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 1024);
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  const t = useTokens();
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
-        {!isMobile ? (
-          <motion.div
-            className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
-            style={{ filter: 'blur(64px)' }}
-            animate={{ opacity: [0.3, 0.5, 0.3] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        ) : (
-          <div
-            className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.1)] via-transparent to-[rgba(46,204,113,0.1)] opacity-30"
-            style={{ filter: 'blur(40px)' }}
-          />
-        )}
-      </div>
-
+    <div className="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-0" style={{ backgroundColor: t.pageBg }} />
+      <div
+        className="absolute top-0 left-0 w-full h-full opacity-30"
+        style={{ background: 'linear-gradient(to right, rgba(46,204,113,0.1), transparent, rgba(46,204,113,0.1))', filter: 'blur(40px)' }}
+      />
       <div className="hidden lg:block absolute inset-0 opacity-30 overflow-hidden">
-        <motion.div
-          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        <div
+          className="absolute top-20 -left-20 w-96 h-96 bg-[#2ECC71] rounded-full gpu-orb gpu-orb-pulse"
+          style={{ filter: 'blur(100px)', '--dur': '5s' } as React.CSSProperties}
         />
-        <motion.div
-          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full"
-          style={{ filter: 'blur(100px)', transform: 'translateZ(0)' }}
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full"
-          style={{ filter: 'blur(80px)', transform: 'translateZ(0)' }}
-          animate={{ rotate: [0, 360], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        <div
+          className="absolute bottom-20 -right-20 w-[500px] h-[500px] bg-[#27AE60] rounded-full gpu-orb gpu-orb-pulse-reverse"
+          style={{ filter: 'blur(100px)', '--dur': '6s' } as React.CSSProperties}
         />
       </div>
-
       <div className="lg:hidden absolute inset-0 opacity-20 overflow-hidden">
         <div className="absolute top-20 -left-20 w-64 h-64 bg-[#2ECC71] rounded-full" style={{ filter: 'blur(60px)' }} />
         <div className="absolute bottom-20 -right-20 w-72 h-72 bg-[#27AE60] rounded-full" style={{ filter: 'blur(60px)' }} />
@@ -76,6 +46,7 @@ function HeroBackground() {
 }
 
 export function AchievementDetailPage() {
+  const t = useTokens();
   const { achievementSlug } = useParams<{ achievementSlug: string }>();
   const navigate = useNavigate();
   const [achievement, setAchievement] = useState<Achievement | null>(null);
@@ -144,7 +115,7 @@ export function AchievementDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.pageBg }}>
         <HeroBackground />
         <div className="relative">
           <div className="w-16 h-16 border-4 border-[#2ECC71]/20 border-t-[#2ECC71] rounded-full animate-spin" />
@@ -156,11 +127,11 @@ export function AchievementDetailPage() {
 
   if (error || !achievement) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: t.pageBg }}>
         <HeroBackground />
         <div className="text-center z-10">
-          <h1 className="text-3xl font-bold text-white mb-4">Achievement Not Found</h1>
-          <p className="text-gray-400 mb-8">{error || 'The achievement you are looking for does not exist.'}</p>
+          <h1 className="text-3xl font-bold mb-4" style={{ color: t.textPrimary }}>Achievement Not Found</h1>
+          <p className="mb-8" style={{ color: t.textSecondary }}>{error || 'The achievement you are looking for does not exist.'}</p>
           <button
             onClick={() => navigate('/activities/achievements')}
             className="px-6 py-3 bg-[#2ECC71] text-black font-bold rounded-xl hover:bg-[#27AE60] transition-colors"
@@ -175,7 +146,7 @@ export function AchievementDetailPage() {
   const title = achievement.Name || achievement.id || 'Untitled Achievement';
 
   return (
-    <div className="min-h-screen bg-black text-white relative">
+    <div className="min-h-screen relative" style={{ backgroundColor: t.pageBg, color: t.textPrimary }}>
       <HeroBackground />
 
       {/* Spacer to push content below navbar */}
@@ -211,7 +182,7 @@ export function AchievementDetailPage() {
             <Trophy className="w-4 h-4 text-black" />
             <span className="text-black text-xs sm:text-sm font-bold tracking-wider uppercase">Achievement</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight" style={{ color: t.textPrimary }}>
             {title}
           </h1>
         </motion.div>
@@ -222,7 +193,8 @@ export function AchievementDetailPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="relative h-72 sm:h-96 lg:h-[28rem] bg-black rounded-2xl overflow-hidden mb-10 border border-[#2ECC71]/10"
+            className="relative h-72 sm:h-96 lg:h-[28rem] rounded-2xl overflow-hidden mb-10 border border-[#2ECC71]/10"
+            style={{ backgroundColor: t.pageBg }}
           >
             <img
               src={images[currentImageIndex]}
@@ -276,10 +248,10 @@ export function AchievementDetailPage() {
         >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">Description</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: t.textPrimary }}>Description</h2>
           </div>
           <div className="bg-white/[0.03] rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-7 border border-[#2ECC71]/10 backdrop-blur-sm">
-            <p className="text-gray-300 text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">
+            <p className="text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
               {achievement.Description || 'No description available'}
             </p>
           </div>
@@ -296,7 +268,7 @@ export function AchievementDetailPage() {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-0.5 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full" />
-              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">Gallery</h2>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold" style={{ color: t.textPrimary }}>Gallery</h2>
             </div>
             <div className="grid grid-cols-2 gap-4">
               {images.map((img, idx) => (

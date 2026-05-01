@@ -8,12 +8,18 @@ import {
   Menu,
   X,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Sun,
+  Moon
 } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
+import { useTokens } from '@/tokens/useTokens';
 import { db } from '@/config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 export function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+  const t = useTokens();
   const [scrolled, setScrolled] = useState(false);
   const [activitiesOpen, setActivitiesOpen] = useState(false);
   const [governingPanelOpen, setGoverningPanelOpen] = useState(false);
@@ -90,7 +96,6 @@ export function Navbar() {
     { name: 'Home', path: '/', section: null },
     { name: 'Governing Panel', path: '/', section: 'governing-panel' },
     { name: 'Activities', path: '/activities', section: null },
-    { name: 'Research and project', path: '/research-projects', section: null },
     { name: 'Enthusiast Acquisition', path: '/enthusiast-acquisition', section: null },
     { name: 'About us', path: '/about', section: null },
   ];
@@ -204,10 +209,8 @@ export function Navbar() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-          ? 'bg-transparent backdrop-blur-none'
-          : 'bg-gradient-to-b from-black/80 via-black/40 to-transparent backdrop-blur-md'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? '' : 'backdrop-blur-md'}`}
+        style={scrolled ? { background: 'transparent' } : { background: t.surfaceNavbarGrad }}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
@@ -241,7 +244,7 @@ export function Navbar() {
                       </div>
                     </div>
                     <div>
-                      <span className="tracking-tight text-white text-sm">
+                      <span className="tracking-tight text-sm" style={{ color: t.textPrimary }}>
                         Aust Robotics Club
                       </span>
                     </div>
@@ -255,13 +258,22 @@ export function Navbar() {
           {/* DESKTOP NAVIGATION - Only shows when NOT mobile */}
           {/* ============================================ */}
           {!isMobile && (
-            <div className="flex-1 flex justify-center pl-[230px]">
-              <div ref={desktopNavRef} className="flex items-center gap-6 bg-black/10 backdrop-blur-md px-6 py-3 rounded-full border border-[rgba(46,204,113,0.2)]">
+            <div className="flex-1 flex items-center justify-center pl-[230px] gap-3">
+              <div
+                ref={desktopNavRef}
+                className="flex items-center gap-6 backdrop-blur-md px-6 py-3 rounded-full navbar-pill"
+                style={{
+                  backgroundColor: t.surfaceNavbar,
+                  border: `1px solid ${t.borderBrand}`,
+                  boxShadow: `0 0 12px rgba(46,204,113,0.15), 0 0 28px rgba(46,204,113,0.08), inset 0 0 12px rgba(46,204,113,0.04)`,
+                }}
+              >
               {navItems.map((item) =>
                 item.name === 'Activities' ? (
                   <div
                     key={item.name}
-                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    className="relative hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    style={{ color: t.textPrimary }}
                     onMouseEnter={() => setActivitiesOpen(true)}
                     onMouseLeave={() => setActivitiesOpen(false)}
                   >
@@ -272,7 +284,8 @@ export function Navbar() {
                     <AnimatePresence>
                       {activitiesOpen && (
                         <motion.div
-                          className="absolute left-0 top-full mt-2 bg-white/95 backdrop-blur-xl shadow-[0_0_40px_0_rgba(46,204,113,0.2)] rounded-md w-56 overflow-hidden"
+                          className="absolute left-0 top-full mt-2 backdrop-blur-xl shadow-[0_0_40px_0_rgba(46,204,113,0.2)] rounded-md w-56 overflow-hidden"
+                          style={{ backgroundColor: t.surfaceCardHover, border: `1px solid ${t.borderDefault}` }}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -282,7 +295,7 @@ export function Navbar() {
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.path}
-                              className="block px-4 py-3 text-gray-400 hover:text-[#2ECC71] transition-all text-sm font-medium"
+                              className="block px-4 py-3 hover:text-[#2ECC71] transition-all text-sm font-medium" style={{ color: t.textSecondary }}
                             >
                               {dropdownItem.name}
                             </Link>
@@ -294,7 +307,7 @@ export function Navbar() {
                 ) : item.name === 'Governing Panel' ? (
                   <div
                     key={item.name}
-                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap cursor-pointer"
+                    className="relative hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap cursor-pointer" style={{ color: t.textPrimary }}
                     onMouseEnter={() => setGoverningPanelOpen(true)}
                     onMouseLeave={() => setGoverningPanelOpen(false)}
                   >
@@ -305,22 +318,23 @@ export function Navbar() {
                     <AnimatePresence>
                       {governingPanelOpen && (
                         <motion.div
-                          className="absolute left-0 top-full mt-2 bg-white/95 backdrop-blur-xl shadow-[0_0_40px_0_rgba(46,204,113,0.2)] rounded-md w-48 max-h-96 overflow-y-auto"
+                          className="absolute left-0 top-full mt-2 backdrop-blur-xl shadow-[0_0_40px_0_rgba(46,204,113,0.2)] rounded-md w-48 max-h-96 overflow-y-auto"
+                          style={{ backgroundColor: t.surfaceCardHover, border: `1px solid ${t.borderDefault}` }}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ duration: 0.2 }}
                         >
                           {loadingSemesters ? (
-                            <div className="px-4 py-3 text-gray-400 text-sm">Loading...</div>
+                            <div className="px-4 py-3 text-sm" style={{ color: t.textSecondary }}>Loading...</div>
                           ) : governingPanelDropdownItems.length === 0 ? (
-                            <div className="px-4 py-3 text-gray-400 text-sm">No semesters found</div>
+                            <div className="px-4 py-3 text-sm" style={{ color: t.textSecondary }}>No semesters found</div>
                           ) : (
                             governingPanelDropdownItems.map((dropdownItem) => (
                               <Link
                                 key={dropdownItem.name}
                                 to={dropdownItem.path}
-                                className="block px-4 py-2 text-gray-400 hover:text-[#2ECC71] hover:bg-[rgba(46,204,113,0.1)] transition-all"
+                                className="block px-4 py-2 hover:text-[#2ECC71] hover:bg-[rgba(46,204,113,0.1)] transition-all" style={{ color: t.textSecondary }}
                               >
                                 {dropdownItem.name}
                               </Link>
@@ -336,7 +350,8 @@ export function Navbar() {
                     href={item.path}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    className="relative hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    style={{ color: t.textPrimary }}
                   >
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] group-hover:w-full transition-all duration-300 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]" />
@@ -346,7 +361,8 @@ export function Navbar() {
                     key={item.name}
                     to={item.path}
                     onClick={() => handleNavClick(item)}
-                    className="relative text-gray-400 hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    className="relative hover:text-[#2ECC71] transition-all group text-sm whitespace-nowrap"
+                    style={{ color: t.textPrimary }}
                   >
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] group-hover:w-full transition-all duration-300 shadow-[0_0_10px_0_rgba(46,204,113,0.8)]" />
@@ -367,8 +383,77 @@ export function Navbar() {
                 </motion.button>
               </Link>
             </div>
+
+              {/* Desktop theme toggle — sits right next to the nav pill */}
+              <motion.button
+                onClick={toggleTheme}
+                className="flex items-center justify-center rounded-xl backdrop-blur-md hover:border-[#2ECC71]/40 transition-colors flex-shrink-0"
+                style={{
+                  width: '42px', height: '42px',
+                  backgroundColor: t.surfaceCard,
+                  border: `1px solid ${t.borderFocus}`,
+                  color: t.textPrimary,
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Toggle theme"
+              >
+                <AnimatePresence mode="wait">
+                  {theme === 'dark' ? (
+                    <motion.div key="sun-d" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <Sun className="w-5 h-5 text-yellow-400" />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="moon-d" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                      <Moon className="w-5 h-5 text-blue-500" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
             </div>
           )}
+
+          {/* ============================================ */}
+          {/* THEME TOGGLE - Mobile only (fixed position) */}
+          {/* ============================================ */}
+          {isMobile && <div className="fixed z-50 top-5 right-20">
+            <motion.button
+              onClick={toggleTheme}
+              className="w-11 h-11 flex items-center justify-center rounded-xl backdrop-blur-md hover:border-[#2ECC71]/40 transition-colors"
+              style={{
+                backgroundColor: t.surfaceCard,
+                border: `1px solid ${t.borderFocus}`,
+                color: t.textPrimary,
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Toggle theme"
+            >
+              <AnimatePresence mode="wait">
+                {theme === 'dark' ? (
+                  <motion.div
+                    key="sun"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Sun className="w-5 h-5 text-yellow-400" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="moon"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Moon className="w-5 h-5 text-blue-300" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>}
 
           {/* ============================================ */}
           {/* MOBILE HAMBURGER - Only shows when isMobile is true */}
@@ -376,7 +461,12 @@ export function Navbar() {
           {isMobile && (
             <div className="fixed right-6 top-5 z-50">
               <motion.button
-                className="w-11 h-11 flex items-center justify-center rounded-xl bg-black/30 backdrop-blur-md border border-white/10 text-white"
+                className="w-11 h-11 flex items-center justify-center rounded-xl backdrop-blur-md transition-colors"
+                style={{
+                  backgroundColor: t.surfaceCard,
+                  border: `1px solid ${t.borderFocus}`,
+                  color: t.textPrimary,
+                }}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -429,14 +519,15 @@ export function Navbar() {
 
             {/* Drawer */}
             <motion.div
-              className="fixed top-0 right-0 h-full w-[80%] max-w-sm bg-gradient-to-b from-gray-900 via-gray-900 to-black z-50 shadow-2xl border-l border-white/10"
+              className="fixed top-0 right-0 h-full w-[80%] max-w-sm z-50 shadow-2xl"
+              style={{ background: t.surfaceDrawer, borderLeft: `1px solid ${t.borderDefault}` }}
               variants={menuVariants}
               initial="closed"
               animate="open"
               exit="closed"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+              <div className="flex items-center justify-between px-6 py-5 border-b" style={{ borderColor: t.borderDefault }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl overflow-hidden">
                     <img
@@ -446,12 +537,13 @@ export function Navbar() {
                     />
                   </div>
                   <div>
-                    <span className="text-white font-semibold text-sm">AUST</span>
+                    <span className="font-semibold text-sm" style={{ color: t.textPrimary }}>AUST</span>
                     <span className="text-[#2ECC71] font-semibold text-sm">RC</span>
                   </div>
                 </div>
                 <motion.button
-                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white"
+                  className="w-10 h-10 flex items-center justify-center rounded-xl"
+                  style={{ backgroundColor: t.borderSubtle, color: t.textPrimary }}
                   onClick={() => setMobileMenuOpen(false)}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -474,13 +566,13 @@ export function Navbar() {
                       <div className="flex items-center justify-between py-4 px-3">
                         <Link
                           to="/activities"
-                          className="flex-1 text-gray-300 hover:text-[#2ECC71] transition-colors text-base font-medium"
+                          className="flex-1 hover:text-[#2ECC71] transition-colors text-base font-medium" style={{ color: t.textPrimary }}
                           onClick={() => setMobileMenuOpen(false)}
                         >
                           {item.name}
                         </Link>
                         <button
-                          className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-300 hover:text-[#2ECC71] transition-colors -mr-2"
+                          className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 hover:text-[#2ECC71] transition-colors -mr-2" style={{ color: t.textPrimary }}
                           onClick={() => setMobileActivitiesOpen(!mobileActivitiesOpen)}
                         >
                           <motion.div
@@ -512,7 +604,8 @@ export function Navbar() {
                               >
                                 <Link
                                   to={dropdownItem.path}
-                                  className="flex items-center gap-2 py-3 px-4 text-gray-400 hover:text-[#2ECC71] transition-colors text-sm"
+                                  className="flex items-center gap-2 py-3 px-4 hover:text-[#2ECC71] transition-colors text-sm"
+                                  style={{ color: t.textSecondary }}
                                   onClick={() => setMobileMenuOpen(false)}
                                 >
                                   <ChevronRight className="w-4 h-4 text-[#2ECC71]/50" />
@@ -534,7 +627,7 @@ export function Navbar() {
                       className="border-b border-white/5"
                     >
                       <button
-                        className="w-full flex items-center justify-between py-4 px-3 text-gray-300 hover:text-[#2ECC71] transition-colors"
+                        className="w-full flex items-center justify-between py-4 px-3 hover:text-[#2ECC71] transition-colors" style={{ color: t.textPrimary }}
                         onClick={() => setMobileGoverningOpen(!mobileGoverningOpen)}
                       >
                         <span className="text-base font-medium">{item.name}</span>
@@ -555,9 +648,9 @@ export function Navbar() {
                             className="overflow-hidden bg-white/5 rounded-xl mb-3 mx-2 max-h-60 overflow-y-auto"
                           >
                             {loadingSemesters ? (
-                              <div className="py-3 px-4 text-gray-400 text-sm">Loading...</div>
+                              <div className="py-3 px-4 text-sm" style={{ color: t.textMuted }}>Loading...</div>
                             ) : governingPanelDropdownItems.length === 0 ? (
-                              <div className="py-3 px-4 text-gray-400 text-sm">No semesters found</div>
+                              <div className="py-3 px-4 text-sm" style={{ color: t.textMuted }}>No semesters found</div>
                             ) : (
                               governingPanelDropdownItems.map((dropdownItem, dropIndex) => (
                                 <motion.div
@@ -571,7 +664,8 @@ export function Navbar() {
                                 >
                                   <Link
                                     to={dropdownItem.path}
-                                    className="flex items-center gap-2 py-3 px-4 text-gray-400 hover:text-[#2ECC71] transition-colors text-sm"
+                                    className="flex items-center gap-2 py-3 px-4 hover:text-[#2ECC71] transition-colors text-sm"
+                                    style={{ color: t.textMuted }}
                                     onClick={() => setMobileMenuOpen(false)}
                                   >
                                     <ChevronRight className="w-4 h-4 text-[#2ECC71]/50" />
@@ -594,7 +688,7 @@ export function Navbar() {
                       href={item.path}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between py-4 px-3 text-gray-300 hover:text-[#2ECC71] transition-colors border-b border-white/5"
+                      className="flex items-center justify-between py-4 px-3 hover:text-[#2ECC71] transition-colors border-b border-white/5" style={{ color: t.textPrimary }}
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <span className="text-base font-medium">{item.name}</span>
@@ -610,7 +704,7 @@ export function Navbar() {
                     >
                       <Link
                         to={item.path}
-                        className="flex items-center justify-between py-4 px-3 text-gray-300 hover:text-[#2ECC71] transition-colors border-b border-white/5"
+                        className="flex items-center justify-between py-4 px-3 hover:text-[#2ECC71] transition-colors border-b border-white/5" style={{ color: t.textPrimary }}
                         onClick={() => handleNavClick(item)}
                       >
                         <span className="text-base font-medium">{item.name}</span>
@@ -622,7 +716,7 @@ export function Navbar() {
               </div>
 
               {/* Footer */}
-              <div className="absolute bottom-0 left-0 right-0 px-6 py-5 border-t border-white/10 bg-gradient-to-t from-black via-gray-900/95 to-transparent">
+              <div className="absolute bottom-0 left-0 right-0 px-6 py-5 border-t" style={{ borderColor: t.borderDefault, background: `linear-gradient(to top, ${t.pageBg}, ${t.pageBgAlt}99, transparent)` }}>
                 <Link to="/get-app" onClick={() => setMobileMenuOpen(false)}>
                   <motion.button
                     className="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-semibold rounded-xl shadow-[0_0_20px_0_rgba(46,204,113,0.4)]"
@@ -633,7 +727,7 @@ export function Navbar() {
                     Download App
                   </motion.button>
                 </Link>
-                <p className="text-center text-gray-500 text-xs mt-4">
+                <p className="text-center text-xs mt-4" style={{ color: t.textMuted }}>
                   ©2026 AUST Robotics Club
                 </p>
               </div>

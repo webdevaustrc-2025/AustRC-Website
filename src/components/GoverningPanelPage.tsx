@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { Facebook, Linkedin, Github, Mail, X } from "lucide-react";
+import { useTokens } from "@/tokens/useTokens";
 import { Card } from "./ui/card";
 import { useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -118,6 +119,7 @@ function isUnknown(memberName: string) {
 }
 
 export function GoverningPanelPage() {
+  const t = useTokens();
   const { panelId } = useParams<{ panelId: string }>();
 
   const getDisplayText = (slug: string) => {
@@ -393,10 +395,10 @@ export function GoverningPanelPage() {
 
   return (
     <>
-      <div className="min-h-screen relative overflow-hidden bg-black pt-32 pb-20">
+      <div className="min-h-screen relative overflow-hidden pt-32 pb-20" style={{ backgroundColor: t.pageBg }}>
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black" />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom right, ${t.pageBg}, ${t.pageBgAlt}, ${t.pageBg})` }} />
           <motion.div
             className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[rgba(46,204,113,0.15)] via-transparent to-[rgba(46,204,113,0.15)]"
             style={{ filter: "blur(64px)" }}
@@ -441,11 +443,11 @@ export function GoverningPanelPage() {
               </span>
             </motion.div>
 
-            <h1 className="text-6xl mb-6 bg-gradient-to-r from-white via-[#2ECC71] to-white bg-clip-text text-transparent">
+            <h1 className="text-6xl mb-6 text-[#2ECC71]">
               {getDisplayText(panelId || "")}
             </h1>
 
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: t.textSecondary }}>
               {panelId === "hall-of-fame"
                 ? "Honoring the exceptional leaders who shaped the legacy of Aust Robotics Club"
                 : "Meet the dedicated panel members leading the way"}
@@ -455,11 +457,11 @@ export function GoverningPanelPage() {
           {/* Members */}
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-gray-400">Loading panel members...</p>
+              <p style={{ color: t.textSecondary }}>Loading panel members...</p>
             </div>
           ) : members.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-400">
+              <p style={{ color: t.textSecondary }}>
                 No members found for this section yet.
               </p>
             </div>
@@ -487,12 +489,15 @@ export function GoverningPanelPage() {
                       onClick={() => setSelectedPerson(member)}
                     >
                       {/* ✅ min height to keep cards uniform */}
-                      <Card className="relative group overflow-hidden bg-gradient-to-br from-black/90 via-[#0a1810]/90 to-black/90 border-[#2ECC71]/20 hover:border-[#2ECC71]/50 backdrop-blur-xl transition-all duration-500 hover:shadow-[0_0_60px_0_rgba(46,204,113,0.3)] cursor-pointer min-h-[560px] h-full flex flex-col">
+                      <Card
+                        className="relative group overflow-hidden border-[#2ECC71]/20 hover:border-[#2ECC71]/50 backdrop-blur-xl transition-all duration-500 hover:shadow-[0_0_60px_0_rgba(46,204,113,0.3)] cursor-pointer min-h-[560px] h-full flex flex-col"
+                        style={{ background: `linear-gradient(to bottom right, ${t.pageBg}e6, ${t.nodeBg}e6, ${t.pageBg}e6)` }}
+                      >
                         {/* Glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#2ECC71]/5 via-transparent to-[#27AE60]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         {/* ✅ FULL IMAGE SHOWING (no cropping) */}
-                        <div className="relative w-full aspect-[3/4] bg-black overflow-hidden">
+                        <div className="relative w-full aspect-[3/4] overflow-hidden" style={{ backgroundColor: t.avatarBg }}>
                           <motion.img
                             src={member.image}
                             alt={member.name}
@@ -507,7 +512,7 @@ export function GoverningPanelPage() {
                         {/* Content */}
                         <div className="relative p-6 space-y-4 flex-1 flex flex-col justify-between">
                           <div>
-                            <h3 className="text-2xl text-white mb-2">
+                            <h3 className="text-2xl mb-2" style={{ color: t.textPrimary }}>
                               {member.name}
                             </h3>
                             <p className="text-[#2ECC71]">{member.title}</p>
@@ -584,19 +589,21 @@ export function GoverningPanelPage() {
                 onClick={() => setSelectedPerson(null)}
               >
                 <div
-                  className="bg-[#0a1810] border border-[#2ECC71]/30 rounded-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row shadow-[0_0_50px_0_rgba(46,204,113,0.3)] relative"
+                  className="border border-[#2ECC71]/30 rounded-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row shadow-[0_0_50px_0_rgba(46,204,113,0.3)] relative"
+                  style={{ backgroundColor: t.nodeBg }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
                     onClick={() => setSelectedPerson(null)}
-                    className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-[#2ECC71]/20 rounded-full text-white hover:text-[#2ECC71] transition-all z-10"
+                    className="absolute top-4 right-4 p-2 hover:bg-[#2ECC71]/20 rounded-full hover:text-[#2ECC71] transition-all z-10"
+                    style={{ backgroundColor: t.surfaceOverlay, color: t.textPrimary }}
                     aria-label="Close"
                   >
                     <X size={24} />
                   </button>
 
                   {/* Image */}
-                  <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-black overflow-hidden">
+                  <div className="w-full md:w-1/2 h-64 md:h-auto relative overflow-hidden" style={{ backgroundColor: t.avatarBg }}>
                     <motion.img
                       src={selectedPerson.image}
                       alt={selectedPerson.name}
@@ -605,8 +612,9 @@ export function GoverningPanelPage() {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
                     />
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-t from-[#0a1810] via-transparent to-transparent md:bg-gradient-to-r"
+                    <motion.div
+                      className="absolute inset-0 md:bg-gradient-to-r"
+                      style={{ background: `linear-gradient(to top, ${t.nodeBg}, transparent, transparent)` }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.5, delay: 0.3 }}
@@ -621,7 +629,7 @@ export function GoverningPanelPage() {
                   </div>
 
                   {/* Details */}
-                  <div className="w-full md:w-1/2 p-8 flex flex-col justify-center bg-black/40 overflow-hidden">
+                  <div className="w-full md:w-1/2 p-8 flex flex-col justify-center overflow-hidden" style={{ backgroundColor: t.surfaceCard }}>
                     {/* Category Badge */}
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
@@ -635,7 +643,7 @@ export function GoverningPanelPage() {
                     </motion.div>
 
                     {/* Name with Typewriter */}
-                    <h2 className="text-4xl text-white font-bold mb-2">
+                    <h2 className="text-4xl font-bold mb-2" style={{ color: t.textPrimary }}>
                       <TypewriterText 
                         text={selectedPerson.name} 
                         delay={0.4} 
@@ -655,8 +663,9 @@ export function GoverningPanelPage() {
                     <GlowingDivider delay={0.4 + (selectedPerson.name.length + selectedPerson.title.length) * 0.035 + 0.5} />
 
                     {/* Additional Info with staggered reveal */}
-                    <motion.div 
-                      className="space-y-3 text-gray-300 mb-6"
+                    <motion.div
+                      className="space-y-3 mb-6"
+                      style={{ color: t.textSecondary }}
                       initial="hidden"
                       animate="visible"
                       variants={{

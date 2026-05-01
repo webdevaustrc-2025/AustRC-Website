@@ -129,6 +129,7 @@
     font-family: 'Funnel Display', 'Exo', sans-serif;
     overflow-x: hidden;
   }
+
 }
 
 /**
@@ -234,7 +235,6 @@ body {
   .backdrop-blur {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background-color: rgba(0, 0, 0, 0.95) !important;
   }
   
   /* Reduce animation complexity on mobile */
@@ -261,4 +261,259 @@ body {
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   AustRC Design Tokens
+   CSS custom properties for each token, toggled via .dark class on <html>.
+   @theme inline block maps them to Tailwind utilities:
+     bg-surface-card, text-text-primary, border-border-brand, etc.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Dark (default) */
+:root,
+.dark {
+  --color-page-bg:              #000000;
+  --color-page-bg-alt:          #0a0a0a;
+
+  --color-surface-card:         rgba(255,255,255,0.025);
+  --color-surface-card-hover:   #111111;
+  --color-surface-overlay:      rgba(0,0,0,0.6);
+  --color-surface-navbar:       rgba(0,0,0,0.1);
+  --color-surface-drawer:       #111111;
+
+  --color-text-primary:         #ffffff;
+  --color-text-secondary:       rgba(255,255,255,0.48);
+  --color-text-muted:           rgba(255,255,255,0.22);
+  --color-text-muted-mid:       rgba(255,255,255,0.32);
+  --color-text-muted-high:      rgba(255,255,255,0.35);
+  --color-text-dot:             rgba(255,255,255,0.18);
+
+  --color-border-subtle:        rgba(255,255,255,0.05);
+  --color-border-default:       rgba(255,255,255,0.07);
+  --color-border-focus:         rgba(255,255,255,0.12);
+  --color-border-brand:         rgba(46,204,113,0.2);
+  --color-border-brand-hover:   rgba(46,204,113,0.55);
+
+  --color-brand-green:          #2ECC71;
+  --color-brand-green-dark:     #27AE60;
+  --color-brand-green-mid:      #3DED97;
+}
+
+/* Light overrides */
+html:not(.dark) {
+  --color-page-bg:              #f1f5f9;
+  --color-page-bg-alt:          #ffffff;
+
+  --color-surface-card:         rgba(255,255,255,0.92);
+  --color-surface-card-hover:   #ffffff;
+  --color-surface-overlay:      rgba(15,23,42,0.5);
+  --color-surface-navbar:       rgba(255,255,255,0.75);
+  --color-surface-drawer:       #ffffff;
+
+  --color-text-primary:         #0f172a;
+  --color-text-secondary:       #475569;
+  --color-text-muted:           #94a3b8;
+  --color-text-muted-mid:       #64748b;
+  --color-text-muted-high:      #475569;
+  --color-text-dot:             #cbd5e1;
+
+  --color-border-subtle:        rgba(0,0,0,0.06);
+  --color-border-default:       rgba(0,0,0,0.1);
+  --color-border-focus:         rgba(0,0,0,0.15);
+  --color-border-brand:         rgba(22,163,74,0.5);
+  --color-border-brand-hover:   rgba(22,163,74,0.9);
+
+  --color-brand-green:          #16a34a;
+  --color-brand-green-dark:     #15803d;
+  --color-brand-green-mid:      #22c55e;
+}
+
+/* Map tokens into Tailwind's color namespace so utility classes work:
+   bg-page-bg, text-text-primary, border-border-brand, etc. */
+@theme inline {
+  --color-page-bg:              var(--color-page-bg);
+  --color-page-bg-alt:          var(--color-page-bg-alt);
+
+  --color-surface-card:         var(--color-surface-card);
+  --color-surface-card-hover:   var(--color-surface-card-hover);
+  --color-surface-overlay:      var(--color-surface-overlay);
+  --color-surface-navbar:       var(--color-surface-navbar);
+  --color-surface-drawer:       var(--color-surface-drawer);
+
+  --color-text-primary:         var(--color-text-primary);
+  --color-text-secondary:       var(--color-text-secondary);
+  --color-text-muted:           var(--color-text-muted);
+  --color-text-muted-mid:       var(--color-text-muted-mid);
+  --color-text-muted-high:      var(--color-text-muted-high);
+  --color-text-dot:             var(--color-text-dot);
+
+  --color-border-subtle:        var(--color-border-subtle);
+  --color-border-default:       var(--color-border-default);
+  --color-border-focus:         var(--color-border-focus);
+  --color-border-brand:         var(--color-border-brand);
+  --color-border-brand-hover:   var(--color-border-brand-hover);
+
+  --color-brand-green:          var(--color-brand-green);
+  --color-brand-green-dark:     var(--color-brand-green-dark);
+  --color-brand-green-mid:      var(--color-brand-green-mid);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLOBAL LIGHT-MODE OVERRIDES
+   Remaps hardcoded Tailwind gray / white / black text + bg utilities so that
+   components which still use these classes automatically look correct in both
+   themes without requiring per-component edits.
+
+   Specificity: these rules are inside html:not(.dark), which matches any
+   element that is NOT inside a .dark root — i.e. light mode only.
+   They are intentionally lower-specificity than inline `style` props so token-
+   based inline styles always win.
+   ───────────────────────────────────────────────────────────────────────────── */
+html:not(.dark) {
+
+  /* ── Text: white → near-black ─────────────────────────────────────────── */
+  .text-white  { color: #0f172a !important; }
+
+  /* ── Text: gray scale → slate scale (readable on light bg) ────────────── */
+  .text-gray-50,
+  .text-gray-100  { color: #1e293b !important; }
+  .text-gray-200  { color: #1e293b !important; }
+  .text-gray-300  { color: #334155 !important; }
+  .text-gray-400  { color: #475569 !important; }
+  .text-gray-500  { color: #64748b !important; }
+  .text-gray-600  { color: #475569 !important; }
+  .text-gray-700  { color: #334155 !important; }
+
+  /* slate */
+  .text-slate-300 { color: #334155 !important; }
+  .text-slate-400 { color: #475569 !important; }
+  .text-slate-500 { color: #64748b !important; }
+
+  /* zinc / neutral / stone */
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-zinc-500,
+  .text-neutral-400,
+  .text-neutral-500,
+  .text-stone-400,
+  .text-stone-500   { color: #64748b !important; }
+
+  /* ── Backgrounds: black / dark-gray → light surfaces ──────────────────── */
+  .bg-black         { background-color: #f1f5f9 !important; }
+  .bg-gray-900      { background-color: #f1f5f9 !important; }
+  .bg-gray-800      { background-color: #e2e8f0 !important; }
+
+  /* Gradient "from" stops containing black / dark grays */
+  .from-black       { --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important; }
+  .via-black        { --tw-gradient-via: #f1f5f9 var(--tw-gradient-via-position)   !important; }
+  .to-black         { --tw-gradient-to:   #f1f5f9 var(--tw-gradient-to-position)   !important; }
+  .from-gray-900    { --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important; }
+  .via-gray-900     { --tw-gradient-via: #f1f5f9 var(--tw-gradient-via-position)   !important; }
+  .to-gray-900      { --tw-gradient-to:   #f1f5f9 var(--tw-gradient-to-position)   !important; }
+  .from-gray-950    { --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important; }
+  .to-gray-950      { --tw-gradient-to:   #f1f5f9 var(--tw-gradient-to-position)   !important; }
+
+  /* Opacity variants that are common (/40, /60, /80) */
+  .bg-black\/40,
+  .bg-black\/60,
+  .bg-black\/80     { background-color: rgba(241,245,249,0.85) !important; }
+  .bg-gray-900\/80,
+  .bg-gray-800\/80  { background-color: rgba(226,232,240,0.85) !important; }
+
+  /* Card/panel content gradient overlays that use black */
+  .from-black\/60   { --tw-gradient-from: rgba(241,245,249,0.6) var(--tw-gradient-from-position) !important; }
+  .to-black\/80     { --tw-gradient-to:   rgba(241,245,249,0.8) var(--tw-gradient-to-position)   !important; }
+  .via-black\/60    { --tw-gradient-via:  rgba(241,245,249,0.6) var(--tw-gradient-via-position)   !important; }
+
+  /* ── Border: dark borders → light borders ──────────────────────────────── */
+  .border-gray-700  { border-color: rgba(0,0,0,0.15) !important; }
+  .border-gray-600  { border-color: rgba(0,0,0,0.12) !important; }
+}
+
+/* ─── CSS-only particle animations (replaces JS motion.div particles) ───────
+   GPU-composited: only opacity + transform, no layout/paint triggers.
+   ─────────────────────────────────────────────────────────────────────────── */
+@keyframes particle-float {
+  0%   { transform: translateY(0)   translateZ(0); opacity: 0.25; }
+  50%  { transform: translateY(-80px) translateZ(0); opacity: 0.5; }
+  100% { transform: translateY(-160px) translateZ(0); opacity: 0; }
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1)   translateZ(0); opacity: 0.3; }
+  50%       { transform: scale(1.2) translateZ(0); opacity: 0.5; }
+}
+
+@keyframes orb-pulse-reverse {
+  0%, 100% { transform: scale(1.2) translateZ(0); opacity: 0.5; }
+  50%       { transform: scale(1)   translateZ(0); opacity: 0.3; }
+}
+
+@keyframes radial-breathe {
+  0%, 100% { transform: scale(1)   translateZ(0); opacity: 0.3; }
+  50%       { transform: scale(1.2) translateZ(0); opacity: 0.5; }
+}
+
+/* Particle dot — apply via className="particle-dot" with inline --delay / --dur */
+.particle-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #2ECC71;
+  border-radius: 50%;
+  will-change: transform, opacity;
+  animation: particle-float var(--dur, 8s) var(--delay, 0s) infinite linear;
+}
+
+/* Animated orb — add gpu-orb class alongside existing positioning */
+.gpu-orb {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+.gpu-orb-pulse         { animation: orb-pulse         var(--dur, 5s) ease-in-out infinite; }
+.gpu-orb-pulse-reverse { animation: orb-pulse-reverse  var(--dur, 6s) ease-in-out infinite; }
+.gpu-radial-breathe    { animation: radial-breathe     var(--dur, 8s) ease-in-out infinite; }
+
+/* Navbar pill — breathing green glow */
+@keyframes navbar-glow {
+  0%,100% {
+    box-shadow: 0 0 10px rgba(46,204,113,0.12), 0 0 24px rgba(46,204,113,0.07), inset 0 0 10px rgba(46,204,113,0.03);
+  }
+  50% {
+    box-shadow: 0 0 18px rgba(46,204,113,0.28), 0 0 40px rgba(46,204,113,0.14), inset 0 0 16px rgba(46,204,113,0.07);
+  }
+}
+.navbar-pill {
+  will-change: box-shadow;
+  animation: navbar-glow 3.5s ease-in-out infinite;
+}
+
+/* In light mode — use darker green glow so it's visible on white */
+html:not(.dark) .navbar-pill {
+  animation: navbar-glow-light 3.5s ease-in-out infinite;
+}
+@keyframes navbar-glow-light {
+  0%,100% {
+    box-shadow: 0 0 10px rgba(22,163,74,0.2), 0 0 24px rgba(22,163,74,0.1), inset 0 0 10px rgba(22,163,74,0.05);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(22,163,74,0.4), 0 0 44px rgba(22,163,74,0.2), inset 0 0 18px rgba(22,163,74,0.1);
+  }
+}
+
+/* Hero circuit — boost opacity in light mode so traces are clearly visible */
+html:not(.dark) .hs-circuit-static { opacity: 0.45 !important; }
+html:not(.dark) .hs-circuit-pads   { opacity: 0.55 !important; }
+html:not(.dark) .hs-circuit-chips  { opacity: 0.4  !important; }
+
+/* Disable ALL decorative animations on mobile for max performance */
+@media (max-width: 1023px) {
+  .particle-dot,
+  .gpu-orb-pulse,
+  .gpu-orb-pulse-reverse,
+  .gpu-radial-breathe {
+    animation: none !important;
+    opacity: 0 !important;
+  }
 }
