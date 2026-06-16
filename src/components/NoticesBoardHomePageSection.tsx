@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useTokens } from '@/tokens/useTokens';
+import { LinkifyText } from './LinkifyText';
 
 interface Notice {
   id: string;
@@ -164,8 +165,8 @@ const NoticeCard = ({
                 })()}
               </div>
 
-              <p className="text-xs sm:text-sm line-clamp-3 mb-3 leading-relaxed" style={{ color: t.textSecondary }}>
-                {notice.Short_Description}
+              <p className="text-xs sm:text-sm line-clamp-3 mb-3 leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
+                <LinkifyText text={notice.Short_Description} />
               </p>
 
               {/* Footer */}
@@ -311,10 +312,10 @@ const NoticeDetailModal = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
-                className="bg-white/[0.03] rounded-xl p-5 border border-[#2ECC71]/10"
+                className="bg-white/[0.03] rounded-xl p-8 border border-[#2ECC71]/10"
               >
-                <p className="text-sm sm:text-base leading-relaxed" style={{ color: t.textSecondary }}>
-                  {notice.Short_Description}
+                <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap" style={{ color: t.textSecondary }}>
+                  <LinkifyText text={notice.Short_Description} />
                 </p>
               </motion.div>
 
