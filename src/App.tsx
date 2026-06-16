@@ -34,6 +34,7 @@ import { OtherActivityDetailPage } from './components/activities/OtherActivityDe
 import { CollaborationsPage } from './components/CollaborationsPage';
 import { SponsorsPage } from './components/SponsorsPage';
 import JourneyPage from './components/Journeypage';
+import { BatchRepresentativePage } from './components/BatchRepresentativePage';
 
 
 // Scroll to top on every route change
@@ -113,6 +114,7 @@ function AppContent() {
         <Route path="/get-app" element={<AppDownloadPage />} />
         <Route path="/find-austrc-id" element={<FindAustrcIdPage />} />
         <Route path="/website-journey" element={<JourneyPage />} />
+        <Route path="/batch-representative" element={<BatchRepresentativePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </div>
