@@ -35,6 +35,7 @@ import { CollaborationsPage } from './components/CollaborationsPage';
 import { SponsorsPage } from './components/SponsorsPage';
 import JourneyPage from './components/Journeypage';
 import { BatchRepresentativePage } from './components/BatchRepresentativePage';
+import { RegistrationPage } from './components/RegistrationPage';
 import { AdminPage } from './components/admin/AdminPage';
 
 
@@ -93,6 +94,8 @@ function SiteLayout() {
           <Route path="/find-austrc-id" element={<FindAustrcIdPage />} />
           <Route path="/website-journey" element={<JourneyPage />} />
           <Route path="/batch-representative" element={<BatchRepresentativePage />} />
+          <Route path="/registration" element={<RegistrationPage />} />
+          <Route path="/gm-registration" element={<RegistrationPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

@@ -1,4 +1,6 @@
 import { motion } from "motion/react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useTokens } from "@/tokens/useTokens";
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -339,6 +341,22 @@ export function HeroSection() {
               Join a community of innovators mastering quadcopters, AI, and next-gen robotics.
               From research to real machines — we build the future.
             </motion.p>
+
+            {/* Registration CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.54 }}
+              className="flex justify-center pt-4"
+            >
+              <Link
+                to="/registration"
+                className="group inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-white font-bold rounded-full shadow-[0_0_30px_0_rgba(46,204,113,0.3)] hover:shadow-[0_0_50px_0_rgba(46,204,113,0.5)] transition-all duration-300 transform hover:-translate-y-1 text-base"
+              >
+                <span>Register as General Member</span>
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
 
           </div>
         </div>
