@@ -324,6 +324,18 @@ export function HeroSection() {
           }
         }
 
+        @media (max-width: 640px) {
+          .premium-shimmer-btn {
+            padding: 10px 24px;
+            font-size: 0.85rem;
+            gap: 8px;
+          }
+          .premium-shimmer-btn svg {
+            width: 15px;
+            height: 15px;
+          }
+        }
+
         /* Kill desktop board animations on mobile */
         @media (max-width: 1023px) {
           .hs-pulse-a, .hs-pulse-b { animation: none !important; }
