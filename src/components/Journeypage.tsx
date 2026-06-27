@@ -217,7 +217,7 @@ const milestones = [
     side: "right",
     title: "Full Stack Website & Mobile App Completed",
     description:
-"Under the leadership of <strong>Director Saobia Islam Tinni</strong>, with <strong>Assistant Directors Shajedul Kabir Rafi and Arany Hasan</strong>, the team has successfully completed the official <strong>Full Stack Website and Mobile Application</strong> for the club. Every member was <strong>incredibly active, skilled, and dedicated</strong> delivering with <strong>precision and passion</strong>, and it was their <strong>collective dedication</strong> that made it possible to complete a <strong>full-scale, production ready platform in a remarkably short time.</strong> <strong>Director Saobia Islam Tinni's outstanding leadership</strong> kept every team member <strong>motivated, aligned, and excited</strong> to give their absolute best. A heartfelt thanks to <strong>Fall '24 Director Ahnaf Amer</strong> for his <strong>vision and guidance</strong> that laid the foundation for the club's <strong>first-ever live deployment</strong> of a full stack platform. To every panel member of <strong>Spring '25</strong> — thank you. This is not just a milestone; it's a <strong>legacy</strong> that will inspire future generations of the AUST Robotics Club.",   
+"Under the leadership of <strong>Director Saobia Islam Tinni</strong>, with <strong>Assistant Directors Shajedul Kabir Rafi and Arany Hasan</strong>, the team has successfully completed the official <strong>Full Stack Website and Mobile Application</strong> for the club. This advanced platform is powered by a robust <strong>database</strong> and features a dynamic <strong>admin panel</strong> for complete management. <strong>Director Saobia Islam Tinni</strong> worked tirelessly, showing immense dedication and putting in incredible effort to spearhead the project. Every member was <strong>incredibly active, skilled, and dedicated</strong>, delivering with <strong>precision and passion</strong>, and it was their <strong>collective dedication</strong> along with Saobia's outstanding leadership that kept the team <strong>motivated, aligned, and excited</strong> to complete a <strong>full-scale, production-ready platform in a remarkably short time.</strong> A heartfelt thanks to <strong>Fall '24 Director Ahnaf Amer</strong> for his <strong>vision and guidance</strong> that laid the foundation for the club's <strong>first-ever live deployment</strong> of a full stack platform. To every panel member of <strong>Spring '25</strong> — thank you. This is not just a milestone; it's a <strong>legacy</strong> that will inspire future generations of the AUST Robotics Club.",   
  achievement: "Full Stack Website ✦ Mobile App — both completed",
     people: [
       {
@@ -237,6 +237,34 @@ const milestones = [
       },
     ],
     icon: "🏆",
+  },
+  {
+    id: "arcevent",
+    period: "Spring 25",
+    tag: "Event Platform",
+    side: "left",
+    title: "Fullstack ARC Event Management Website Completed",
+    description:
+      "Under the leadership of <strong>Director Saobia Islam Tinni</strong>, alongside Assistant Directors <strong>Shajedul Kabir Rafi</strong> and <strong>Arany Hasan</strong>, the team successfully completed the official fullstack event management website for the <strong>AUST Rover Challenge (ARC) national competition</strong>. Developed using <strong>Next.js</strong>, powered by a <strong>PostgreSQL database</strong>, and integrated with a comprehensive <strong>admin panel</strong>, the platform streamlines candidate registration and competition logistics. The project was a true collective effort, driven by an incredibly active and dedicated team. Saobia contributed tirelessly alongside them, leading not just as a director but as a hands-on contributor whose commitment and encouragement inspired the team to give their absolute best. A heartfelt thanks goes to the entire team for their relentless efforts and dedication in bringing this project to life, marking this platform as a major achievement for the team.<br/><br/><strong>Live Link:</strong> <a href='https://arc-event-website.vercel.app/' target='_blank' rel='noopener noreferrer' style='color:#2ECC71;text-decoration:underline;font-weight:600'>arc-event-website.vercel.app</a>",
+    achievement: "Fullstack event management website with PostgreSQL, admin panel and Next.js built for ARC",
+    people: [
+      {
+        name: "Saobia Islam Tinni",
+        role: "Director, Web and App Development Team, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Saobia%20Islam%20-%20Saobia%20Islam%20(Tinni).png?updatedAt=1769118154021",
+      },
+      {
+        name: "Shajedul Kabir Rafi",
+        role: "Assistant Director, Web & App Development Team, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Shajedul%20Kabir%20Rafi.jpg?updatedAt=1769118153733",
+      },
+      {
+        name: "Arany Hasan",
+        role: "Assistant Director, Web & App Development Team, Spring'25",
+        img: "https://ik.imagekit.io/mekt2pafz/Web%20site%20team/Arany%20-%20Arany%20Hasan.jpeg?updatedAt=1769118153821",
+      },
+    ],
+    icon: "📅",
   },
 ];
 
@@ -600,7 +628,7 @@ function Hero() {
           {[
             { v: "2024", l: "Founded" },
             { v: "4", l: "Panels" },
-            { v: "5", l: "Websites" },
+            { v: "6", l: "Websites" },
             { v: "∞", l: "Ambition" },
           ].map((s) => (
             <div key={s.l} className="flex flex-col items-center px-5 py-3 rounded-xl" style={{ backgroundColor: t.statChipBg, border: `1px solid ${t.statChipBorder}` }}>
