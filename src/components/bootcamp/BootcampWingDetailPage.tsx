@@ -1,940 +1,873 @@
-import { motion, useScroll, useSpring, useTransform } from 'motion/react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import {
-  ArrowLeft,
-  BadgeCheck,
-  BookOpen,
-  CalendarDays,
-  CheckCircle2,
-  ChevronRight,
-  Clock,
-  ExternalLink,
-  Laptop,
-  MonitorCog,
-  ShieldCheck,
   Users,
-  Zap,
-  Star,
-  Trophy,
-  ArrowRight,
-  Sparkles,
+  Radio,
+  Group,
+  ClipboardList,
+  CalendarDays,
+  BookOpen,
+  Armchair,
+  Monitor,
   Target,
-  Cpu,
+  ChevronLeft,
+  Sparkles,
+  ArrowRight,
+  Map,
+  Trophy,
+  CheckCircle2,
 } from 'lucide-react';
-import { BOOTCAMP_BASE_PATH, getBootcampWingBySlug } from '@/data/bootcampData';
+import {
+  BOOTCAMP_BASE_PATH,
+  getBootcampWingBySlug,
+  bootcampWings,
+} from '@/data/bootcampData';
 import { useTokens } from '@/tokens/useTokens';
-import { useState, useRef } from 'react';
 
-// ─── Particle Config (same as BootcampPage) ──────────────────────────────────
-const DETAIL_PARTICLES = [
-  { left: '4%',  top: '12%', dur: '11s', delay: '0s'   },
-  { left: '14%', top: '58%', dur: '14s', delay: '2s'   },
-  { left: '24%', top: '33%', dur: '9s',  delay: '1s'   },
-  { left: '36%', top: '78%', dur: '12s', delay: '3s'   },
-  { left: '50%', top: '18%', dur: '8s',  delay: '0.5s' },
-  { left: '62%', top: '68%', dur: '13s', delay: '2.5s' },
-  { left: '74%', top: '42%', dur: '10s', delay: '4s'   },
-  { left: '86%', top: '22%', dur: '9s',  delay: '1.5s' },
-  { left: '93%', top: '72%', dur: '11s', delay: '3.5s' },
-  { left: '32%', top: '52%', dur: '10s', delay: '0.8s' },
-];
-
-// ─── Premium Background (identical to BootcampPage) ──────────────────────────
-const PremiumBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.75)_100%)]" />
-    <div
-      className="absolute top-0 left-1/4 w-[700px] h-[700px] rounded-full hidden lg:block gpu-orb gpu-orb-pulse"
-      style={{ background: 'radial-gradient(circle, rgba(46,204,113,0.09) 0%, transparent 70%)', '--dur': '8s' } as React.CSSProperties}
-    />
-    <div
-      className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full hidden lg:block gpu-orb gpu-orb-pulse-reverse"
-      style={{ background: 'radial-gradient(circle, rgba(39,174,96,0.07) 0%, transparent 70%)', '--dur': '10s' } as React.CSSProperties}
-    />
-    <div
-      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full hidden lg:block gpu-orb gpu-orb-pulse"
-      style={{ background: 'radial-gradient(circle, rgba(46,204,113,0.04) 0%, transparent 70%)', '--dur': '12s' } as React.CSSProperties}
-    />
-    <div className="hidden lg:block">
-      {DETAIL_PARTICLES.map((p, i) => (
-        <span
-          key={i}
-          className="particle-dot"
-          style={{ left: p.left, top: p.top, '--dur': p.dur, '--delay': p.delay } as React.CSSProperties}
-        />
-      ))}
-    </div>
-  </div>
-);
-
-// ─── Ambient Glows (same as BootcampPage) ────────────────────────────────────
-const AmbientGlows = () => (
-  <>
-    <div
-      className="absolute -top-32 -left-32 w-[450px] h-[450px] rounded-full blur-[130px] pointer-events-none z-0"
-      style={{ backgroundColor: 'rgba(46,204,113,0.12)' }}
-    />
-    <div
-      className="absolute -bottom-32 -right-32 w-[350px] h-[350px] rounded-full blur-[110px] pointer-events-none z-0"
-      style={{ backgroundColor: 'rgba(39,174,96,0.08)' }}
-    />
-  </>
-);
-
-// ─── Scroll Progress Bar ──────────────────────────────────────────────────────
-const ScrollProgress = () => {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60] origin-left z-[99999]"
-      style={{ scaleX }}
-    />
-  );
-};
-
-// ─── Registration handler ─────────────────────────────────────────────────────
-function handleRegistrationClick(e: React.MouseEvent<HTMLAnchorElement>, url: string) {
+function handleRegistrationClick(
+  e: React.MouseEvent<HTMLAnchorElement>,
+  url: string
+) {
   if (!url || url === '#') {
     e.preventDefault();
     alert('Registration form link will be added soon.');
   }
 }
 
-// ─── Hero Section ─────────────────────────────────────────────────────────────
-const HeroSection = ({ wing }: { wing: ReturnType<typeof getBootcampWingBySlug> }) => {
+export function BootcampWingDetailPage() {
+  const { wingSlug } = useParams();
+  const wing = getBootcampWingBySlug(wingSlug);
   const t = useTokens();
-  if (!wing) return null;
+  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] = useState<'learn' | 'roadmap' | 'outcomes'>('learn');
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [hoveredInfo, setHoveredInfo] = useState<number | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMounted(true), 80);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!wing) {
+    return (
+      <main
+        style={{
+          minHeight: '100vh',
+          backgroundColor: t.pageBg,
+          color: t.textPrimary,
+          padding: '120px 20px 60px',
+        }}
+      >
+        <style>{`
+          @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .nf-link {
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: inherit;
+            text-decoration: none;
+          }
+          .nf-link:hover {
+            background: rgba(46,204,113,0.1) !important;
+            border-color: rgba(46,204,113,0.55) !important;
+            transform: translateX(6px);
+          }
+          .nf-back:hover {
+            box-shadow: 0 8px 28px rgba(46,204,113,0.5) !important;
+            transform: translateY(-2px);
+          }
+        `}</style>
+        <div style={{ maxWidth: '680px', margin: '0 auto', animation: 'fadeUp 0.5s ease both' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            {/* Search icon */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              width: '80px', height: '80px', borderRadius: '24px',
+              background: 'rgba(46,204,113,0.1)',
+              border: '1px solid rgba(46,204,113,0.25)',
+              marginBottom: '20px',
+            }}>
+              <Target size={36} color="#2ECC71" strokeWidth={1.6} />
+            </div>
+            <h1 style={{ fontSize: 'clamp(26px, 5vw, 40px)', fontWeight: 900, marginBottom: '14px' }}>
+              Wing Not Found
+            </h1>
+            <p style={{ color: t.textSecondary, lineHeight: 1.8, fontSize: '16px' }}>
+              The bootcamp wing you are looking for does not exist.
+              Choose one of the available wings below.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gap: '12px', marginBottom: '32px' }}>
+            {bootcampWings.map((item, i) => (
+              <Link
+                key={item.slug}
+                to={`${BOOTCAMP_BASE_PATH}/${item.slug}`}
+                className="nf-link"
+                style={{
+                  border: '1px solid rgba(46,204,113,0.2)',
+                  borderRadius: '14px',
+                  padding: '18px 20px',
+                  backgroundColor: 'rgba(46,204,113,0.03)',
+                  animation: `fadeUp 0.5s ease ${0.1 + i * 0.07}s both`,
+                }}
+              >
+                <div>
+                  <span style={{
+                    color: '#2ECC71', fontSize: '11px', fontWeight: 800,
+                    letterSpacing: '0.12em', textTransform: 'uppercase' as const,
+                  }}>
+                    {item.eyebrow}
+                  </span>
+                  <p style={{ margin: '4px 0 0', fontWeight: 700, color: t.textPrimary }}>
+                    {item.title}
+                  </p>
+                </div>
+                <ArrowRight size={18} color="#2ECC71" />
+              </Link>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center' }}>
+            <Link
+              to={BOOTCAMP_BASE_PATH}
+              className="nf-back"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: '#000',
+                backgroundColor: '#2ECC71',
+                padding: '13px 28px',
+                borderRadius: '12px',
+                fontWeight: 800,
+                textDecoration: 'none',
+                transition: 'all 0.25s ease',
+                boxShadow: '0 4px 20px rgba(46,204,113,0.35)',
+              }}
+            >
+              <ChevronLeft size={16} strokeWidth={2.5} />
+              Back to Bootcamp
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const infoItems = [
+    { icon: <Target size={17} color="#2ECC71" strokeWidth={2} />,        label: 'Target Group',    value: wing.targetGroup    },
+    { icon: <Radio size={17} color="#2ECC71" strokeWidth={2} />,         label: 'Mode',            value: wing.mode           },
+    { icon: <Users size={17} color="#2ECC71" strokeWidth={2} />,         label: 'Group Format',    value: wing.groupFormat    },
+    { icon: <ClipboardList size={17} color="#2ECC71" strokeWidth={2} />, label: 'Requirement',     value: wing.requirement    },
+    { icon: <CalendarDays size={17} color="#2ECC71" strokeWidth={2} />,  label: 'Duration',        value: wing.timeline       },
+    { icon: <BookOpen size={17} color="#2ECC71" strokeWidth={2} />,      label: 'Class Count',     value: wing.classCount     },
+    ...(wing.capacity
+      ? [{ icon: <Armchair size={17} color="#2ECC71" strokeWidth={2} />, label: 'Capacity',        value: wing.capacity }]
+      : []),
+    ...(wing.softwareAccess
+      ? [{ icon: <Monitor size={17} color="#2ECC71" strokeWidth={2} />,  label: 'Software Access', value: wing.softwareAccess }]
+      : []),
+  ];
 
   return (
-    <div className="relative z-10 pt-32 pb-12 sm:pt-36 sm:pb-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-10"
-        >
-          <Link to={BOOTCAMP_BASE_PATH}>
-            <motion.span
-              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border text-sm font-bold relative overflow-hidden group"
-              style={{
-                backgroundColor: 'rgba(46,204,113,0.06)',
-                borderColor: 'rgba(46,204,113,0.3)',
-                color: '#2ECC71',
-              }}
-              whileHover={{ x: -4, borderColor: '#2ECC71', boxShadow: '0 0 20px rgba(46,204,113,0.2)' }}
-              whileTap={{ scale: 0.96 }}
-            >
-              <motion.span
-                animate={{ x: [0, -3, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <ArrowLeft size={16} />
-              </motion.span>
+    <main style={{ minHeight: '100vh', backgroundColor: t.pageBg, color: t.textPrimary, overflowX: 'hidden' }}>
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(32px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeLeft {
+          from { opacity: 0; transform: translateX(32px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeDown {
+          from { opacity: 0; transform: translateY(-16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        @keyframes floatY {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes shimmerSlide {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        @keyframes dotPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0.5); }
+          50% { box-shadow: 0 0 0 5px rgba(46,204,113,0); }
+        }
+        @keyframes tabSlide {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes borderGlow {
+          0%, 100% { border-color: rgba(46,204,113,0.3); }
+          50% { border-color: rgba(46,204,113,0.65); }
+        }
+
+        .back-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          text-decoration: none;
+          transition: all 0.25s ease;
+          font-weight: 600;
+          font-size: 14px;
+        }
+        .back-link:hover { gap: 12px; }
+        .back-link .arrow { transition: transform 0.25s ease; display: inline-flex; }
+        .back-link:hover .arrow { transform: translateX(-4px); }
+
+        .reg-btn-main {
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background-color: #2ECC71;
+          color: #000;
+          padding: 14px 28px;
+          border-radius: 12px;
+          font-weight: 800;
+          font-size: 15px;
+          text-decoration: none;
+          box-shadow: 0 4px 20px rgba(46,204,113,0.4);
+          transition: all 0.3s cubic-bezier(.4,0,.2,1);
+        }
+        .reg-btn-main::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.5s ease;
+        }
+        .reg-btn-main:hover::before { transform: translateX(100%); }
+        .reg-btn-main:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 12px 32px rgba(46,204,113,0.55);
+        }
+
+        .outline-btn-main {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          border: 1px solid rgba(46,204,113,0.3);
+          color: inherit;
+          padding: 14px 24px;
+          border-radius: 12px;
+          font-weight: 700;
+          font-size: 15px;
+          text-decoration: none;
+          background: rgba(46,204,113,0.04);
+          transition: all 0.25s ease;
+        }
+        .outline-btn-main:hover {
+          background: rgba(46,204,113,0.1) !important;
+          border-color: rgba(46,204,113,0.55) !important;
+          transform: translateY(-2px);
+        }
+
+        .info-card-item {
+          transition: all 0.28s cubic-bezier(.4,0,.2,1);
+          cursor: default;
+        }
+        .info-card-item:hover {
+          transform: translateY(-5px) scale(1.03);
+          border-color: rgba(46,204,113,0.55) !important;
+          box-shadow: 0 10px 30px rgba(46,204,113,0.15);
+          background: rgba(46,204,113,0.07) !important;
+        }
+
+        .tab-button {
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          position: relative;
+          padding: 12px 22px;
+          border-radius: 10px 10px 0 0;
+          font-weight: 700;
+          font-size: 14px;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+        }
+        .tab-button::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 2px;
+          background: #2ECC71;
+          border-radius: 999px;
+          transition: width 0.3s ease;
+        }
+        .tab-button.tab-active::after { width: 75%; }
+        .tab-button:hover:not(.tab-active) { background: rgba(46,204,113,0.06); }
+
+        .tab-content-anim {
+          animation: tabSlide 0.35s cubic-bezier(.4,0,.2,1) both;
+        }
+
+        .learn-card {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          border: 1px solid rgba(46,204,113,0.15);
+          border-radius: 14px;
+          padding: 16px 18px;
+          background: rgba(46,204,113,0.03);
+          transition: all 0.25s ease;
+          cursor: default;
+        }
+        .learn-card:hover {
+          border-color: rgba(46,204,113,0.4) !important;
+          background: rgba(46,204,113,0.07) !important;
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(46,204,113,0.12);
+        }
+
+        .roadmap-row {
+          display: grid;
+          grid-template-columns: 130px 1fr;
+          border: 1px solid rgba(46,204,113,0.18);
+          border-radius: 16px;
+          overflow: hidden;
+          transition: all 0.3s cubic-bezier(.4,0,.2,1);
+          cursor: default;
+        }
+        .roadmap-row:hover {
+          border-color: rgba(46,204,113,0.5) !important;
+          transform: translateX(8px);
+          box-shadow: 0 6px 24px rgba(46,204,113,0.14);
+        }
+
+        .outcome-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          padding: 16px 20px;
+          border: 1px solid rgba(46,204,113,0.14);
+          border-radius: 14px;
+          background: rgba(46,204,113,0.025);
+          transition: all 0.25s ease;
+          cursor: default;
+        }
+        .outcome-row:hover {
+          border-color: rgba(46,204,113,0.4) !important;
+          background: rgba(46,204,113,0.07) !important;
+          transform: translateX(7px);
+        }
+
+        .final-cta-reg {
+          position: relative;
+          overflow: hidden;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          background-color: #2ECC71;
+          color: #000;
+          padding: 15px 36px;
+          border-radius: 14px;
+          font-weight: 900;
+          font-size: 16px;
+          text-decoration: none;
+          box-shadow: 0 6px 24px rgba(46,204,113,0.45);
+          transition: all 0.3s cubic-bezier(.4,0,.2,1);
+        }
+        .final-cta-reg::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.5s ease;
+        }
+        .final-cta-reg:hover::before { transform: translateX(100%); }
+        .final-cta-reg:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 36px rgba(46,204,113,0.55);
+        }
+
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 22px;
+        }
+        .section-title-bar {
+          width: 4px;
+          height: 24px;
+          border-radius: 999px;
+          background: linear-gradient(180deg, #2ECC71, rgba(46,204,113,0.25));
+          box-shadow: 0 0 10px rgba(46,204,113,0.5);
+        }
+        .section-title-text {
+          color: #2ECC71;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+        }
+        .fee-badge {
+          animation: floatY 3.5s ease-in-out infinite;
+        }
+        .status-dot {
+          animation: dotPulse 1.8s ease-in-out infinite;
+        }
+      `}</style>
+
+      {/* ─── HERO ─── */}
+      <div style={{ position: 'relative', overflow: 'hidden', paddingTop: '108px', paddingBottom: '64px' }}>
+        {/* BG orbs */}
+        <div style={{
+          position: 'absolute', top: '-140px', right: '-140px',
+          width: '520px', height: '520px',
+          background: 'radial-gradient(circle, rgba(46,204,113,0.13) 0%, transparent 70%)',
+          borderRadius: '50%', pointerEvents: 'none',
+          animation: 'glowPulse 3.5s ease-in-out infinite',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-100px', left: '-100px',
+          width: '400px', height: '400px',
+          background: 'radial-gradient(circle, rgba(46,204,113,0.07) 0%, transparent 70%)',
+          borderRadius: '50%', pointerEvents: 'none',
+          animation: 'glowPulse 5s ease-in-out infinite 1.5s',
+        }} />
+
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          {/* Back */}
+          <div style={{
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? 'none' : 'translateY(-12px)',
+            transition: 'opacity 0.4s ease, transform 0.4s ease',
+            marginBottom: '36px',
+          }}>
+            <Link to={BOOTCAMP_BASE_PATH} className="back-link" style={{ color: t.textSecondary }}>
+              <span className="arrow"><ChevronLeft size={16} strokeWidth={2.5} /></span>
               Back to Bootcamp
-            </motion.span>
-          </Link>
-        </motion.div>
+            </Link>
+          </div>
 
-        {/* Hero Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-3xl overflow-hidden"
-        >
-          {/* Glow border */}
-          <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#2ECC71]/40 via-transparent to-[#27AE60]/30 blur-sm" />
-
-          <div
-            className="relative rounded-3xl border p-8 sm:p-10 lg:p-14 overflow-hidden"
-            style={{ backgroundColor: 'rgba(4,12,8,0.92)', borderColor: 'rgba(46,204,113,0.25)' }}
-          >
-            {/* Animated top line */}
-            <motion.div
-              className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-
-            {/* BG decoration */}
-            <div className="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-[#2ECC71]/8 blur-3xl pointer-events-none" />
-            <div className="absolute -left-16 -bottom-16 w-60 h-60 rounded-full bg-[#27AE60]/5 blur-3xl pointer-events-none" />
-
-            {/* Corner accents */}
-            <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-[#2ECC71]/40 rounded-tl-3xl" />
-            <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-[#2ECC71]/40 rounded-br-3xl" />
-
-            <div className="relative max-w-5xl">
-              {/* Eyebrow badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-7 relative overflow-hidden"
-                style={{ backgroundColor: 'rgba(46,204,113,0.1)', borderColor: 'rgba(46,204,113,0.35)' }}
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-[#2ECC71]/15 to-transparent"
-                  animate={{ x: ['-200%', '200%'] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
-                />
-                <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}>
-                  <BadgeCheck size={15} className="text-[#2ECC71]" />
-                </motion.div>
-                <span className="text-sm font-bold text-[#2ECC71]">{wing.eyebrow}</span>
-                <span className="text-[#2ECC71]/50 text-sm">•</span>
-                <span className="text-sm font-bold text-[#2ECC71]">Registration: {wing.fee}</span>
-                <motion.div
-                  animate={{ scale: [1, 1.4, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-[#2ECC71]"
-                />
-              </motion.div>
-
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-none"
-              >
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
-                  {wing.title}
+          {/* Hero Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
+            gap: '48px',
+            alignItems: 'flex-start',
+          }}>
+            {/* Left */}
+            <div style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'none' : 'translateY(30px)',
+              transition: 'opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s',
+            }}>
+              {/* Eyebrow pill */}
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                backgroundColor: 'rgba(46,204,113,0.12)',
+                border: '1px solid rgba(46,204,113,0.3)',
+                borderRadius: '999px', padding: '6px 16px', marginBottom: '22px',
+              }}>
+                <span style={{
+                  width: '7px', height: '7px', borderRadius: '50%',
+                  backgroundColor: '#2ECC71', display: 'inline-block',
+                  boxShadow: '0 0 8px rgba(46,204,113,0.8)',
+                  animation: 'dotPulse 2s ease-in-out infinite',
+                }} />
+                <span style={{
+                  color: '#2ECC71', fontSize: '12px', fontWeight: 800,
+                  letterSpacing: '0.12em', textTransform: 'uppercase' as const,
+                }}>
+                  {wing.eyebrow}
                 </span>
-              </motion.h1>
+              </div>
 
-              {/* Animated underline */}
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.7 }}
-                className="w-24 h-1.5 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-full origin-left mb-7"
-              />
+              <h1 style={{
+                fontSize: 'clamp(36px, 5.5vw, 64px)',
+                lineHeight: 1.1, fontWeight: 900,
+                marginBottom: '20px', letterSpacing: '-0.025em',
+              }}>
+                {wing.title}
+              </h1>
 
-              {/* Description */}
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="text-base sm:text-lg lg:text-xl leading-[1.85] max-w-4xl"
-                style={{ color: t.textSecondary }}
-              >
+              <p style={{
+                color: t.textSecondary, fontSize: '17px',
+                lineHeight: 1.85, maxWidth: '680px', marginBottom: '36px',
+              }}>
                 {wing.detailIntro}
-              </motion.p>
+              </p>
 
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.65 }}
-                className="flex flex-col sm:flex-row gap-4 mt-10"
-              >
+              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '14px', alignItems: 'center' }}>
                 <a
                   href={wing.registrationUrl}
                   target="_blank"
                   rel="noreferrer"
                   onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
+                  className="reg-btn-main"
                 >
-                  <motion.span
-                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-black font-bold text-base relative overflow-hidden"
-                    whileHover={{ scale: 1.04, boxShadow: '0 0 35px rgba(46,204,113,0.5)' }}
-                    whileTap={{ scale: 0.96 }}
-                  >
-                    <motion.span
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-                      initial={{ x: '-150%' }}
-                      whileHover={{ x: '150%' }}
-                      transition={{ duration: 0.7 }}
-                    />
-                    <span className="relative">Register Now</span>
-                    <ExternalLink size={17} className="relative" />
-                  </motion.span>
+                  <Sparkles size={15} strokeWidth={2.2} />
+                  Register Now — Free
                 </a>
-
-                <a href="#roadmap">
-                  <motion.span
-                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2.5 px-8 py-4 rounded-2xl border font-bold text-base"
-                    style={{ borderColor: 'rgba(46,204,113,0.3)', color: t.textPrimary, backgroundColor: 'rgba(46,204,113,0.05)' }}
-                    whileHover={{ scale: 1.04, borderColor: '#2ECC71', boxShadow: '0 0 25px rgba(46,204,113,0.2)' }}
-                    whileTap={{ scale: 0.96 }}
-                  >
-                    View Roadmap
-                    <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.3, repeat: Infinity }}>
-                      <ChevronRight size={18} />
-                    </motion.span>
-                  </motion.span>
-                </a>
-              </motion.div>
+                <Link to={BOOTCAMP_BASE_PATH} className="outline-btn-main">
+                  All Wings <ArrowRight size={15} strokeWidth={2} />
+                </Link>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </div>
-    </div>
-  );
-};
 
-// ─── Quick Info Card ──────────────────────────────────────────────────────────
-const QuickInfoCard = ({ wing }: { wing: ReturnType<typeof getBootcampWingBySlug> }) => {
-  const t = useTokens();
-  if (!wing) return null;
-
-  const infoItems = [
-    { icon: Users, label: 'Target Group', value: wing.targetGroup },
-    { icon: MonitorCog, label: 'Mode', value: wing.mode },
-    { icon: Users, label: 'Group Format', value: wing.groupFormat },
-    { icon: ShieldCheck, label: 'Requirement', value: wing.requirement },
-    { icon: CalendarDays, label: 'Timeline', value: wing.timeline },
-    { icon: Clock, label: 'Class Count', value: wing.classCount },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="relative h-full"
-    >
-      <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#2ECC71]/24 to-[#27AE60]/14 blur-sm pointer-events-none" />
-
-      <div
-        className="relative rounded-3xl border p-6 sm:p-7 lg:p-8 overflow-hidden"
-        style={{
-          backgroundColor: 'rgba(4,12,8,0.92)',
-          borderColor: 'rgba(46,204,113,0.24)',
-        }}
-      >
-        <motion.div
-          className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
-          animate={{ opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
-
-        <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-[#2ECC71]/6 blur-3xl pointer-events-none" />
-
-        <div className="relative flex items-center gap-3 mb-7">
-          <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
-            className="w-10 h-10 rounded-full bg-[#2ECC71]/10 flex items-center justify-center shrink-0"
-          >
-            <Cpu size={17} className="text-[#2ECC71]" />
-          </motion.div>
-
-          <h3 className="text-xl font-black leading-tight shrink-0" style={{ color: t.textPrimary }}>
-            Quick Info
-          </h3>
-
-          <div className="h-px flex-1 bg-gradient-to-r from-[#2ECC71]/35 to-transparent" />
-        </div>
-
-        <div className="relative flex flex-col gap-4">
-          {infoItems.map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              whileHover={{ x: 4 }}
-              className="flex items-start gap-4 rounded-2xl border p-4 sm:p-5 group cursor-default min-w-0"
-              style={{
-                backgroundColor: 'rgba(46,204,113,0.035)',
-                borderColor: 'rgba(46,204,113,0.13)',
-              }}
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#2ECC71]/10 flex items-center justify-center shrink-0 group-hover:bg-[#2ECC71]/20 transition-colors">
-                <item.icon size={15} className="text-[#2ECC71]" />
+            {/* Right — Fee Badge */}
+            <div style={{
+              opacity: mounted ? 1 : 0,
+              transform: mounted ? 'none' : 'translateX(30px)',
+              transition: 'opacity 0.6s ease 0.22s, transform 0.6s ease 0.22s',
+              display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '14px',
+            }}>
+              <div
+                className="fee-badge"
+                style={{
+                  border: '1.5px solid rgba(46,204,113,0.4)',
+                  borderRadius: '22px',
+                  padding: '30px 36px',
+                  textAlign: 'center',
+                  background: 'rgba(46,204,113,0.07)',
+                  backdropFilter: 'blur(14px)',
+                  boxShadow: '0 8px 36px rgba(46,204,113,0.18), inset 0 1px 0 rgba(46,204,113,0.2)',
+                  minWidth: '190px',
+                }}
+              >
+                <p style={{
+                  color: '#2ECC71', fontSize: '11px', fontWeight: 800,
+                  letterSpacing: '0.14em', textTransform: 'uppercase' as const,
+                  marginBottom: '12px',
+                }}>
+                  Registration Fee
+                </p>
+                <p style={{
+                  fontSize: '44px', fontWeight: 900, color: '#2ECC71',
+                  lineHeight: 1, textShadow: '0 0 24px rgba(46,204,113,0.55)',
+                  marginBottom: '10px',
+                }}>
+                  {wing.fee}
+                </p>
+                <p style={{ color: t.textSecondary, fontSize: '13px', lineHeight: 1.5 }}>
+                  {wing.mode}
+                </p>
               </div>
 
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-black tracking-widest uppercase text-[#2ECC71]/70 mb-1.5 leading-none">
-                  {item.label}
+              {wing.status && (
+                <div style={{
+                  backgroundColor: 'rgba(46,204,113,0.12)',
+                  border: '1px solid rgba(46,204,113,0.3)',
+                  borderRadius: '999px',
+                  padding: '7px 18px',
+                  color: '#2ECC71',
+                  fontSize: '13px', fontWeight: 700,
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                }}>
+                  <span className="status-dot" style={{
+                    width: '6px', height: '6px', borderRadius: '50%',
+                    backgroundColor: '#2ECC71', display: 'inline-block',
+                  }} />
+                  {wing.status}
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div
-                  className="text-sm font-semibold leading-[1.65] break-words"
-                  style={{ color: t.textPrimary }}
-                >
+      {/* Divider */}
+      <div style={{
+        height: '1px',
+        background: 'linear-gradient(90deg, transparent, rgba(46,204,113,0.3), transparent)',
+        maxWidth: '1200px', margin: '0 auto',
+      }} />
+
+      {/* ─── MAIN CONTENT ─── */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px 90px' }}>
+
+        {/* ── Quick Details ── */}
+        <section style={{
+          marginBottom: '56px',
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s',
+        }}>
+          <div className="section-title">
+            <div className="section-title-bar" />
+            <span className="section-title-text">Quick Details</span>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+            gap: '14px',
+          }}>
+            {infoItems.map((item, i) => (
+              <div
+                key={item.label}
+                className="info-card-item"
+                onMouseEnter={() => setHoveredInfo(i)}
+                onMouseLeave={() => setHoveredInfo(null)}
+                style={{
+                  border: hoveredInfo === i
+                    ? '1px solid rgba(46,204,113,0.55)'
+                    : '1px solid rgba(46,204,113,0.16)',
+                  borderRadius: '16px',
+                  padding: '18px',
+                  backgroundColor: hoveredInfo === i
+                    ? 'rgba(46,204,113,0.07)'
+                    : 'rgba(46,204,113,0.03)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  {item.icon}
+                  <span style={{
+                    color: '#2ECC71', fontSize: '11px', fontWeight: 800,
+                    letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+                  }}>
+                    {item.label}
+                  </span>
+                </div>
+                <p style={{ margin: 0, color: t.textPrimary, fontWeight: 700, fontSize: '14px', lineHeight: 1.6 }}>
                   {item.value}
-                </div>
+                </p>
               </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
+        </section>
 
-          {wing.capacity && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ x: 4 }}
-              className="flex items-start gap-4 rounded-2xl border p-4 sm:p-5 group cursor-default min-w-0"
-              style={{
-                backgroundColor: 'rgba(46,204,113,0.035)',
-                borderColor: 'rgba(46,204,113,0.13)',
-              }}
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#2ECC71]/10 flex items-center justify-center shrink-0 group-hover:bg-[#2ECC71]/20 transition-colors">
-                <Users size={15} className="text-[#2ECC71]" />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-black tracking-widest uppercase text-[#2ECC71]/70 mb-1.5 leading-none">
-                  Capacity
-                </div>
-
-                <div className="text-sm font-semibold leading-[1.65] break-words" style={{ color: t.textPrimary }}>
-                  {wing.capacity}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {wing.softwareAccess && (
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ x: 4 }}
-              className="flex items-start gap-4 rounded-2xl border p-4 sm:p-5 group cursor-default min-w-0"
-              style={{
-                backgroundColor: 'rgba(46,204,113,0.035)',
-                borderColor: 'rgba(46,204,113,0.13)',
-              }}
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#2ECC71]/10 flex items-center justify-center shrink-0 group-hover:bg-[#2ECC71]/20 transition-colors">
-                <Laptop size={15} className="text-[#2ECC71]" />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="text-[11px] font-black tracking-widest uppercase text-[#2ECC71]/70 mb-1.5 leading-none">
-                  Software Access
-                </div>
-
-                <div className="text-sm font-semibold leading-[1.65] break-words" style={{ color: t.textPrimary }}>
-                  {wing.softwareAccess}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {wing.status && (
-            <motion.div
-              className="rounded-2xl border p-5 relative overflow-hidden"
-              style={{
-                borderColor: 'rgba(46,204,113,0.28)',
-                backgroundColor: 'rgba(46,204,113,0.065)',
-              }}
-              animate={{
-                borderColor: ['rgba(46,204,113,0.28)', 'rgba(46,204,113,0.55)', 'rgba(46,204,113,0.28)'],
-              }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <motion.span
-                  animate={{ scale: [1, 1.4, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full bg-[#2ECC71] inline-block"
-                />
-                <span className="text-[11px] font-black tracking-widest uppercase text-[#2ECC71]">
-                  Status
-                </span>
-              </div>
-
-              <div className="text-sm font-semibold leading-[1.65]" style={{ color: t.textPrimary }}>
-                {wing.status}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-// ─── Highlights Grid ──────────────────────────────────────────────────────────
-const HighlightsSection = ({ wing }: { wing: ReturnType<typeof getBootcampWingBySlug> }) => {
-  const t = useTokens();
-  if (!wing) return null;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-      className="relative h-full"
-    >
-      <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#2ECC71]/20 via-transparent to-transparent blur-sm pointer-events-none" />
-
-      <div
-        className="relative rounded-3xl border p-6 sm:p-7 lg:p-8 overflow-hidden h-full"
-        style={{
-          backgroundColor: 'rgba(4,12,8,0.88)',
-          borderColor: 'rgba(46,204,113,0.2)',
-        }}
-      >
-        <div className="absolute -left-12 -bottom-12 w-48 h-48 rounded-full bg-[#2ECC71]/5 blur-3xl pointer-events-none" />
-
-        <div className="relative flex items-center gap-3 mb-7">
-          <div className="h-px w-8 bg-gradient-to-r from-[#2ECC71] to-transparent rounded-full shrink-0" />
-
-          <Star size={16} className="text-[#2ECC71] fill-[#2ECC71] shrink-0" />
-
-          <h2
-            className="text-2xl md:text-3xl font-black leading-tight shrink-0"
-            style={{ color: t.textPrimary }}
-          >
-            Wing Highlights
-          </h2>
-
-          <div className="h-px flex-1 bg-gradient-to-r from-[#2ECC71]/30 to-transparent rounded-full" />
-        </div>
-
-        <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-          {wing.highlights.map((highlight, i) => (
-            <motion.div
-              key={highlight}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07, duration: 0.5 }}
-              whileHover={{ x: 5, scale: 1.01 }}
-              className="flex items-start gap-4 p-4 sm:p-5 rounded-2xl border group cursor-default min-w-0"
-              style={{
-                backgroundColor: 'rgba(46,204,113,0.04)',
-                borderColor: 'rgba(46,204,113,0.12)',
-              }}
-            >
-              <motion.div
-                className="w-7 h-7 rounded-full bg-[#2ECC71]/15 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#2ECC71]/25 transition-colors"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-              >
-                <CheckCircle2 size={14} className="text-[#2ECC71]" />
-              </motion.div>
-
-              <span
-                className="text-sm leading-[1.75] font-medium min-w-0 break-words"
-                style={{ color: t.textSecondary }}
-              >
-                {highlight}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-// ─── Roadmap Section ──────────────────────────────────────────────────────────
-const RoadmapSection = ({ wing }: { wing: ReturnType<typeof getBootcampWingBySlug> }) => {
-  const t = useTokens();
-  if (!wing) return null;
-
-  return (
-    <section id="roadmap" className="relative z-10 py-20 sm:py-28">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-16 sm:mb-20"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6"
-            style={{ backgroundColor: 'rgba(46,204,113,0.06)', borderColor: 'rgba(46,204,113,0.25)' }}
-          >
-            <BookOpen size={13} className="text-[#2ECC71]" />
-            <span className="text-xs font-bold tracking-widest uppercase text-[#2ECC71]">Learning Path</span>
-          </motion.div>
-
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5">
-            <span style={{ color: t.textPrimary }}>Class & Weekly </span>
-            <span className="relative inline-block">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
-                Roadmap
-              </span>
-              <motion.svg
-                className="absolute -bottom-2 left-0 w-full"
-                viewBox="0 0 180 10"
-                fill="none"
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-              >
-                <motion.path
-                  d="M2 6C45 2 135 2 178 6"
-                  stroke="url(#roadmap-underline)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  initial={{ pathLength: 0 }}
-                  whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: 0.3 }}
-                />
-                <defs>
-                  <linearGradient id="roadmap-underline" x1="0" y1="0" x2="180" y2="0">
-                    <stop stopColor="#2ECC71" />
-                    <stop offset="1" stopColor="#27AE60" />
-                  </linearGradient>
-                </defs>
-              </motion.svg>
-            </span>
-          </h2>
-
-          <p className="max-w-2xl mx-auto text-base sm:text-lg leading-[1.8]" style={{ color: t.textSecondary }}>
-            Follow the structured learning sequence — each phase builds on the last.
-          </p>
-        </motion.div>
-
-        {/* Timeline */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Center line */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2">
-            <motion.div
-              className="h-full bg-gradient-to-b from-[#2ECC71]/60 via-[#2ECC71]/30 to-transparent"
-              initial={{ scaleY: 0 }}
-              whileInView={{ scaleY: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5, ease: 'easeInOut' }}
-              style={{ transformOrigin: 'top' }}
-            />
+        {/* ── Tabbed Curriculum ── */}
+        <section style={{
+          marginBottom: '56px',
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease 0.42s, transform 0.6s ease 0.42s',
+        }}>
+          <div className="section-title">
+            <div className="section-title-bar" />
+            <span className="section-title-text">Curriculum</span>
           </div>
 
-          <div className="space-y-10 md:space-y-0">
-            {wing.roadmap.map((item, index) => {
-              const isLeft = index % 2 === 0;
-              return (
-                <motion.div
-                  key={`${item.period}-${item.title}`}
-                  initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-80px' }}
-                  transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative md:grid md:grid-cols-2 md:gap-8 md:mb-10"
-                >
-                  {/* Center dot */}
-                  <div className="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 z-10 items-center justify-center">
-                    <motion.div
-                      className="w-5 h-5 rounded-full bg-[#2ECC71] border-2 border-black"
-                      animate={{ scale: [1, 1.3, 1], boxShadow: ['0 0 0px #2ECC71', '0 0 12px #2ECC71', '0 0 0px #2ECC71'] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: index * 0.3 }}
-                    />
-                  </div>
-
-                  {/* Card — alternates sides */}
-                  <div className={`relative ${isLeft ? 'md:col-start-1 md:pr-12' : 'md:col-start-2 md:pl-12'}`}>
-                    <motion.div
-                      whileHover={{ y: -4 }}
-                      transition={{ duration: 0.3 }}
-                      className="relative group"
-                    >
-                      {/* Card glow */}
-                      <motion.div
-                        className="absolute -inset-[1px] rounded-2xl blur-sm"
-                        style={{ background: 'linear-gradient(135deg, #2ECC71, #27AE60)' }}
-                        initial={{ opacity: 0.1 }}
-                        whileHover={{ opacity: 0.4 }}
-                        transition={{ duration: 0.3 }}
-                      />
-
-                      <div
-                        className="relative rounded-2xl border p-6 overflow-hidden"
-                        style={{ backgroundColor: 'rgba(4,12,8,0.92)', borderColor: 'rgba(46,204,113,0.2)' }}
-                      >
-                        {/* Top bar */}
-                        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#2ECC71] via-[#3DED97] to-[#27AE60]">
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                            animate={{ x: ['-200%', '200%'] }}
-                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                          />
-                        </div>
-
-                        {/* Period badge */}
-                        <motion.div
-                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border mb-4"
-                          style={{ backgroundColor: 'rgba(46,204,113,0.1)', borderColor: 'rgba(46,204,113,0.25)' }}
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          <BookOpen size={12} className="text-[#2ECC71]" />
-                          <span className="text-[11px] font-black tracking-widest uppercase text-[#2ECC71]">
-                            {item.period}
-                          </span>
-                        </motion.div>
-
-                        {/* Step number watermark */}
-                        <div
-                          className="absolute top-3 right-4 text-6xl font-black select-none pointer-events-none leading-none"
-                          style={{ color: 'rgba(46,204,113,0.05)' }}
-                        >
-                          {String(index + 1).padStart(2, '0')}
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-xl font-black mb-4" style={{ color: t.textPrimary }}>
-                          {item.title}
-                        </h3>
-
-                        {/* Points */}
-                        <ul className="space-y-2.5">
-                          {item.points.map((point, pi) => (
-                            <motion.li
-                              key={point}
-                              initial={{ opacity: 0, x: -10 }}
-                              whileInView={{ opacity: 1, x: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: index * 0.05 + pi * 0.06 }}
-                              className="flex items-start gap-2.5 text-sm leading-[1.75]"
-                              style={{ color: t.textSecondary }}
-                            >
-                              <motion.span
-                                className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#2ECC71] shrink-0"
-                                animate={{ scale: [1, 1.5, 1] }}
-                                transition={{ duration: 2, repeat: Infinity, delay: pi * 0.4 }}
-                              />
-                              <span>{point}</span>
-                            </motion.li>
-                          ))}
-                        </ul>
-                      </div>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              );
-            })}
+          {/* Tab Bar */}
+          <div style={{
+            display: 'flex',
+            gap: '4px',
+            borderBottom: '1px solid rgba(46,204,113,0.18)',
+            marginBottom: '28px',
+          }}>
+            {([
+              { key: 'learn',    label: 'What You Learn', icon: <CheckCircle2 size={14} strokeWidth={2.2} /> },
+              { key: 'roadmap',  label: 'Roadmap',        icon: <Map          size={14} strokeWidth={2.2} /> },
+              { key: 'outcomes', label: 'Outcomes',       icon: <Trophy       size={14} strokeWidth={2.2} /> },
+            ] as const).map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`tab-button ${activeTab === tab.key ? 'tab-active' : ''}`}
+                style={{
+                  color: activeTab === tab.key ? '#2ECC71' : t.textSecondary,
+                  backgroundColor: activeTab === tab.key ? 'rgba(46,204,113,0.07)' : 'transparent',
+                }}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
-// ─── Outcomes Section ─────────────────────────────────────────────────────────
-const OutcomesSection = ({ wing }: { wing: ReturnType<typeof getBootcampWingBySlug> }) => {
-  const t = useTokens();
-  if (!wing) return null;
+          {/* Tab Content */}
+          <div key={activeTab} className="tab-content-anim">
 
-  return (
-    <section className="relative z-10 pb-24 sm:pb-32">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative"
-        >
-          {/* Outer glow */}
-          <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-br from-[#2ECC71]/30 via-transparent to-[#27AE60]/25 blur-sm" />
+            {/* Learn */}
+            {activeTab === 'learn' && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '12px',
+              }}>
+                {wing.highlights.map((item) => (
+                  <div key={item} className="learn-card">
+                    <span style={{
+                      width: '8px', height: '8px', borderRadius: '50%',
+                      backgroundColor: '#2ECC71', flexShrink: 0, marginTop: '6px',
+                      boxShadow: '0 0 6px rgba(46,204,113,0.6)',
+                    }} />
+                    <span style={{ color: t.textSecondary, fontSize: '14px', lineHeight: 1.75 }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
 
-          <div
-            className="relative rounded-3xl border p-8 sm:p-10 lg:p-14 overflow-hidden"
-            style={{ backgroundColor: 'rgba(4,12,8,0.92)', borderColor: 'rgba(46,204,113,0.28)' }}
-          >
-            {/* Animated top line */}
-            <motion.div
-              className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
-              animate={{ opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-            <div className="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-[#2ECC71]/6 blur-3xl pointer-events-none" />
-            <div className="absolute -left-20 -bottom-20 w-60 h-60 rounded-full bg-[#27AE60]/5 blur-3xl pointer-events-none" />
-
-            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-              {/* Outcomes */}
-              <div>
-                <div className="flex items-center gap-3 mb-8">
-                  <motion.div
-                    animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
-                    className="w-10 h-10 rounded-full bg-[#2ECC71]/10 flex items-center justify-center shrink-0"
+            {/* Roadmap */}
+            {activeTab === 'roadmap' && (
+              <div style={{ display: 'grid', gap: '14px' }}>
+                {wing.roadmap.map((item, i) => (
+                  <div
+                    key={`${item.period}-${item.title}`}
+                    className="roadmap-row"
+                    style={{
+                      backgroundColor: hoveredCard === i
+                        ? 'rgba(46,204,113,0.05)'
+                        : 'rgba(46,204,113,0.025)',
+                    }}
+                    onMouseEnter={() => setHoveredCard(i)}
+                    onMouseLeave={() => setHoveredCard(null)}
                   >
-                    <Trophy size={19} className="text-[#2ECC71]" />
-                  </motion.div>
-                  <h2 className="text-2xl md:text-3xl font-black" style={{ color: t.textPrimary }}>
-                    Expected Outcomes
-                  </h2>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-[#2ECC71]/40 to-transparent mb-8" />
-
-                <div className="space-y-3">
-                  {wing.outcomes.map((outcome, i) => (
-                    <motion.div
-                      key={outcome}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.09, duration: 0.5 }}
-                      whileHover={{ x: 6 }}
-                      className="flex items-start gap-3.5 p-4 rounded-2xl border group cursor-default"
-                      style={{ backgroundColor: 'rgba(46,204,113,0.04)', borderColor: 'rgba(46,204,113,0.12)' }}
-                    >
-                      <motion.div
-                        className="w-7 h-7 rounded-full bg-[#2ECC71]/12 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#2ECC71]/22 transition-colors"
-                        whileHover={{ scale: 1.2 }}
-                      >
-                        <CheckCircle2 size={15} className="text-[#2ECC71]" />
-                      </motion.div>
-                      <span className="text-sm leading-relaxed font-medium" style={{ color: t.textSecondary }}>
-                        {outcome}
+                    {/* Period sidebar */}
+                    <div style={{
+                      backgroundColor: 'rgba(46,204,113,0.1)',
+                      borderRight: '1px solid rgba(46,204,113,0.2)',
+                      padding: '22px 16px',
+                      display: 'flex', alignItems: 'center',
+                      justifyContent: 'center', textAlign: 'center',
+                    }}>
+                      <span style={{ color: '#2ECC71', fontWeight: 900, fontSize: '13px', lineHeight: 1.45 }}>
+                        {item.period}
                       </span>
-                    </motion.div>
-                  ))}
-                </div>
+                    </div>
+                    {/* Content */}
+                    <div style={{ padding: '22px 26px' }}>
+                      <h3 style={{ fontSize: '17px', fontWeight: 800, marginBottom: '12px', color: t.textPrimary }}>
+                        {item.title}
+                      </h3>
+                      <ul style={{ margin: 0, paddingLeft: '18px', color: t.textSecondary, lineHeight: 1.85, fontSize: '14px' }}>
+                        {item.points.map((point) => (
+                          <li key={point}>{point}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
               </div>
+            )}
 
-              {/* CTA Card */}
-              <motion.div
-                className="relative"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-br from-[#2ECC71]/35 to-[#27AE60]/25 blur-sm" />
-                <div
-                  className="relative rounded-2xl border p-8 overflow-hidden"
-                  style={{ backgroundColor: 'rgba(8,20,12,0.95)', borderColor: 'rgba(46,204,113,0.3)' }}
-                >
-                  {/* Shimmer */}
-                  <motion.div
-                    className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#2ECC71] to-transparent"
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                  />
-
-                  {/* Icon */}
-                  <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                    className="w-16 h-16 rounded-2xl bg-[#2ECC71]/10 flex items-center justify-center mb-6 border border-[#2ECC71]/20"
-                  >
-                    <Sparkles size={28} className="text-[#2ECC71]" />
-                  </motion.div>
-
-                  <h3 className="text-2xl font-black mb-3" style={{ color: t.textPrimary }}>
-                    Ready to Join?
-                  </h3>
-                  <p className="text-sm leading-[1.8] mb-8" style={{ color: t.textSecondary }}>
-                    Registration is completely <span className="text-[#2ECC71] font-bold">100% free</span>. Secure your spot and start your robotics journey with AUSTRC.
-                  </p>
-
-                  {/* Pulse CTA */}
-                  <a
-                    href={wing.registrationUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
-                    className="block"
-                  >
-                    <motion.span
-                      className="inline-flex w-full items-center justify-center gap-2.5 py-4 rounded-2xl bg-gradient-to-r from-[#2ECC71] to-[#27AE60] text-black font-bold text-base relative overflow-hidden"
-                      whileHover={{ scale: 1.03, boxShadow: '0 0 35px rgba(46,204,113,0.5)' }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      <motion.span
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-                        initial={{ x: '-150%' }}
-                        whileHover={{ x: '150%' }}
-                        transition={{ duration: 0.7 }}
-                      />
-                      <span className="relative">Register for {wing.shortTitle}</span>
-                      <motion.span
-                        className="relative"
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ duration: 1.3, repeat: Infinity }}
-                      >
-                        <ArrowRight size={17} />
-                      </motion.span>
-                    </motion.span>
-                  </a>
-
-                  {/* Free badge */}
-                  <motion.div
-                    className="flex items-center justify-center gap-2 mt-4"
-                    animate={{ opacity: [0.6, 1, 0.6] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                  >
-                    <BadgeCheck size={14} className="text-[#2ECC71]" />
-                    <span className="text-xs font-bold text-[#2ECC71]/70">No payment required — completely free</span>
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
+            {/* Outcomes */}
+            {activeTab === 'outcomes' && (
+              <div style={{ display: 'grid', gap: '10px' }}>
+                {wing.outcomes.map((item, i) => (
+                  <div key={item} className="outcome-row">
+                    <span style={{
+                      width: '26px', height: '26px', borderRadius: '50%',
+                      backgroundColor: 'rgba(46,204,113,0.15)',
+                      border: '1.5px solid rgba(46,204,113,0.4)',
+                      color: '#2ECC71', fontSize: '12px', fontWeight: 900,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0, marginTop: '1px',
+                    }}>
+                      {i + 1}
+                    </span>
+                    <span style={{ color: t.textSecondary, fontSize: '15px', lineHeight: 1.78 }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
+        </section>
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-export function BootcampWingDetailPage() {
-  const t = useTokens();
-  const { wingSlug } = useParams();
-  const wing = getBootcampWingBySlug(wingSlug);
+        {/* ── Final CTA ── */}
+        <section style={{
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? 'none' : 'translateY(24px)',
+          transition: 'opacity 0.6s ease 0.54s, transform 0.6s ease 0.54s',
+        }}>
+          <div style={{
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: '24px',
+            border: '1px solid rgba(46,204,113,0.3)',
+            padding: '60px 40px',
+            background: 'linear-gradient(135deg, rgba(46,204,113,0.09) 0%, rgba(46,204,113,0.03) 100%)',
+            textAlign: 'center',
+            animation: 'borderGlow 4s ease-in-out infinite',
+          }}>
+            {/* Orbs */}
+            <div style={{
+              position: 'absolute', top: '-70px', left: '-70px',
+              width: '240px', height: '240px',
+              background: 'radial-gradient(circle, rgba(46,204,113,0.14) 0%, transparent 70%)',
+              borderRadius: '50%', pointerEvents: 'none',
+            }} />
+            <div style={{
+              position: 'absolute', bottom: '-70px', right: '-70px',
+              width: '240px', height: '240px',
+              background: 'radial-gradient(circle, rgba(46,204,113,0.1) 0%, transparent 70%)',
+              borderRadius: '50%', pointerEvents: 'none',
+            }} />
 
-  if (!wing) {
-    return <Navigate to={BOOTCAMP_BASE_PATH} replace />;
-  }
-
-  return (
-    <>
-      <ScrollProgress />
-
-      <main
-        className="relative min-h-screen overflow-x-hidden"
-        style={{ backgroundColor: t.pageBg, color: t.textPrimary }}
-      >
-        {/* ── Same background as BootcampPage ── */}
-        <PremiumBackground />
-        <AmbientGlows />
-
-        {/* ══ HERO ══ */}
-        <HeroSection wing={wing} />
-
-        {/* ══ INFO + HIGHLIGHTS (side by side) ══ */}
-        <section className="relative z-10 pb-8">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
-              {/* Highlights — takes 2/3 width */}
-              <div className="lg:col-span-2">
-                <HighlightsSection wing={wing} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                backgroundColor: 'rgba(46,204,113,0.12)',
+                border: '1px solid rgba(46,204,113,0.32)',
+                borderRadius: '999px', padding: '6px 18px', marginBottom: '22px',
+                color: '#2ECC71', fontSize: '12px', fontWeight: 800,
+                letterSpacing: '0.1em', textTransform: 'uppercase' as const,
+              }}>
+                <Sparkles size={13} strokeWidth={2.2} color="#2ECC71" />
+                100% Free — Limited Seats
               </div>
-              {/* Quick Info — takes 1/3 width */}
-              <div className="lg:col-span-1">
-                <QuickInfoCard wing={wing} />
+
+              <h2 style={{
+                fontSize: 'clamp(24px, 4vw, 42px)',
+                fontWeight: 900, marginBottom: '16px', letterSpacing: '-0.015em',
+              }}>
+                Ready to Join{' '}
+                <span style={{ color: '#2ECC71', textShadow: '0 0 20px rgba(46,204,113,0.4)' }}>
+                  {wing.shortTitle}
+                </span>?
+              </h2>
+
+              <p style={{
+                color: t.textSecondary, fontSize: '16px',
+                lineHeight: 1.8, maxWidth: '540px', margin: '0 auto 36px',
+              }}>
+                This bootcamp wing is completely free. Secure your spot now
+                before seats fill up.
+              </p>
+
+              <div style={{
+                display: 'flex', justifyContent: 'center',
+                flexWrap: 'wrap' as const, gap: '16px',
+              }}>
+                <a
+                  href={wing.registrationUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
+                  className="final-cta-reg"
+                >
+                  Register for {wing.shortTitle}
+                  <ArrowRight size={17} strokeWidth={2.5} />
+                </a>
+                <Link
+                  to={BOOTCAMP_BASE_PATH}
+                  className="outline-btn-main"
+                  style={{ padding: '15px 28px', fontSize: '15px' }}
+                >
+                  Explore All Wings
+                </Link>
               </div>
             </div>
           </div>
         </section>
-
-        {/* Divider */}
-        <div className="relative z-10 px-8 py-4">
-          <div className="h-px bg-gradient-to-r from-transparent via-[#2ECC71]/20 to-transparent" />
-        </div>
-
-        {/* ══ ROADMAP ══ */}
-        <RoadmapSection wing={wing} />
-
-        {/* ══ OUTCOMES + CTA ══ */}
-        <OutcomesSection wing={wing} />
-
-        {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10" />
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
