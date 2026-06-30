@@ -315,6 +315,17 @@ const ProgramOverview = () => {
 };
 
 // ─── Registration handler ────────────────────────────────────────────────────
+const WING_REGISTRATION_LINKS: Record<string, string> = {
+  'basic-robotics-projects': 'https://forms.gle/pqVYq2gsyut8CJTf7',
+  'pcb-design-fabrication': 'https://forms.gle/mf7WbLd3YbnL89vz5',
+  'solidworks-bootcamp-roadmap': 'https://forms.gle/cVBThKHWajzxgwkN7',
+  'web-app-design': 'https://forms.gle/PvEhHp86NjyPGSjT6',
+};
+
+function getRegistrationUrl(slug: string, fallbackUrl: string) {
+  return WING_REGISTRATION_LINKS[slug] || fallbackUrl;
+}
+
 function handleRegistrationClick(e: React.MouseEvent<HTMLAnchorElement>, url: string) {
   if (!url || url === '#') {
     e.preventDefault();
@@ -528,10 +539,10 @@ const WingCard = ({ wing, index }: { wing: typeof bootcampWings[0]; index: numbe
             </Link>
 
             <a
-              href={wing.registrationUrl}
+              href={getRegistrationUrl(wing.slug, wing.registrationUrl)}
               target="_blank"
               rel="noreferrer"
-              onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
+              onClick={(e) => handleRegistrationClick(e, getRegistrationUrl(wing.slug, wing.registrationUrl))}
               className="block w-full"
             >
               <motion.span

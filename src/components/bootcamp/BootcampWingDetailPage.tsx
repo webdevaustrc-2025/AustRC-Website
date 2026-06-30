@@ -23,6 +23,17 @@ import {
 } from '@/data/bootcampData';
 import { useTokens } from '@/tokens/useTokens';
 
+const WING_REGISTRATION_LINKS: Record<string, string> = {
+  'basic-robotics-projects': 'https://forms.gle/pqVYq2gsyut8CJTf7',
+  'pcb-design-fabrication': 'https://forms.gle/mf7WbLd3YbnL89vz5',
+  'solidworks-bootcamp-roadmap': 'https://forms.gle/cVBThKHWajzxgwkN7',
+  'web-app-design': 'https://forms.gle/PvEhHp86NjyPGSjT6',
+};
+
+function getRegistrationUrl(slug: string, fallbackUrl: string) {
+  return WING_REGISTRATION_LINKS[slug] || fallbackUrl;
+}
+
 function handleRegistrationClick(
   e: React.MouseEvent<HTMLAnchorElement>,
   url: string
@@ -634,10 +645,10 @@ export function BootcampWingDetailPage() {
                 style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '14px', alignItems: 'center' }}
               >
                 <a
-                  href={wing.registrationUrl}
+                  href={getRegistrationUrl(wing.slug, wing.registrationUrl)}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
+                  onClick={(e) => handleRegistrationClick(e, getRegistrationUrl(wing.slug, wing.registrationUrl))}
                   className="reg-btn-main"
                 >
                   <Sparkles size={15} strokeWidth={2.2} />
@@ -972,10 +983,10 @@ export function BootcampWingDetailPage() {
                 flexWrap: 'wrap' as const, gap: '16px',
               }}>
                 <a
-                  href={wing.registrationUrl}
+                  href={getRegistrationUrl(wing.slug, wing.registrationUrl)}
                   target="_blank"
                   rel="noreferrer"
-                  onClick={(e) => handleRegistrationClick(e, wing.registrationUrl)}
+                  onClick={(e) => handleRegistrationClick(e, getRegistrationUrl(wing.slug, wing.registrationUrl))}
                   className="final-cta-reg"
                 >
                   Register for {wing.shortTitle}
