@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import {
   Users,
   Radio,
-  Group,
   ClipboardList,
   CalendarDays,
   BookOpen,
@@ -83,7 +82,6 @@ export function BootcampWingDetailPage() {
         `}</style>
         <div style={{ maxWidth: '680px', margin: '0 auto', animation: 'fadeUp 0.5s ease both' }}>
           <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            {/* Search icon */}
             <div style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               width: '80px', height: '80px', borderRadius: '24px',
@@ -427,6 +425,68 @@ export function BootcampWingDetailPage() {
         .status-dot {
           animation: dotPulse 1.8s ease-in-out infinite;
         }
+
+        /* ── Hero layout ── */
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 48px;
+          align-items: flex-start;
+        }
+
+        /* ── Fee badge inline strip (mobile only) ── */
+        .fee-inline-strip {
+          display: none;
+        }
+
+        /* ── Desktop: hide mobile strip, show right column ── */
+        .hero-right-col {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 14px;
+        }
+
+        @media (max-width: 700px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+            text-align: center;
+          }
+
+          /* Hide the big floating badge on mobile */
+          .hero-right-col {
+            display: none;
+          }
+
+          /* Show the compact inline strip on mobile */
+          .fee-inline-strip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(46,204,113,0.09);
+            border: 1px solid rgba(46,204,113,0.32);
+            border-radius: 12px;
+            padding: 8px 16px 8px 12px;
+            margin-bottom: 22px;
+          }
+
+          /* Center the eyebrow pill */
+          .hero-eyebrow-wrap {
+            justify-content: center;
+          }
+
+          /* Center CTA buttons */
+          .hero-cta-row {
+            justify-content: center;
+          }
+
+          /* Center description text */
+          .hero-desc {
+            margin-left: auto;
+            margin-right: auto;
+          }
+        }
       `}</style>
 
       {/* ─── HERO ─── */}
@@ -461,26 +521,25 @@ export function BootcampWingDetailPage() {
             </Link>
           </div>
 
-          {/* Hero Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            gap: '48px',
-            alignItems: 'flex-start',
-          }}>
-            {/* Left */}
+          {/* Hero Grid — desktop: two columns | mobile: single centered column */}
+          <div className="hero-grid">
+
+            {/* ── Left / Main content ── */}
             <div style={{
               opacity: mounted ? 1 : 0,
               transform: mounted ? 'none' : 'translateY(30px)',
               transition: 'opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s',
             }}>
+
               {/* Eyebrow pill */}
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                backgroundColor: 'rgba(46,204,113,0.12)',
-                border: '1px solid rgba(46,204,113,0.3)',
-                borderRadius: '999px', padding: '6px 16px', marginBottom: '22px',
-              }}>
+              <div
+                className="hero-eyebrow-wrap"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  backgroundColor: 'rgba(46,204,113,0.12)',
+                  border: '1px solid rgba(46,204,113,0.3)',
+                  borderRadius: '999px', padding: '6px 16px', marginBottom: '18px',
+                }}
+              >
                 <span style={{
                   width: '7px', height: '7px', borderRadius: '50%',
                   backgroundColor: '#2ECC71', display: 'inline-block',
@@ -495,6 +554,63 @@ export function BootcampWingDetailPage() {
                 </span>
               </div>
 
+              {/*
+                ── MOBILE-ONLY compact fee strip ──
+                Sits right below the eyebrow pill, only visible on mobile.
+                Hidden on desktop via CSS (.fee-inline-strip { display: none }
+                overridden at ≤700 px).
+              */}
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="fee-inline-strip">
+                  {/* Icon placeholder — small green circle */}
+                  <span style={{
+                    width: '28px', height: '28px', borderRadius: '8px',
+                    background: 'rgba(46,204,113,0.15)',
+                    border: '1px solid rgba(46,204,113,0.35)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}>
+                    <Sparkles size={13} color="#2ECC71" strokeWidth={2} />
+                  </span>
+
+                  <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1px' }}>
+                    <span style={{
+                      color: '#2ECC71', fontSize: '9px', fontWeight: 800,
+                      letterSpacing: '0.14em', textTransform: 'uppercase' as const,
+                      lineHeight: 1,
+                    }}>
+                      Registration Fee
+                    </span>
+                    <span style={{
+                      color: '#2ECC71', fontSize: '18px', fontWeight: 900,
+                      lineHeight: 1.1, textShadow: '0 0 14px rgba(46,204,113,0.5)',
+                    }}>
+                      {wing.fee}
+                    </span>
+                    <span style={{ color: t.textSecondary, fontSize: '10px', lineHeight: 1 }}>
+                      {wing.mode}
+                    </span>
+                  </div>
+
+                  {wing.status && (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '5px',
+                      backgroundColor: 'rgba(46,204,113,0.12)',
+                      border: '1px solid rgba(46,204,113,0.28)',
+                      borderRadius: '999px', padding: '3px 10px',
+                      color: '#2ECC71', fontSize: '10px', fontWeight: 700,
+                      whiteSpace: 'nowrap' as const,
+                    }}>
+                      <span className="status-dot" style={{
+                        width: '5px', height: '5px', borderRadius: '50%',
+                        backgroundColor: '#2ECC71', display: 'inline-block',
+                      }} />
+                      {wing.status}
+                    </span>
+                  )}
+                </div>
+              </div>
+
               <h1 style={{
                 fontSize: 'clamp(36px, 5.5vw, 64px)',
                 lineHeight: 1.1, fontWeight: 900,
@@ -503,14 +619,20 @@ export function BootcampWingDetailPage() {
                 {wing.title}
               </h1>
 
-              <p style={{
-                color: t.textSecondary, fontSize: '17px',
-                lineHeight: 1.85, maxWidth: '680px', marginBottom: '36px',
-              }}>
+              <p
+                className="hero-desc"
+                style={{
+                  color: t.textSecondary, fontSize: '17px',
+                  lineHeight: 1.85, maxWidth: '680px', marginBottom: '36px',
+                }}
+              >
                 {wing.detailIntro}
               </p>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '14px', alignItems: 'center' }}>
+              <div
+                className="hero-cta-row"
+                style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '14px', alignItems: 'center' }}
+              >
                 <a
                   href={wing.registrationUrl}
                   target="_blank"
@@ -527,13 +649,15 @@ export function BootcampWingDetailPage() {
               </div>
             </div>
 
-            {/* Right — Fee Badge */}
-            <div style={{
-              opacity: mounted ? 1 : 0,
-              transform: mounted ? 'none' : 'translateX(30px)',
-              transition: 'opacity 0.6s ease 0.22s, transform 0.6s ease 0.22s',
-              display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '14px',
-            }}>
+            {/* ── Right — Fee Badge (desktop only) ── */}
+            <div
+              className="hero-right-col"
+              style={{
+                opacity: mounted ? 1 : 0,
+                transform: mounted ? 'none' : 'translateX(30px)',
+                transition: 'opacity 0.6s ease 0.22s, transform 0.6s ease 0.22s',
+              }}
+            >
               <div
                 className="fee-badge"
                 style={{
@@ -584,6 +708,7 @@ export function BootcampWingDetailPage() {
                 </div>
               )}
             </div>
+
           </div>
         </div>
       </div>
