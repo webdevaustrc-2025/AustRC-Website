@@ -675,7 +675,7 @@ function Closing() {
         The story continues
       </p>
       <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight" style={{ fontFamily: "'Sora',sans-serif", color: t.textPrimary }}>
-        The best chapter is the next one.
+        Built with dedication. Carried forward with pride.
       </h2>
       <p className="text-sm max-w-sm mx-auto mb-10" style={{ fontFamily: "'DM Sans',sans-serif", color: t.textMutedMid }}>
         See our developers who are dedicatedly building the Full Stack Website.
