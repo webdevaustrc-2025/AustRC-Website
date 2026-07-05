@@ -47,15 +47,15 @@ import wing4Logo from '@/assets/wing 4.jpeg';
 
 // ─── Slugs ───────────────────────────────────────────────────────────────────
 const WING1_SLUG = 'basic-robotics-projects';
-const WING4_SLUG = 'web-app-design';
+const WING4_SLUG = 'web-app-development';
 
 // ─── Logo resolver ────────────────────────────────────────────────────────────
 // Safer than array index mapping. Now logos are connected directly with slug.
 const WING_LOGOS: Record<string, string> = {
   'basic-robotics-projects': wing1Logo,
   'pcb-design-fabrication': wing2Logo,
-  'solidworks-bootcamp-roadmap': wing3Logo,
-  'web-app-design': wing4Logo,
+  '3D-design-&-modeling': wing3Logo,
+  'web-app-development': wing4Logo,
 };
 
 function getWingLogo(slug: string): string {
@@ -66,8 +66,8 @@ function getWingLogo(slug: string): string {
 const WING_REGISTRATION_LINKS: Record<string, string> = {
   'basic-robotics-projects': 'https://forms.gle/pqVYq2gsyut8CJTf7',
   'pcb-design-fabrication': 'https://forms.gle/mf7WbLd3YbnL89vz5',
-  'solidworks-bootcamp-roadmap': 'https://forms.gle/cVBThKHWajzxgwkN7',
-  'web-app-design': 'https://forms.gle/PvEhHp86NjyPGSjT6',
+  '3D-design-&-modeling': 'https://forms.gle/cVBThKHWajzxgwkN7',
+  'web-app-development': 'https://forms.gle/PvEhHp86NjyPGSjT6',
 };
 
 // ─── Solo / Team config ───────────────────────────────────────────────────────
@@ -75,15 +75,15 @@ const WING_FORMAT_TAG: Record<string, 'Solo' | 'Team'> = {
   'basic-robotics-projects': 'Team',
   'pcb-design-fabrication': 'Solo',
   'solidworks-bootcamp-roadmap': 'Solo',
-  'web-app-design': 'Team',
+  'web-app-development': 'Team',
 };
 
 // ─── Wing 4 Documentation Data ────────────────────────────────────────────────
 // This data replaces only Wing 4 information from the uploaded Web App Bootcamp PDF.
 const WING4_DOCUMENTATION_DETAILS = {
   eyebrow: 'Wing 4',
-  title: 'Web App Bootcamp',
-  shortTitle: 'Web App Bootcamp',
+  title: 'Web App Development',
+  shortTitle: 'Web App Development',
   detailIntro:
     'From your first backend endpoint to a complete, secure, and deployed web application. Build, connect, and deploy one beginner-friendly project through setup, data, users, frontend, experience, security, and a final hackathon.',
   targetGroup: 'Beginner-friendly web app learners',

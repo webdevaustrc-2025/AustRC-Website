@@ -164,8 +164,8 @@ export const bootcampWings: BootcampWing[] = [
   },
   {
     id: 3,
-    slug: 'solidworks-bootcamp-roadmap',
-    title: 'SOLIDWORKS Bootcamp Roadmap',
+    slug: '3D-design-&-modeling',
+    title: '3D Design & Modeling',
     shortTitle: 'SOLIDWORKS',
     eyebrow: 'Wing 03',
     summary:
@@ -247,12 +247,12 @@ export const bootcampWings: BootcampWing[] = [
   },
   {
     id: 4,
-    slug: 'web-app-design',
-    title: 'Web App Design',
+    slug: 'web-app-development',
+    title: 'Web App Development',
     shortTitle: 'Web App Design',
     eyebrow: 'Wing 04',
     summary:
-      'A software and IoT dashboard wing focused on web interfaces, full-stack concepts, database management, active data streams, and robotics control dashboard deployment.',
+      'A beginner-friendly web app bootcamp where participants build one practical project from the first backend endpoint to a complete, secure, deployed web application.',
     detailIntro:
       'This wing introduces software architecture and IoT web dashboard development. Participants will learn how hardware systems can be connected with real-time software interfaces, databases, and active data streams to build a functional robotics control dashboard.',
     targetGroup: 'Members looking to expand into software architecture, full-stack development, or IoT web dashboard implementations.',
@@ -265,9 +265,9 @@ export const bootcampWings: BootcampWing[] = [
     fee: 'Free',
     registrationUrl: '#',
     highlights: [
-      'Clean web interface design',
-      'Core web technologies',
-      'Software architecture for robotics dashboards',
+      'Understand the full web flow from browser to backend and database.',
+      'Build and test REST APIs with useful endpoints and reliable responses.',
+      'Work with stored data, database-backed CRUD operations, and fast temporary data.',
       'Database management concepts',
       'Active data streams and final robotics control dashboard',
     ],

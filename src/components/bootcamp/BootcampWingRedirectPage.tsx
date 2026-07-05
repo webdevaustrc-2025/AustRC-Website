@@ -27,7 +27,7 @@ const WING_NAMES: Record<string, string> = {
   'wing-1': 'Wing 01 — Basic Robotics & Projects',
   'wing-2': 'Wing 02 — PCB Design & Fabrication',
   'wing-3': 'Wing 03 — SOLIDWORKS Bootcamp Roadmap',
-  'wing-4': 'Wing 04 — Web App Design',
+  'wing-4': 'Wing 04 — Web App Development',
 };
 
 export function BootcampWingRedirectPage() {
