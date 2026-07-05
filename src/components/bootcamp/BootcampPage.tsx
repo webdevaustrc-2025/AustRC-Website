@@ -35,18 +35,6 @@ const wingLogos: Record<number, string> = {
   3: wing4Logo,
 };
 
-// ─── Wing Registration URLs ───────────────────────────────────────────────────
-// These match exactly what BootcampWingRedirectPage uses.
-// We reference the internal redirect route so the router handles the
-// external navigation — keeping a single source of truth in
-// BootcampWingRedirectPage.
-const WING_REGISTRATION_ROUTES: Record<number, string> = {
-  0: `${BOOTCAMP_BASE_PATH}/wing-1`,
-  1: `${BOOTCAMP_BASE_PATH}/wing-2`,
-  2: `${BOOTCAMP_BASE_PATH}/wing-3`,
-  3: `${BOOTCAMP_BASE_PATH}/wing-4`,
-};
-
 // Direct external form URLs (mirrors BootcampWingRedirectPage's WING_FORM_URLS)
 // Used as the href on the anchor so middle-click / open-in-new-tab works.
 const WING_FORM_URLS: Record<number, string> = {
@@ -473,10 +461,6 @@ const WingCard = ({ wing, index }: { wing: typeof bootcampWings[0]; index: numbe
   // The direct external Google Form URL for this wing
   const formUrl = WING_FORM_URLS[index];
 
-  // The internal redirect route (e.g. /bootcamp/wing-1) — used for
-  // same-tab navigation so the router's replace() handles the external jump
-  const registrationRoute = WING_REGISTRATION_ROUTES[index];
-
   return (
     <motion.article
       initial={{ opacity: 0, y: 50 }}
@@ -581,23 +565,23 @@ const WingCard = ({ wing, index }: { wing: typeof bootcampWings[0]; index: numbe
           <div className="grid grid-cols-3 gap-2 mb-5">
             {/* Duration */}
             <div
-              className="rounded-xl border p-2.5 flex flex-col gap-1"
+              className="bootcamp-info-square rounded-xl border p-2.5 flex flex-col gap-1"
               style={{
                 borderColor: 'rgba(46,204,113,0.14)',
                 backgroundColor: 'rgba(46,204,113,0.04)',
               }}
             >
-              <div className="flex items-center gap-1">
-                <Clock size={9} className="text-[#2ECC71]/50 shrink-0" />
+              <div className="bootcamp-info-label-row flex items-center gap-1">
+                <Clock size={9} className="bootcamp-info-icon text-[#2ECC71]/50 shrink-0" />
                 <span
-                  className="text-[9px] font-semibold leading-tight"
+                  className="bootcamp-info-label text-[8px] sm:text-[9px] font-semibold leading-none whitespace-nowrap"
                   style={{ color: t.textSecondary }}
                 >
                   Duration
                 </span>
               </div>
               <div
-                className="text-[11px] font-bold leading-tight"
+                className="bootcamp-info-value text-[11px] font-bold leading-tight"
                 style={{ color: t.textPrimary }}
               >
                 {wing.timeline}
@@ -606,23 +590,23 @@ const WingCard = ({ wing, index }: { wing: typeof bootcampWings[0]; index: numbe
 
             {/* Classes */}
             <div
-              className="rounded-xl border p-2.5 flex flex-col gap-1"
+              className="bootcamp-info-square rounded-xl border p-2.5 flex flex-col gap-1"
               style={{
                 borderColor: 'rgba(46,204,113,0.14)',
                 backgroundColor: 'rgba(46,204,113,0.04)',
               }}
             >
-              <div className="flex items-center gap-1">
-                <BookOpen size={9} className="text-[#2ECC71]/50 shrink-0" />
+              <div className="bootcamp-info-label-row flex items-center gap-1">
+                <BookOpen size={9} className="bootcamp-info-icon text-[#2ECC71]/50 shrink-0" />
                 <span
-                  className="text-[9px] font-semibold leading-tight"
+                  className="bootcamp-info-label text-[8px] sm:text-[9px] font-semibold leading-none whitespace-nowrap"
                   style={{ color: t.textSecondary }}
                 >
                   Classes
                 </span>
               </div>
               <div
-                className="text-[11px] font-bold leading-tight"
+                className="bootcamp-info-value text-[11px] font-bold leading-tight"
                 style={{ color: t.textPrimary }}
               >
                 {wing.classCount}
@@ -631,22 +615,22 @@ const WingCard = ({ wing, index }: { wing: typeof bootcampWings[0]; index: numbe
 
             {/* Fee */}
             <div
-              className="rounded-xl border p-2.5 flex flex-col gap-1"
+              className="bootcamp-info-square rounded-xl border p-2.5 flex flex-col gap-1"
               style={{
                 borderColor: 'rgba(46,204,113,0.18)',
                 backgroundColor: 'rgba(46,204,113,0.06)',
               }}
             >
-              <div className="flex items-center gap-1">
-                <BadgeCheck size={9} className="text-[#2ECC71]/60 shrink-0" />
+              <div className="bootcamp-info-label-row flex items-center gap-1">
+                <BadgeCheck size={9} className="bootcamp-info-icon text-[#2ECC71]/60 shrink-0" />
                 <span
-                  className="text-[9px] font-semibold leading-tight"
+                  className="bootcamp-info-label text-[8px] sm:text-[9px] font-semibold leading-none whitespace-nowrap"
                   style={{ color: t.textSecondary }}
                 >
                   Fee
                 </span>
               </div>
-              <div className="text-[11px] font-black leading-tight text-[#2ECC71]">
+              <div className="bootcamp-info-value text-[11px] font-black leading-tight text-[#2ECC71]">
                 {wing.fee}
               </div>
             </div>
@@ -924,6 +908,27 @@ export function BootcampPage() {
         @media (max-width: 640px) {
           .bootcamp-stats-grid { grid-template-columns: repeat(2, minmax(0,1fr)) !important; }
           .bootcamp-wings-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 420px) {
+          .bootcamp-info-square {
+            padding: 0.8rem !important;
+            gap: 0.29rem !important;
+          }
+          .bootcamp-info-label-row {
+            gap: 0.3rem !important;
+          }
+          .bootcamp-info-label {
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+          }
+          .bootcamp-info-icon {
+            width: 0.55rem !important;
+            height: 0.55rem !important;
+          }
+          .bootcamp-info-value {
+            font-size: 0.8rem !important;
+            line-height: 1.08 !important;
+          }
         }
       `}</style>
 
