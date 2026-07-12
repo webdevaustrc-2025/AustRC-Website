@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useTokens } from '@/tokens/useTokens';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/config/firebase';
@@ -273,15 +274,13 @@ export function EnthusiastAcquisitionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.7 }}
               >
-                <a
-                  href="https://registration.austrc.com/sub-executive/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to="/sub-executive-registration"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-xl text-white text-lg hover:shadow-[0_0_40px_0_rgba(46,204,113,0.8)] transition-all hover:scale-105 group"
                 >
                   Apply Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </motion.div>
             </motion.div>
 
@@ -563,15 +562,13 @@ export function EnthusiastAcquisitionPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="https://registration.austrc.com/sub-executive/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to="/sub-executive-registration"
                   className="inline-flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-r from-[#2ECC71] to-[#27AE60] rounded-xl text-white text-lg hover:shadow-[0_0_60px_0_rgba(46,204,113,1)] transition-all hover:scale-105 group"
                 >
                   Apply Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
                 <a
                   href="mailto:austrc@aust.edu"
                   className="inline-flex items-center justify-center gap-3 px-10 py-4 border border-[#2ECC71]/50 rounded-xl text-lg hover:border-[#2ECC71] hover:shadow-[0_0_40px_0_rgba(46,204,113,0.4)] transition-all group"
