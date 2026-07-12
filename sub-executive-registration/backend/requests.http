@@ -1,0 +1,11 @@
+### Health check
+GET http://localhost:5000/api/health
+
+### Form options
+GET http://localhost:5000/api/form-options
+
+### Replace with an actual team UUID from form-options
+GET http://localhost:5000/api/teams/10000000-0000-0000-0000-000000000001/questions
+
+### Check dummy application status
+GET http://localhost:5000/api/applications/SUBEX-2026-00001/status?studentId=20230104001
