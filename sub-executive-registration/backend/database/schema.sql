@@ -23,6 +23,7 @@ DROP VIEW IF EXISTS v_sub_ex_applications;
 DROP TABLE IF EXISTS application_answers CASCADE;
 DROP TABLE IF EXISTS applications CASCADE;
 DROP TABLE IF EXISTS applicants CASCADE;
+DROP TABLE IF EXISTS form_configs CASCADE;
 DROP TABLE IF EXISTS screening_questions CASCADE;
 DROP TABLE IF EXISTS recruitment_cycles CASCADE;
 DROP TABLE IF EXISTS teams CASCADE;
@@ -186,6 +187,17 @@ FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
 
 -- ----------------------------------------------------------------------------
+-- 5B. FORM CONFIGURATIONS
+-- Stores JSONB configurations for dynamic forms.
+-- ----------------------------------------------------------------------------
+CREATE TABLE form_configs (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_name   VARCHAR(150) NOT NULL UNIQUE,
+    fields          JSONB NOT NULL,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- ----------------------------------------------------------------------------
 -- 6. APPLICANTS
 -- Stores a student's basic profile.
 -- A student is stored once and may apply again in a future recruitment cycle.
@@ -282,6 +294,7 @@ CREATE TABLE applications (
                             ON DELETE RESTRICT,
 
     status                  VARCHAR(30) NOT NULL DEFAULT 'submitted',
+    submission_data         JSONB,
     admin_notes             TEXT,
     submitted_at            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -797,6 +810,7 @@ SELECT
     a.id AS application_id,
     a.application_number,
     a.status,
+    a.submission_data,
     a.admin_notes,
     a.submitted_at,
     a.updated_at,

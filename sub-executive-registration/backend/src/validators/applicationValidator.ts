@@ -182,7 +182,14 @@ export const createApplicationSchema = z.object({
     .array(answerSchema)
     .max(100, {
       error: 'A maximum of 100 answers can be submitted.',
-    }),
+    })
+    .optional()
+    .default([]),
+
+  submissionData: z
+    .record(z.string(), z.any())
+    .optional()
+    .nullable(),
 });
 
 /*

@@ -3,6 +3,7 @@ import { pool, withTransaction } from '../config/database';
 import type {
   CreateApplicationInput,
   ScreeningQuestionRow,
+  ApplicationAnswerInput,
 } from '../types/registration';
 import { AppError } from '../utils/AppError';
 
@@ -115,7 +116,7 @@ export async function getTeamQuestions(teamId: string) {
 }
 
 function answerHasValue(
-  answer: CreateApplicationInput['answers'][number] | undefined,
+  answer: ApplicationAnswerInput | undefined,
 ): boolean {
   return Boolean(answer?.answerText?.trim() || answer?.answerJson?.length);
 }
@@ -178,9 +179,10 @@ export async function createApplication(input: CreateApplicationInput) {
 
     const questions = questionsResult.rows;
     const questionById = new Map(questions.map((question) => [question.id, question]));
-    const answerByQuestionId = new Map<string, CreateApplicationInput['answers'][number]>();
+    const answers = input.answers || [];
+    const answerByQuestionId = new Map<string, any>();
 
-    for (const answer of input.answers) {
+    for (const answer of answers) {
       if (answerByQuestionId.has(answer.questionId)) {
         throw new AppError(
           400,
@@ -255,7 +257,7 @@ export async function createApplication(input: CreateApplicationInput) {
             : [answer.answerText ?? ''];
 
         const invalidSelection = selectedValues.some(
-          (value) => !question.options?.includes(value),
+          (value: any) => !question.options?.includes(value),
         );
 
         if (invalidSelection) {
@@ -363,11 +365,17 @@ export async function createApplication(input: CreateApplicationInput) {
       `INSERT INTO applications (
          applicant_id,
          recruitment_cycle_id,
-         team_id
+         team_id,
+         submission_data
        )
-       VALUES ($1, $2, $3)
+       VALUES ($1, $2, $3, $4::jsonb)
        RETURNING id, application_number, status, submitted_at`,
-      [applicantId, cycle.id, input.teamId],
+      [
+        applicantId,
+        cycle.id,
+        input.teamId,
+        input.submissionData ? JSON.stringify(input.submissionData) : null,
+      ],
     );
 
     const application = applicationResult.rows[0];
@@ -375,7 +383,7 @@ export async function createApplication(input: CreateApplicationInput) {
       throw new AppError(500, 'APPLICATION_CREATE_FAILED', 'Could not create application.');
     }
 
-    for (const answer of input.answers) {
+    for (const answer of answers) {
       await client.query(
         `INSERT INTO application_answers (
            application_id,

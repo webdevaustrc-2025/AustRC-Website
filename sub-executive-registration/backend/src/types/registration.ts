@@ -33,5 +33,6 @@ export interface CreateApplicationInput {
   personalEmail: string;
   phoneNumber: string;
   linkedinUrl?: string | null;
-  answers: ApplicationAnswerInput[];
+  answers?: ApplicationAnswerInput[];
+  submissionData?: Record<string, any> | null;
 }

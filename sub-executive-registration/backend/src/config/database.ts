@@ -3,6 +3,9 @@ import { env } from './env';
 
 export const pool = new Pool({
   connectionString: env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // এটি না দিলে নিওন ডাটাবেসে কানেক্ট হবে না
+  },
   max: env.NODE_ENV === 'production' ? 10 : 5,
   idleTimeoutMillis: 30_000,
   connectionTimeoutMillis: 10_000,

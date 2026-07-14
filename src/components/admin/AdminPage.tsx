@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Bell, Calendar, Trophy,
   GraduationCap, Users, Globe, LogOut,
   Loader2, Lock, ShieldAlert, Eye, EyeOff, Mail,
-  MessageSquareQuote, Menu, X,
+  MessageSquareQuote, Menu, X, Settings,
 } from 'lucide-react';
 
 import { auth } from '@/config/firebase';
@@ -17,6 +17,7 @@ import { GoverningPanelEditor } from './GoverningPanelEditor';
 import { SponsorsEditor } from './SponsorsEditor';
 import { CollaborationsEditor } from './CollaborationsEditor';
 import { TestimonialsEditor } from './TestimonialsEditor';
+import { FormEditor } from './FormEditor';
 
 const DEFAULT_ADMIN_EMAILS = ['webdev.austrc@gmail.com'];
 const configuredAdminEmails = (import.meta.env.VITE_ADMIN_EMAILS || '')
@@ -35,6 +36,7 @@ const MENU = [
   { id: 'sponsors',        label: 'Sponsors',           icon: Globe },
   { id: 'collaborations',  label: 'Collaborations',     icon: Globe },
   { id: 'testimonials',    label: 'Testimonials',       icon: MessageSquareQuote },
+  { id: 'form-editor',     label: 'Form Editor & Export', icon: Settings },
 ];
 
 /* ─────────────────────────────── styles ─────────────────────────────── */
@@ -403,6 +405,7 @@ export function AdminPage() {
           {tab === 'sponsors'        && <SponsorsEditor />}
           {tab === 'collaborations'  && <CollaborationsEditor />}
           {tab === 'testimonials'    && <TestimonialsEditor />}
+          {tab === 'form-editor'     && <FormEditor />}
         </div>
       </main>
     </div>

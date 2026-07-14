@@ -10,6 +10,7 @@ import {
   notFoundHandler,
 } from './middleware/errorHandler';
 import { registrationRouter } from './routes/registrationRoutes';
+import { adminRouter } from './routes/admin.routes';
 
 /**
  * Main Express application.
@@ -71,7 +72,7 @@ const corsOptions: CorsOptions = {
     );
   },
 
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 
   allowedHeaders: [
     'Content-Type',
@@ -204,6 +205,7 @@ app.post(
  * Mount all registration API routes.
  */
 app.use('/api', registrationRouter);
+app.use('/api/admin', adminRouter);
 
 /**
  * Handle requests that do not match any existing route.
