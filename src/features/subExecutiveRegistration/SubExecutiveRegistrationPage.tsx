@@ -11,11 +11,9 @@ import {
   Camera,
   CheckCircle2,
   ClipboardCheck,
-  Database,
   ImagePlus,
   LoaderCircle,
   Send,
-  ShieldCheck,
   Users,
 } from 'lucide-react';
 import { useTokens } from '@/tokens/useTokens';
@@ -41,11 +39,16 @@ const ALLOWED_PHOTO_TYPES = new Set([
   'image/jpg',
   'image/png',
 ]);
+const STRICT_EMAIL_PATTERN =
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
+const AUST_EMAIL_PATTERN =
+  /^[A-Z0-9._%+-]+@aust\.edu$/i;
 const initialForm: ApplicationFormData = {
   fullName: '',
   departmentId: '',
   studentId: '',
+  austrcId: '',
   semesterId: '',
   personalEmail: '',
   eduEmail: '',
@@ -300,48 +303,74 @@ export function SubExecutiveRegistrationPage() {
     setPhoto(selectedFile);
   }
 
-  function validateForm(): string | null {
-    if (!photo) {
-      return 'Please attach your applicant photo.';
-    }
+function validateForm(): string | null {
+  const personalEmail =
+    form.personalEmail.trim();
 
-    if (!form.firstTeamId) {
-      return 'Please select your first team preference.';
-    }
+  const eduEmail =
+    form.eduEmail.trim();
 
-    if (
-      form.secondTeamId &&
-      form.firstTeamId === form.secondTeamId
-    ) {
-      return 'First and second team preferences must be different.';
-    }
-
-    if (!form.workedWithAustrcBefore) {
-      return 'Please select whether you worked with AUSTRC, ARC or RoboMania before.';
-    }
-
-    if (
-      form.workedWithAustrcBefore === 'yes' &&
-      !form.previousWorkDescription.trim()
-    ) {
-      return 'Please describe your previous AUSTRC, ARC or RoboMania work.';
-    }
-
-    return (
-      validateTeamAnswers(
-        'First preference',
-        firstQuestions,
-        firstAnswers,
-      ) ||
-      (form.secondTeamId
-        ? validateTeamAnswers(
-            'Second preference',
-            secondQuestions,
-            secondAnswers,
-          )
-        : null)
-    );
+  if (
+    !STRICT_EMAIL_PATTERN.test(
+      personalEmail,
+    )
+  ) {
+    return 'Enter a valid personal email address, for example yourname@gmail.com.';
   }
+
+  if (
+    !AUST_EMAIL_PATTERN.test(
+      eduEmail,
+    )
+  ) {
+    return 'Educational email must be a valid @aust.edu email address.';
+  }
+  if (!form.austrcId.trim()) {
+    return 'Enter your AUSTRC ID. If you do not have one, write N/A.';
+  }
+  if (!photo) {
+    return 'Please attach your applicant photo.';
+  }
+
+  if (!form.firstTeamId) {
+    return 'Please select your first team preference.';
+  }
+
+  if (
+    form.secondTeamId &&
+    form.firstTeamId ===
+      form.secondTeamId
+  ) {
+    return 'First and second team preferences must be different.';
+  }
+
+  if (!form.workedWithAustrcBefore) {
+    return 'Please select whether you worked with AUSTRC, ARC or RoboMania before.';
+  }
+
+  if (
+    form.workedWithAustrcBefore ===
+      'yes' &&
+    !form.previousWorkDescription.trim()
+  ) {
+    return 'Please describe your previous AUSTRC, ARC or RoboMania work.';
+  }
+
+  return (
+    validateTeamAnswers(
+      'First preference',
+      firstQuestions,
+      firstAnswers,
+    ) ||
+    (form.secondTeamId
+      ? validateTeamAnswers(
+          'Second preference',
+          secondQuestions,
+          secondAnswers,
+        )
+      : null)
+  );
+}
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -412,20 +441,6 @@ export function SubExecutiveRegistrationPage() {
             your selected teams will appear.
           </p>
 
-          <div className="subex-hero-stats">
-            <div>
-              <Users size={20} />
-              <span>Two team preferences</span>
-            </div>
-            <div>
-              <Database size={20} />
-              <span>Neon database storage</span>
-            </div>
-            <div>
-              <ShieldCheck size={20} />
-              <span>Cloudinary image upload</span>
-            </div>
-          </div>
         </section>
 
         {result ? (
@@ -604,7 +619,58 @@ export function SubExecutiveRegistrationPage() {
                         placeholder="Example: 20230104001"
                       />
                     </div>
+                    <div className="subex-field-group">
+  <label htmlFor="subex-austrc-id">
+    AUSTRC ID{' '}
+    <span className="subex-required">
+      *
+    </span>
+  </label>
 
+  <input
+    id="subex-austrc-id"
+    type="text"
+
+    value={form.austrcId}
+
+    onChange={(event) =>
+      updateFormField(
+        'austrcId',
+        event.target.value,
+      )
+    }
+
+    onBlur={(event) => {
+      const value =
+        event.target.value.trim();
+
+      const compactValue =
+        value.replace(/\s+/g, '');
+
+      updateFormField(
+        'austrcId',
+
+        /^(n\/a|na)$/i.test(
+          compactValue,
+        )
+          ? 'N/A'
+          : value,
+      );
+    }}
+
+    required
+    minLength={1}
+    maxLength={50}
+    disabled={submitting}
+
+    placeholder="Enter AUSTRC ID or N/A"
+  />
+
+  <small className="subex-field-hint">
+    If you do not have an AUSTRC ID,
+    write N/A.
+  </small>
+</div>
                     <div className="subex-field-group">
                       <label htmlFor="subex-semester">
                         Semester <span className="subex-required">*</span>
@@ -647,40 +713,111 @@ export function SubExecutiveRegistrationPage() {
                     </div>
 
                     <div className="subex-field-group">
-                      <label htmlFor="subex-personal-email">
-                        Personal mail <span className="subex-required">*</span>
-                      </label>
-                      <input
-                        id="subex-personal-email"
-                        type="email"
-                        value={form.personalEmail}
-                        onChange={(event) =>
-                          updateFormField('personalEmail', event.target.value)
-                        }
-                        required
-                        maxLength={255}
-                        disabled={submitting}
-                        placeholder="yourname@gmail.com"
-                      />
-                    </div>
+  <label htmlFor="subex-personal-email">
+    Personal mail{' '}
+    <span className="subex-required">
+      *
+    </span>
+  </label>
+
+  <input
+    id="subex-personal-email"
+    type="email"
+    inputMode="email"
+    autoComplete="email"
+
+    value={form.personalEmail}
+
+    onChange={(event) =>
+      updateFormField(
+        'personalEmail',
+        event.target.value.replace(
+          /\s/g,
+          '',
+        ),
+      )
+    }
+
+    onBlur={(event) =>
+      updateFormField(
+        'personalEmail',
+        event.target.value
+          .trim()
+          .toLowerCase(),
+      )
+    }
+
+    pattern={
+      STRICT_EMAIL_PATTERN.source
+    }
+
+    title="Enter a valid email address, for example yourname@gmail.com."
+
+    required
+    maxLength={255}
+    disabled={submitting}
+
+    placeholder="yourname@gmail.com"
+  />
+
+  <small className="subex-field-hint">
+    Enter a complete and valid personal
+    email address.
+  </small>
+</div>
 
                     <div className="subex-field-group">
-                      <label htmlFor="subex-edu-email">
-                        Edu mail <span className="subex-required">*</span>
-                      </label>
-                      <input
-                        id="subex-edu-email"
-                        type="email"
-                        value={form.eduEmail}
-                        onChange={(event) =>
-                          updateFormField('eduEmail', event.target.value)
-                        }
-                        required
-                        maxLength={255}
-                        disabled={submitting}
-                        placeholder="your-id@aust.edu"
-                      />
-                    </div>
+  <label htmlFor="subex-edu-email">
+    Edu mail{' '}
+    <span className="subex-required">
+      *
+    </span>
+  </label>
+
+  <input
+    id="subex-edu-email"
+    type="email"
+    inputMode="email"
+    autoComplete="email"
+
+    value={form.eduEmail}
+
+    onChange={(event) =>
+      updateFormField(
+        'eduEmail',
+        event.target.value
+          .toLowerCase()
+          .replace(/\s/g, ''),
+      )
+    }
+
+    onBlur={(event) =>
+      updateFormField(
+        'eduEmail',
+        event.target.value
+          .trim()
+          .toLowerCase(),
+      )
+    }
+
+    pattern={
+      AUST_EMAIL_PATTERN.source
+    }
+
+    title="Enter your official AUST educational email ending with @aust.edu."
+
+    required
+    maxLength={255}
+    disabled={submitting}
+
+    placeholder="student-id@aust.edu"
+  />
+
+  <small className="subex-field-hint">
+    Only an official email ending with
+    @aust.edu is accepted.
+  </small>
+</div>
 
                     <div className="subex-field-group subex-full-width">
                       <label htmlFor="subex-address">
@@ -757,8 +894,9 @@ export function SubExecutiveRegistrationPage() {
                     <div>
                       <strong>Rename the photo with your name.</strong>
                       <p>
-                        This image will be stored in Cloudinary and may appear
-                        in future AUSTRC social-media posts if you are selected.
+                          This picture may appear in future
+  AUSTRC social-media posts if you are
+  selected.
                       </p>
                       {photo && <small>Selected: {photo.name}</small>}
                     </div>
@@ -985,8 +1123,9 @@ export function SubExecutiveRegistrationPage() {
                 <div>
                   <strong>Ready to submit?</strong>
                   <span>
-                    Your photo will be uploaded to Cloudinary and your form data
-                    will be stored in the AUSTRC Neon database.
+                    Review your information and selected-team
+  answers carefully before submitting your
+  application.
                   </span>
                 </div>
                 <button
@@ -1002,7 +1141,7 @@ export function SubExecutiveRegistrationPage() {
                   {submitting ? (
                     <>
                       <LoaderCircle className="subex-spin" size={19} />
-                      Uploading and submitting...
+                      Submitting application...
                     </>
                   ) : (
                     <>

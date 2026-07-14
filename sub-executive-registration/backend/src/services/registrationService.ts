@@ -571,96 +571,123 @@ export async function createApplication(
         );
       }
 
-      const duplicateResult =
-        await client.query<{
-          application_number: string;
-        }>(
-          `SELECT application_number
-           FROM applications
-           WHERE recruitment_cycle_id = $1
-             AND (
-               student_id = $2
-               OR LOWER(edu_email) =
-                  LOWER($3)
-               OR LOWER(personal_email) =
-                  LOWER($4)
-             )
-           LIMIT 1`,
-          [
-            cycle.id,
-            input.studentId,
-            input.eduEmail,
-            input.personalEmail,
-          ],
-        );
+const duplicateResult =
+  await client.query<{
+    application_number: string;
+  }>(
+    `SELECT application_number
+     FROM applications
+     WHERE recruitment_cycle_id = $1
+       AND (
+         student_id = $2
+
+         OR LOWER(edu_email) =
+            LOWER($3)
+
+         OR LOWER(personal_email) =
+            LOWER($4)
+
+         OR (
+           UPPER(BTRIM($5::text)) <> 'N/A'
+
+           AND LOWER(BTRIM(austrc_id)) =
+               LOWER(BTRIM($5::text))
+         )
+       )
+     LIMIT 1`,
+    [
+      cycle.id,
+      input.studentId,
+      input.eduEmail,
+      input.personalEmail,
+      input.austrcId,
+    ],
+  );
 
       if (duplicateResult.rows[0]) {
         throw new AppError(
           409,
           'ALREADY_APPLIED',
-          `An application already exists for this recruitment cycle. Application number: ${duplicateResult.rows[0].application_number}`,
+          `An application already exists with the same Student ID, AUSTRC ID or email for this recruitment cycle. Application number: ${duplicateResult.rows[0].application_number}`,
         );
       }
 
-      const applicationResult =
-        await client.query<{
-          id: string;
-          application_number: string;
-        }>(
-          `INSERT INTO applications (
-             recruitment_cycle_id,
-             full_name,
-             department_id,
-             student_id,
-             semester_id,
-             personal_email,
-             edu_email,
-             phone_number,
-             present_address,
-             facebook_url,
-             photo_url,
-             photo_public_id,
-             photo_original_name,
-             photo_format,
-             photo_bytes,
-             worked_with_austrc_before,
-             previous_work_description,
-             status
-           )
-           VALUES (
-             $1, $2, $3, $4, $5,
-             LOWER($6), LOWER($7),
-             $8, $9, $10,
-             $11, $12, $13, $14,
-             $15, $16, $17, 'draft'
-           )
-           RETURNING
-             id,
-             application_number`,
-          [
-            cycle.id,
-            input.fullName,
-            input.departmentId,
-            input.studentId,
-            input.semesterId,
-            input.personalEmail,
-            input.eduEmail,
-            input.phoneNumber,
-            input.presentAddress,
-            input.facebookUrl,
-            photo.url,
-            photo.publicId,
-            photo.originalName,
-            photo.format,
-            photo.bytes,
-            input.workedWithAustrcBefore,
-            input.workedWithAustrcBefore
-              ? input
-                  .previousWorkDescription
-                  ?.trim() || null
-              : null,
-          ],
-        );
+const applicationResult =
+  await client.query<{
+    id: string;
+    application_number: string;
+  }>(
+    `INSERT INTO applications (
+       recruitment_cycle_id,
+       full_name,
+       department_id,
+       student_id,
+       austrc_id,
+       semester_id,
+       personal_email,
+       edu_email,
+       phone_number,
+       present_address,
+       facebook_url,
+       photo_url,
+       photo_public_id,
+       photo_original_name,
+       photo_format,
+       photo_bytes,
+       worked_with_austrc_before,
+       previous_work_description,
+       status
+     )
+     VALUES (
+       $1,
+       $2,
+       $3,
+       $4,
+       $5,
+       $6,
+       LOWER($7),
+       LOWER($8),
+       $9,
+       $10,
+       $11,
+       $12,
+       $13,
+       $14,
+       $15,
+       $16,
+       $17,
+       $18,
+       'draft'
+     )
+     RETURNING
+       id,
+       application_number`,
+    [
+      cycle.id,
+      input.fullName,
+      input.departmentId,
+      input.studentId,
+      input.austrcId,
+      input.semesterId,
+      input.personalEmail,
+      input.eduEmail,
+      input.phoneNumber,
+      input.presentAddress,
+      input.facebookUrl,
+      photo.url,
+      photo.publicId,
+      photo.originalName,
+      photo.format,
+      photo.bytes,
+      input.workedWithAustrcBefore,
+
+      input.workedWithAustrcBefore
+        ? input
+            .previousWorkDescription
+            ?.trim() || null
+        : null,
+    ],
+  );
 
       const application =
         applicationResult.rows[0];

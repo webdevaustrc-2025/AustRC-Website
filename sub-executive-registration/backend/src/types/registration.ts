@@ -35,6 +35,7 @@ export interface CreateApplicationInput {
   fullName: string;
   departmentId: number;
   studentId: string;
+  austrcId: string;
   semesterId: number;
 
   personalEmail: string;

@@ -74,6 +74,63 @@ const teamPreferenceSchema = z.object({
     .max(100)
     .default([]),
 });
+const strictEmailPattern =
+  /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+const austEmailPattern =
+  /^[A-Z0-9._%+-]+@aust\.edu$/i;
+
+const personalEmailSchema = z
+  .string()
+  .trim()
+  .max(
+    255,
+    'Personal email cannot exceed 255 characters.',
+  )
+  .regex(
+    strictEmailPattern,
+    'Enter a valid personal email address.',
+  )
+  .transform((value) =>
+    value.toLowerCase(),
+  );
+
+const eduEmailSchema = z
+  .string()
+  .trim()
+  .max(
+    255,
+    'Educational email cannot exceed 255 characters.',
+  )
+  .regex(
+    austEmailPattern,
+    'Educational email must end with @aust.edu.',
+  )
+  .transform((value) =>
+    value.toLowerCase(),
+  );
+
+  const austrcIdSchema = z
+  .string()
+  .trim()
+  .min(
+    1,
+    'Enter your AUSTRC ID. If you do not have one, write N/A.',
+  )
+  .max(
+    50,
+    'AUSTRC ID cannot exceed 50 characters.',
+  )
+  .transform((value) => {
+    const compactValue =
+      value.replace(/\s+/g, '');
+
+    return /^(n\/a|na)$/i.test(
+      compactValue,
+    )
+      ? 'N/A'
+      : value;
+  });
 
 export const createApplicationSchema = z
   .object({
@@ -88,24 +145,25 @@ export const createApplicationSchema = z
       .int()
       .positive(),
 
-    studentId: z
-      .string()
-      .trim()
-      .min(3)
-      .max(50),
+studentId: z
+  .string()
+  .trim()
+  .min(
+    3,
+    'Student ID is required.',
+  )
+  .max(50),
+
+austrcId:
+  austrcIdSchema,
 
     semesterId: z.coerce
       .number()
       .int()
       .positive(),
 
-    personalEmail: z
-      .email()
-      .max(255),
-
-    eduEmail: z
-      .email()
-      .max(255),
+personalEmail: personalEmailSchema,
+eduEmail: eduEmailSchema,
 
     phoneNumber: z
       .string()

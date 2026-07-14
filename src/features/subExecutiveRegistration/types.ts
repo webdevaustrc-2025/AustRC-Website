@@ -57,6 +57,7 @@ export interface ApplicationFormData {
   fullName: string;
   departmentId: string;
   studentId: string;
+  austrcId: string;
   semesterId: string;
 
   personalEmail: string;

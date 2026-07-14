@@ -470,10 +470,10 @@ export function HeroSection() {
               className="flex justify-center pt-4"
             >
               <Link
-                to="/GM_Registration"
+                to="/sub-executive-registration"
                 className="group premium-shimmer-btn text-base"
               >
-                <span>Register as General Member</span>
+                <span>Register as Sub-Executive</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>

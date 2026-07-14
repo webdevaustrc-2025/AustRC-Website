@@ -1,27 +1,44 @@
 import { Router } from 'express';
+
 import {
-  getFormConfigs,
-  getFormConfigById,
-  getFormConfigByCategory,
-  createFormConfig,
-  updateFormConfig,
-  deleteFormConfig,
-  exportRegistrations
+  exportRegistrations,
+  getAdminApplicationById,
+  getAdminApplications,
+  updateAdminApplication,
 } from '../controllers/admin.controller';
 
 export const adminRouter = Router();
 
 /**
- * CRUD routes for form configurations
+ * Candidate list, filters, statistics and pagination.
  */
-adminRouter.get('/form-config', getFormConfigs);
-adminRouter.get('/form-config/category/:categoryName', getFormConfigByCategory);
-adminRouter.get('/form-config/:id', getFormConfigById);
-adminRouter.post('/form-config', createFormConfig);
-adminRouter.put('/form-config/:id', updateFormConfig);
-adminRouter.delete('/form-config/:id', deleteFormConfig);
+adminRouter.get(
+  '/applications',
+  getAdminApplications,
+);
 
 /**
- * Excel export route for registrations
+ * Excel export.
+ *
+ * This route must stay above the /:id route.
  */
-adminRouter.get('/export-registrations', exportRegistrations);
+adminRouter.get(
+  '/applications/export',
+  exportRegistrations,
+);
+
+/**
+ * Complete details for one candidate.
+ */
+adminRouter.get(
+  '/applications/:id',
+  getAdminApplicationById,
+);
+
+/**
+ * Update application status and private notes.
+ */
+adminRouter.patch(
+  '/applications/:id',
+  updateAdminApplication,
+);
