@@ -107,6 +107,26 @@ function validateTeamAnswers(
 }
 
 export function SubExecutiveRegistrationPage() {
+  const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSf_5MmcppPMXF-VWwJkC03Xy-y72pdJrCTTcdu1Lxj5uZhm3A/viewform';
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      window.location.replace(formUrl);
+    }, 250);
+
+    return () => window.clearTimeout(timer);
+  }, [formUrl]);
+
+  return (
+    <div className="subex-redirect-screen" role="status" aria-live="polite">
+      <div className="subex-redirect-card">
+        <div className="subex-redirect-spinner" aria-hidden="true" />
+        <p>Opening the registration form</p>
+        <span>You will be redirected to Google Forms in a moment.</span>
+      </div>
+    </div>
+  );
+
   const t = useTokens();
   const [options, setOptions] = useState<FormOptions | null>(null);
   const [form, setForm] = useState<ApplicationFormData>(initialForm);

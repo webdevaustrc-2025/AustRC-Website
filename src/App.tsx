@@ -101,7 +101,6 @@ function SiteLayout() {
           <Route path="/registration" element={<RegistrationPage />} />
           <Route path="/gm-registration" element={<RegistrationPage />} />
           <Route path="/GM_Registration" element={<RegistrationPage />} />
-          <Route path="/sub-executive-registration" element={<SubExecutiveRegistrationPage />} />
 
           <Route path="/bootcamp" element={<BootcampPage />} />
           {/* Short wing-N redirect routes → go directly to Google Form */}
@@ -121,6 +120,10 @@ function SiteLayout() {
 function AppContent() {
   return (
     <Routes>
+      <Route
+        path="/sub-executive-registration"
+        element={<SubExecutiveRegistrationPage />}
+      />
       {/* Admin panel — completely isolated, no Navbar/Footer */}
       <Route path="/admin" element={<AdminPage />} />
       {/* All other routes go through the main site layout */}
